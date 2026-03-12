@@ -1,0 +1,11 @@
+{
+  "name": "saju-blueprint",
+  "version": "1.0.0",
+  "description": "The Saju Blueprint — Korean Four Pillars Destiny Report",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.98.0",
+    "@vercel/analytics": "^1.6.1",
+    "openai": "^4.0.0",
+    "stripe": "^14.0.0"
+  }
+}

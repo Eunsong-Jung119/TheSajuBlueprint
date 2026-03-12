@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — The Saju Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<!-- <script src="https://js.stripe.com/v3/"></script> -->
+<style>
+:root {
+  --gold: #c9a84c; --gold-dim: rgba(201,168,76,0.45); --gold-faint: rgba(201,168,76,0.12);
+  --navy: #0b0f1e; --navy-card: #131929;
+  --text: #e8dfc8; --text-dim: rgba(232,223,200,0.65); --text-faint: rgba(232,223,200,0.38);
+  --green: #6abf8a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--navy); color:var(--text); font-family:'EB Garamond',serif;
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 24px; overflow-x:hidden; }
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star { position:absolute; background:#fff; border-radius:50%;
+  animation: twinkle var(--d,4s) var(--delay,0s) infinite alternate; opacity:var(--bright,0.3); }
+@keyframes twinkle { from{opacity:var(--bright,0.3)} to{opacity:0.05} }
+
+.wrap { position:relative; z-index:1; width:100%; max-width:520px; }
+.brand { text-align:center; font-size:12px; letter-spacing:4px; color:var(--gold); margin-bottom:48px; }
+.card { background:var(--navy-card); border:1px solid var(--gold-dim); padding:48px 40px; }
+@media(max-width:480px){ .card { padding:32px 24px; } }
+
+h1 { font-size:clamp(24px,5vw,28px); font-weight:500; margin-bottom:32px; text-align:center; }
+
+/* Order summary */
+.summary { background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.2);
+  padding:20px; margin-bottom:28px; }
+.summary-row { display:flex; justify-content:space-between; align-items:center;
+  font-size:16px; padding:4px 0; }
+.summary-row.total { font-size:20px; color:var(--gold); border-top:1px solid rgba(201,168,76,0.2);
+  margin-top:8px; padding-top:12px; }
+.summary-label { color:var(--text-dim); }
+
+/* Discount */
+.discount-row { display:flex; gap:10px; margin-bottom:28px; }
+.discount-input { flex:1; background:rgba(255,255,255,0.04); border:1px solid rgba(201,168,76,0.3);
+  color:var(--text); font-family:'EB Garamond',serif; font-size:16px;
+  padding:11px 14px; outline:none; transition:border-color 0.2s; text-transform:uppercase; }
+.discount-input::placeholder { color:var(--text-faint); text-transform:none; }
+.discount-input:focus { border-color:var(--gold-dim); }
+.discount-btn { background:transparent; border:1px solid rgba(201,168,76,0.4);
+  color:var(--gold); font-family:'EB Garamond',serif; font-size:14px;
+  letter-spacing:2px; padding:11px 20px; cursor:pointer; white-space:nowrap;
+  transition:all 0.2s; }
+.discount-btn:hover { border-color:var(--gold); }
+.discount-msg { font-size:13px; margin-top:-20px; margin-bottom:24px; min-height:18px; }
+.discount-msg.ok { color:var(--green); }
+.discount-msg.err { color:#e87070; }
+
+/* Stripe element */
+.field { margin-bottom:20px; }
+.field label { display:block; font-size:12px; letter-spacing:3px; color:var(--gold);
+  text-transform:uppercase; margin-bottom:8px; }
+#card-element { background:rgba(255,255,255,0.04); border:1px solid rgba(201,168,76,0.3);
+  padding:14px 16px; }
+#card-errors { color:#e87070; font-size:14px; margin-top:8px; min-height:20px; }
+
+.pay-btn { width:100%; background:var(--gold); border:none; color:var(--navy);
+  font-family:'EB Garamond',serif; font-size:16px; letter-spacing:3px;
+  padding:18px; cursor:pointer; text-transform:uppercase; font-weight:600;
+  transition:all 0.3s; margin-top:8px; }
+.discount-btn,
+.pay-btn {
+  min-height:48px;
+}
+.pay-btn:hover:not(:disabled) { background:#d4b060; }
+.pay-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+.secure { display:flex; align-items:center; justify-content:center; gap:8px;
+  font-size:13px; color:var(--text-faint); margin-top:20px; }
+.back { display:block; text-align:center; margin-bottom:24px;
+  color:var(--text-faint); font-size:14px; text-decoration:none; letter-spacing:1px; }
+.back:hover { color:var(--text-dim); }
+
+.order-info { font-size:14px; color:var(--text-faint); text-align:center; margin-bottom:28px; }
+.order-info strong { color:var(--text-dim); }
+
+@media(max-width:480px){
+  body {
+    padding:32px 16px;
+  }
+  .discount-row {
+    flex-direction:column;
+  }
+  .discount-input,
+  .discount-btn {
+    width:100%;
+  }
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="wrap">
+  <a href="/order" class="back">← Edit Details</a>
+  <div class="brand">✦ The Saju Blueprint ✦</div>
+  <div class="card">
+    <h1>Complete Your Order</h1>
+
+    <div class="order-info">Blueprint for <strong id="displayName">—</strong></div>
+
+    <!-- Order Summary -->
+    <div class="summary">
+      <div class="summary-row">
+        <span class="summary-label">The Saju Blueprint</span>
+        <span>$9.99</span>
+      </div>
+      <div class="summary-row" id="discountRow" style="display:none;">
+        <span class="summary-label" id="discountLabel">Discount</span>
+        <span id="discountAmt" style="color:var(--green)">-$0.00</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span id="totalAmt">$9.99</span>
+      </div>
+    </div>
+
+    <!-- Discount Code -->
+    <div class="discount-row">
+      <input type="text" class="discount-input" id="discountCode" placeholder="Discount code">
+      <button class="discount-btn" onclick="applyDiscount()">Apply</button>
+    </div>
+    <div class="discount-msg" id="discountMsg"></div>
+
+    <!-- Card Input -->
+    <!--
+    <div class="field">
+      <label>Card Details</label>
+      <div id="card-element"></div>
+      <div id="card-errors"></div>
+    </div>
+    -->
+
+    <button class="pay-btn" id="payBtn" onclick="proceed()">✦ Pay $9.99 · Get My Blueprint</button>
+    <div class="secure">🔒 Secured by Stripe · No account required</div>
+  </div>
+</div>
+
+<script>
+// ── Stars
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement('div'); s.className = 'star';
+  const sz = Math.random()*2+0.5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.2+Math.random()*0.5}`;
+  starsEl.appendChild(s);
+}
+
+// ── Load order from sessionStorage
+const order = JSON.parse(sessionStorage.getItem('saju_order') || '{}');
+if (!order.name) { window.location.href = '/order'; }
+document.getElementById('displayName').textContent = order.name || '—';
+
+// ── Stripe (disabled)
+// const stripe = Stripe('STRIPE_PUBLISHABLE_KEY_PLACEHOLDER');
+// const elements = stripe.elements({ locale:'en' });
+// const cardEl = elements.create('card', {
+//   style: {
+//     base: { color:'#e8dfc8', fontFamily:'"EB Garamond", serif', fontSize:'17px',
+//             '::placeholder':{ color:'rgba(232,223,200,0.38)' } },
+//     invalid: { color:'#e87070' }
+//   }
+// });
+// cardEl.mount('#card-element');
+// cardEl.on('change', e => {
+//   document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
+// });
+
+// ── Discount logic
+// Predefined codes: { CODE: discountPercent }
+const DISCOUNT_CODES = {
+  'LAUNCH50': 50,
+  'FRIEND30': 30,
+  'COSMIC20': 20,
+  'TEST100': 100
+};
+let appliedDiscount = 0;
+
+function applyDiscount() {
+  const code = document.getElementById('discountCode').value.trim().toUpperCase();
+  const msg  = document.getElementById('discountMsg');
+  const pct  = DISCOUNT_CODES[code];
+
+  if (!code) { msg.textContent = ''; return; }
+
+  if (pct) {
+    appliedDiscount = pct;
+    const savings = (9.99 * pct / 100).toFixed(2);
+    const total   = (9.99 - parseFloat(savings)).toFixed(2);
+    document.getElementById('discountRow').style.display = 'flex';
+    document.getElementById('discountLabel').textContent = `${code} (${pct}% off)`;
+    document.getElementById('discountAmt').textContent = `-$${savings}`;
+    document.getElementById('totalAmt').textContent = `$${total}`;
+    document.getElementById('payBtn').textContent = `✦ Pay $${total} · Get My Blueprint`;
+    msg.className = 'discount-msg ok';
+    msg.textContent = `✓ Code applied — ${pct}% off!`;
+  } else {
+    appliedDiscount = 0;
+    document.getElementById('discountRow').style.display = 'none';
+    document.getElementById('totalAmt').textContent = '$9.99';
+    document.getElementById('payBtn').textContent = '✦ Pay $9.99 · Get My Blueprint';
+    msg.className = 'discount-msg err';
+    msg.textContent = 'Invalid discount code.';
+  }
+}
+
+// Enter key on discount input
+document.getElementById('discountCode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') applyDiscount();
+});
+
+// ── Payment
+async function submitPayment() {
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    // 1. Create Stripe PaymentIntent via our API
+    const res = await fetch('/api/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        discountCode: document.getElementById('discountCode').value.trim().toUpperCase(),
+        email: order.email,
+        name:  order.name,
+      })
+    });
+    const { clientSecret, orderId, error } = await res.json();
+    if (error) throw new Error(error);
+
+    // 2. Confirm card payment
+    const { paymentIntent, error: stripeError } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardEl,
+        billing_details: { name: order.name, email: order.email }
+      }
+    });
+
+    if (stripeError) {
+      document.getElementById('card-errors').textContent = stripeError.message;
+      btn.disabled = false;
+      btn.textContent = `✦ Pay ${document.getElementById('totalAmt').textContent} · Get My Blueprint`;
+      return;
+    }
+
+    if (paymentIntent.status === 'succeeded') {
+      // 3. Store orderId + birth data, go to generating page
+      sessionStorage.setItem('saju_order_id', orderId);
+      sessionStorage.setItem('saju_payment_intent', paymentIntent.id);
+      window.location.href = '/generating';
+    }
+
+  } catch(err) {
+    // document.getElementById('card-errors').textContent = err.message;
+    btn.disabled = false;
+    btn.textContent = '✦ Pay · Get My Blueprint';
+  }
+}
+
+function proceed() {
+  const mockOrderId = `mock_${Date.now()}`;
+  sessionStorage.setItem('saju_order_id', mockOrderId);
+  sessionStorage.setItem('saju_payment_intent', 'mock_' + mockOrderId);
+  window.location.href = '/generating';
+}
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

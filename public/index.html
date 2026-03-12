@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Saju Blueprint — Your Personal Destiny Report</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-dim: rgba(201,168,76,0.45);
+  --gold-faint: rgba(201,168,76,0.12);
+  --navy: #0b0f1e;
+  --navy-card: #131929;
+  --text: #e8dfc8;
+  --text-dim: rgba(232,223,200,0.65);
+  --text-faint: rgba(232,223,200,0.38);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; overflow-x:hidden; }
+body { background:var(--navy); color:var(--text); font-family:'EB Garamond',serif; overflow-x:hidden; }
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star { position:absolute; background:#fff; border-radius:50%;
+  animation: twinkle var(--d,4s) var(--delay,0s) infinite alternate; opacity:var(--bright,0.3); }
+@keyframes twinkle { from{opacity:var(--bright,0.3)} to{opacity:0.05} }
+.page { position:relative; z-index:1; max-width:860px; margin:0 auto; padding:0 24px 100px; }
+.hero { text-align:center; padding:80px 0 60px; position:relative; overflow:hidden; }
+.hero-rings { position:absolute; top:30px; left:50%; transform:translateX(-50%); pointer-events:none; }
+.hero-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  border:1px solid var(--gold-dim); border-radius:50%; animation:ring-pulse 6s infinite; }
+@keyframes ring-pulse { 0%,100%{opacity:0.3;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:0.7;transform:translate(-50%,-50%) scale(1.04)} }
+.brand { font-size:13px; letter-spacing:4px; color:var(--gold); margin-bottom:40px; }
+.hero-eyebrow { font-size:13px; letter-spacing:3px; color:var(--text-dim); margin-bottom:20px; text-transform:uppercase; }
+.hero-title { font-size:clamp(42px,7vw,72px); line-height:1.1; color:var(--text); margin-bottom:16px; font-weight:500; }
+.hero-title em { color:var(--gold); font-style:italic; }
+.hero-subtitle { font-size:20px; color:var(--text-dim); max-width:560px; margin:0 auto 48px; line-height:1.6; }
+.hero-cta { display:inline-block; background:transparent; border:1px solid var(--gold);
+  color:var(--gold); font-family:'EB Garamond',serif; font-size:15px;
+  letter-spacing:3px; padding:18px 48px; cursor:pointer; text-decoration:none;
+  transition:all 0.3s; text-transform:uppercase; min-height:48px; }
+.hero-cta:hover { background:var(--gold-faint); }
+.hero-divider { width:60px; height:1px; background:var(--gold-dim); margin:60px auto 0; }
+.section { padding:70px 0; border-bottom:1px solid rgba(201,168,76,0.1); }
+.section-label { font-size:11px; letter-spacing:4px; color:var(--gold); text-transform:uppercase; margin-bottom:16px; }
+.section-title { font-size:clamp(28px,4vw,42px); line-height:1.2; margin-bottom:20px; }
+.section-body { font-size:19px; color:var(--text-dim); line-height:1.75; max-width:640px; }
+.problem { padding:70px 0; }
+.problem-cards { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:40px; }
+@media(max-width:640px){ .problem-cards { grid-template-columns:1fr; } }
+.p-card { background:var(--navy-card); border:1px solid rgba(201,168,76,0.15); padding:28px 24px; }
+.p-card-icon { font-size:28px; margin-bottom:12px; }
+.p-card-title { font-size:16px; color:var(--gold); margin-bottom:8px; letter-spacing:1px; }
+.p-card-body { font-size:16px; color:var(--text-dim); line-height:1.6; }
+.inside { padding:70px 0; }
+.inside-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:40px; }
+@media(max-width:580px){ .inside-grid { grid-template-columns:1fr; } }
+.inside-item { display:flex; gap:16px; align-items:flex-start; padding:20px;
+  background:var(--navy-card); border:1px solid rgba(201,168,76,0.12); }
+.inside-num { font-size:28px; color:var(--gold-dim); line-height:1; min-width:32px; }
+.inside-text h4 { font-size:16px; color:var(--text); margin-bottom:4px; }
+.inside-text p { font-size:15px; color:var(--text-dim); line-height:1.5; }
+.sample { padding:70px 0; text-align:center; }
+.sample-preview { display:inline-block; border:1px solid var(--gold-dim);
+  padding:3px; margin:32px auto; max-width:480px; width:100%; }
+.sample-inner { background:var(--navy-card); padding:32px; font-size:15px; color:var(--text-dim); line-height:1.7; }
+.sample-link { display:inline-block; color:var(--gold); font-size:14px;
+  letter-spacing:2px; text-decoration:none; border-bottom:1px solid var(--gold-dim);
+  padding-bottom:2px; margin-top:16px; }
+.sample-link:hover { border-color:var(--gold); }
+.testimonials { padding:70px 0; }
+.testi-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:40px; }
+@media(max-width:580px){ .testi-grid { grid-template-columns:1fr; } }
+.testi { background:var(--navy-card); border:1px solid rgba(201,168,76,0.15); padding:28px 24px; }
+.testi-quote { font-size:17px; color:var(--text); line-height:1.7; font-style:italic; margin-bottom:16px; }
+.testi-author { font-size:13px; color:var(--gold); letter-spacing:2px; }
+.cta-bottom { padding:80px 0; text-align:center; }
+.price-tag { font-size:48px; color:var(--gold); margin-bottom:8px; }
+.price-note { font-size:15px; color:var(--text-faint); margin-bottom:40px; }
+.cta-big { display:inline-block; background:var(--gold); color:var(--navy);
+  font-family:'EB Garamond',serif; font-size:17px; letter-spacing:3px;
+  padding:20px 60px; cursor:pointer; text-decoration:none;
+  transition:all 0.3s; text-transform:uppercase; font-weight:600; min-height:48px; }
+.cta-big:hover { background:#d4b060; }
+.guarantee { font-size:14px; color:var(--text-faint); margin-top:20px; }
+/* ── Footer ── */
+.site-footer { position:relative; z-index:1; text-align:center;
+  padding:32px 24px 48px; border-top:1px solid rgba(201,168,76,0.1); }
+.footer-links { display:flex; justify-content:center; gap:32px; flex-wrap:wrap; margin-bottom:14px; }
+.footer-links a { font-size:13px; color:var(--text-faint); text-decoration:none;
+  letter-spacing:1px; transition:color 0.2s; }
+.footer-links a:hover { color:var(--gold); }
+.footer-copy { font-size:12px; color:var(--text-faint); letter-spacing:1px; }
+@media(max-width:480px){
+  .page { padding:0 16px 80px; }
+  .hero { padding:64px 0 48px; }
+  .hero-subtitle { font-size:18px; margin-bottom:40px; }
+  .hero-rings { top:20px; }
+  .hero-rings .hero-ring:nth-child(1){ width:230px !important; height:230px !important; }
+  .hero-rings .hero-ring:nth-child(2){ width:160px !important; height:160px !important; }
+  .hero-rings .hero-ring:nth-child(3){ width:90px !important; height:90px !important; }
+  .hero-cta, .cta-big { display:block; width:100%; max-width:100%; padding:18px 20px; }
+  .footer-links { gap:20px; }
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="page">
+  <div class="hero">
+    <div class="hero-rings">
+      <div class="hero-ring" style="width:460px;height:460px;animation-delay:0s"></div>
+      <div class="hero-ring" style="width:320px;height:320px;animation-delay:1.5s"></div>
+      <div class="hero-ring" style="width:180px;height:180px;animation-delay:3s"></div>
+    </div>
+    <div class="brand">✦ The Saju Blueprint ✦</div>
+    <div class="hero-eyebrow">Korean Saju · Psychological Insight</div>
+    <h1 class="hero-title">Stop Fighting<br>Your <em>Own Nature</em></h1>
+    <p class="hero-subtitle">Your birth moment encodes a precise map of your energy, your patterns, and the forces shaping your decisions — in work, money, and relationships.</p>
+    <a href="/order" class="hero-cta">✦ Get My Blueprint</a>
+    <div class="hero-divider"></div>
+  </div>
+
+  <div class="problem section">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-title">Most people spend their lives working against their natural grain</h2>
+    <p class="section-body">Burnt out, misunderstood, or stuck in cycles they can't explain — not because they're broken, but because no one ever handed them their owner's manual.</p>
+    <div class="problem-cards">
+      <div class="p-card">
+        <div class="p-card-icon">🔥</div>
+        <div class="p-card-title">Burnout</div>
+        <div class="p-card-body">You push hard but feel empty. Your elemental imbalance may be draining your core energy without you realizing it.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-icon">🔁</div>
+        <div class="p-card-title">Repeating Patterns</div>
+        <div class="p-card-body">Same relationship dynamics. Same career walls. Your chart reveals the structural reason — and what actually breaks the cycle.</div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-icon">🌫</div>
+        <div class="p-card-title">Misalignment</div>
+        <div class="p-card-body">Choosing paths that feel right but lead nowhere. Your energy profile shows exactly where you're fighting yourself.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">The Solution</div>
+    <h2 class="section-title">A Psychological Map Built From Your Birth Moment</h2>
+    <p class="section-body">The Saju Blueprint uses the Four Pillars of Destiny — an ancient Korean system that encodes your elemental balance, psychological tendencies, and life timing into a precise, readable structure. This is not a generic horoscope. Every section is generated specifically for your chart and written in plain, direct language.</p>
+  </div>
+
+  <div class="inside">
+    <div class="section-label">What's Inside</div>
+    <h2 class="section-title">5 Sections. One Complete Picture.</h2>
+    <div class="inside-grid">
+      <div class="inside-item">
+        <div class="inside-num">01</div>
+        <div class="inside-text"><h4>Core Energy System</h4><p>Your elemental makeup, dominant energy type, and the psychological archetype that runs through everything you do</p></div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num">02</div>
+        <div class="inside-text"><h4>Structural Blind Spots</h4><p>The patterns you keep repeating without realizing — and why they're built into your chart, not your character</p></div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num">03</div>
+        <div class="inside-text"><h4>Love &amp; Relationship</h4><p>Who you're drawn to, how you actually behave inside relationships, and the gap between what attracts you and what sustains you</p></div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num">04</div>
+        <div class="inside-text"><h4>Money, Work &amp; Power</h4><p>Your wealth pattern, decision-making style under pressure, and the career energy where your chart naturally produces results</p></div>
+      </div>
+      <div class="inside-item">
+        <div class="inside-num">05</div>
+        <div class="inside-text"><h4>Your Life Activation Map</h4><p>A decade-by-decade energy forecast — when to push, when to wait, and which years carry the most structural momentum for you</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sample">
+    <div class="section-label">See a Real Example</div>
+    <h2 class="section-title">Read a Sample Blueprint</h2>
+    <p style="color:var(--text-dim);font-size:17px;">Not sure what to expect? Browse a complete, real Blueprint below.</p>
+    <div class="sample-preview">
+      <div class="sample-inner">
+        <em>"Your chart carries an unusually high emotional depth score — which means you pick up on things in relationships that most people miss entirely. The risk isn't that you feel too much. It's that you invest before the other person has proven they can hold it."</em>
+      </div>
+    </div>
+    <div>
+      <a href="https://saju-blueprint.vercel.app/result?id=8opemb" target="_blank" class="sample-link">✦ View Full Sample Blueprint →</a>
+    </div>
+  </div>
+
+  <div class="testimonials">
+    <div class="section-label">What Others Say</div>
+    <h2 class="section-title">Real Readers. Real Reactions.</h2>
+    <div class="testi-grid">
+      <div class="testi">
+        <div class="testi-quote">"I didn't know anything about Korean Saju before this. Strangely, it described my personality and patterns more accurately than any astrology reading I've tried."</div>
+        <div class="testi-author">— Emily R., Chicago</div>
+      </div>
+      <div class="testi">
+        <div class="testi-quote">"The relationship section felt almost uncomfortably accurate. It pointed out patterns I didn't realize I kept repeating."</div>
+        <div class="testi-author">— Olivia M., Los Angeles</div>
+      </div>
+      <div class="testi">
+        <div class="testi-quote">"I first tried it just out of curiosity, but it ended up describing my personality surprisingly well. The part about my relationship patterns really stayed with me."</div>
+        <div class="testi-author">— Hannah W., New York</div>
+      </div>
+      <div class="testi">
+        <div class="testi-quote">"I usually take astrology with a grain of salt. But the way this explained my decision patterns was surprisingly precise."</div>
+        <div class="testi-author">— Ji-eun K., Seoul</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bottom">
+    <div class="section-label">Ready?</div>
+    <h2 class="section-title">Your Blueprint is waiting.</h2>
+    <div class="price-tag">$19.99</div>
+    <div class="price-note">One-time · Instant delivery · Personalized to your exact birth moment</div>
+    <a href="/order" class="cta-big">✦ Get My Blueprint Now</a>
+    <div class="guarantee">✦ Every blueprint is uniquely generated for your birth data</div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="/terms">Terms &amp; Conditions</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/refund">Refund Policy</a>
+    <a href="mailto:hello@saju-blueprint.com">Contact</a>
+  </div>
+  <div class="footer-copy">✦ The Saju Blueprint · thesajublueprint@gmail.com ✦</div>
+</footer>
+
+<script>
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 100; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 0.5;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.2+Math.random()*0.5}`;
+  starsEl.appendChild(s);
+}
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

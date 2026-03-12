@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Saju Blueprint — Jane Doe</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.45);
+    --gold-faint: rgba(201,168,76,0.12);
+    --navy: #0b0f1e;
+    --navy-card: #131929;
+    --text: #e8dfc8;
+    --text-dim: rgba(232,223,200,0.65);
+    --text-faint: rgba(232,223,200,0.38);
+    --water: #6ab0d4;
+    --wood: #7ab87a;
+    --fire: #e87070;
+    --metal: #b0c4d8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--navy); color:var(--text); font-family:'EB Garamond',serif; overflow-x:hidden; }
+
+  /* STARS */
+  #stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+  .star { position:absolute; border-radius:50%; background:var(--gold); opacity:0; animation:twinkle var(--d) ease-in-out infinite var(--delay); }
+  @keyframes twinkle { 0%,100%{opacity:0;transform:scale(0.5)} 50%{opacity:var(--bright);transform:scale(1)} }
+
+  /* LAYOUT */
+  .page { position:relative; z-index:1; max-width:680px; margin:0 auto; padding:0 24px 80px; }
+
+  /* HERO */
+  .hero { text-align:center; padding:72px 0 48px; position:relative; }
+  .hero-rings { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; width:1px; height:1px; }
+  .hero-ring { position:absolute; border-radius:50%; border:1px solid var(--gold-faint); top:50%; left:50%; transform:translate(-50%,-50%); animation:ring-pulse 4s ease-in-out infinite; }
+  @keyframes ring-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+  .brand-label { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:5px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:28px; animation:fadeUp 0.8s ease both; }
+  .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,8vw,52px); font-weight:300; color:var(--gold); letter-spacing:1px; line-height:1.15; margin-bottom:6px; animation:fadeUp 0.9s ease both 0.1s; }
+  .hero-name { font-family:'Cormorant Garamond',serif; font-size:clamp(22px,5vw,30px); font-weight:300; color:var(--text); letter-spacing:3px; margin-bottom:16px; animation:fadeUp 1s ease both 0.2s; }
+  .hero-name::before,.hero-name::after { content:' ✦ '; color:var(--gold-dim); font-size:14px; }
+  .hero-date { font-size:14px; letter-spacing:2px; color:var(--text-faint); margin-bottom:40px; animation:fadeUp 1s ease both 0.3s; }
+  .hero-divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,var(--gold-dim),transparent); animation:fadeUp 1s ease both 0.4s; }
+
+  /* ARCHETYPE */
+  .archetype { text-align:center; padding:40px 0 32px; }
+  .archetype-icon { font-size:42px; margin-bottom:12px; display:block; }
+  .archetype-label { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:4px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:10px; }
+  .archetype-name { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; font-style:italic; color:var(--gold); line-height:1.3; }
+
+  /* SECTION */
+  .section { margin-top:48px; opacity:0; transform:translateY(24px); transition:opacity 0.7s ease,transform 0.7s ease; }
+  .section.visible { opacity:1; transform:translateY(0); }
+  .section-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+  .section-num { font-family:'Cormorant Garamond',serif; font-size:10px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; white-space:nowrap; }
+  .section-line { flex:1; height:1px; background:linear-gradient(90deg,var(--gold-faint),transparent); }
+  .section-icon { font-size:20px; margin-bottom:8px; display:block; }
+  .section-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; color:var(--text); line-height:1.3; }
+  .section-subtitle { font-family:'Cormorant Garamond',serif; font-size:15px; font-style:italic; color:var(--gold); margin-top:2px; margin-bottom:4px; }
+
+  /* CARD */
+  .card { background:var(--navy-card); border:1px solid rgba(201,168,76,0.1); padding:22px 24px; margin-top:16px; position:relative; overflow:hidden; }
+  .card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(180deg,var(--gold),transparent); opacity:0.6; }
+  .card-title { font-family:'Cormorant Garamond',serif; font-size:14px; font-weight:600; letter-spacing:0.5px; margin-bottom:8px; }
+  .gold  { color:var(--gold); }
+  .water { color:var(--water); }
+  .red   { color:var(--fire); }
+  .orange{ color:#e8a84c; }
+  .card-body { font-size:15px; line-height:1.82; color:var(--text-dim); }
+  .card-body strong { color:var(--text); font-weight:500; }
+
+  /* ELEMENTS */
+  .element-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:16px; }
+  .el-item { display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 8px; background:var(--navy-card); border:1px solid rgba(201,168,76,0.08); text-align:center; position:relative; }
+  .el-item.missing { border:1px dashed rgba(106,176,212,0.25); background:rgba(106,176,212,0.03); padding-bottom:22px; }
+  .el-item.missing::after { content:'MISSING'; position:absolute; bottom:5px; font-size:7px; letter-spacing:1.5px; color:rgba(106,176,212,0.4); }
+  .el-emoji { font-size:20px; }
+  .el-name { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; }
+
+  /* VAULTS */
+  .vault-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.1); margin-top:16px; }
+  .vault-cell { background:var(--navy-card); padding:16px 8px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .vault-label { font-size:9px; letter-spacing:2px; color:var(--gold-dim); text-transform:uppercase; }
+  .vault-char { font-size:26px; color:var(--gold); font-family:'Cormorant Garamond',serif; font-weight:300; line-height:1; }
+  .vault-name { font-size:10px; color:var(--text-faint); }
+
+  /* PRESCRIPTIONS */
+  .rx-list { margin-top:16px; display:flex; flex-direction:column; gap:10px; }
+  .rx-item { display:flex; align-items:flex-start; gap:14px; padding:14px 18px; background:var(--navy-card); border:1px solid rgba(201,168,76,0.08); }
+  .rx-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+  .rx-text { font-size:14px; line-height:1.7; color:var(--text-dim); }
+  .rx-text strong { color:var(--gold); font-weight:500; font-family:'Cormorant Garamond',serif; font-size:15px; }
+
+  /* QUOTE */
+  .quote-block { text-align:center; padding:40px 24px; margin-top:48px; border-top:1px solid rgba(201,168,76,0.12); border-bottom:1px solid rgba(201,168,76,0.12); }
+  .quote-mark { font-family:'Cormorant Garamond',serif; font-size:64px; color:var(--gold-faint); line-height:0.5; display:block; margin-bottom:20px; }
+  .quote-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-style:italic; font-weight:300; color:var(--text); line-height:1.6; }
+  .quote-attr { margin-top:16px; font-size:11px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; }
+
+  /* CTA */
+  .cta-section { text-align:center; margin-top:64px; padding:48px 24px; background:var(--navy-card); border:1px solid rgba(201,168,76,0.15); position:relative; overflow:hidden; }
+  .cta-section::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 70%); pointer-events:none; }
+  .cta-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:var(--text); margin-bottom:10px; }
+  .cta-sub { font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:28px; }
+  .cta-btn { display:inline-block; padding:14px 40px; border:1px solid var(--gold); color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; text-decoration:none; background:transparent; cursor:pointer; transition:background 0.2s,color 0.2s; }
+  .cta-btn:hover { background:var(--gold); color:var(--navy); }
+
+  /* FOOTER */
+  .footer { text-align:center; margin-top:48px; padding-top:24px; border-top:1px solid rgba(201,168,76,0.08); }
+  .footer-brand { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:4px; color:var(--gold-dim); text-transform:uppercase; }
+  .footer-note { margin-top:8px; font-size:12px; color:var(--text-faint); }
+
+  /* SHARE BAR */
+  .share-bar { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:12px; background:rgba(13,18,38,0.92); backdrop-filter:blur(12px); border:1px solid rgba(201,168,76,0.2); padding:12px 24px; z-index:100; font-family:'Cormorant Garamond',serif; font-size:12px; letter-spacing:2px; color:var(--gold-dim); text-transform:uppercase; white-space:nowrap; }
+  .share-btn { padding:8px 20px; border:1px solid var(--gold); color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; background:transparent; cursor:pointer; transition:all 0.2s; }
+  .share-btn:hover { background:var(--gold); color:var(--navy); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* RESPONSIVE */
+  @media(max-width:480px) {
+    .page { padding:0 20px 100px; }
+    .hero { padding:56px 0 36px; }
+    .element-grid { grid-template-columns:repeat(3,1fr); }
+    .share-bar { width:calc(100% - 32px); justify-content:space-between; }
+  }
+  @media(max-width:420px) {
+    .page { padding:0 16px 100px; }
+    .hero { padding:48px 0 32px; }
+    .hero-title { font-size:32px; }
+    .hero-name { font-size:22px; letter-spacing:2px; }
+    .archetype-name { font-size:22px; }
+    .section { margin-top:36px; }
+    .section-title { font-size:19px; }
+    .section-subtitle { font-size:13px; }
+    .card { padding:16px 16px; }
+    .card-body { font-size:14px; }
+    .quote-text { font-size:19px; }
+    .cta-title { font-size:22px; }
+    .share-bar { width:calc(100% - 32px); padding:10px 16px; font-size:11px; }
+    .share-btn { font-size:10px; padding:7px 16px; }
+  }
+  @media(max-width:375px) {
+    .page { padding:0 14px 100px; }
+    .hero-title { font-size:28px; }
+    .hero-name { font-size:20px; }
+    .archetype-name { font-size:20px; }
+    .section-title { font-size:18px; }
+    .card { padding:14px; margin-top:12px; }
+    .card-body { font-size:13.5px; }
+    .el-item { padding:10px 4px; }
+    .el-emoji { font-size:16px; }
+    .el-name { font-size:9px; }
+    .quote-text { font-size:17px; }
+    .cta-btn { padding:12px 28px; font-size:12px; }
+  }
+  @media(max-height:500px) and (orientation:landscape) {
+    .hero { padding:32px 0 24px; }
+    .hero-rings { display:none; }
+    .share-bar { bottom:12px; padding:8px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div class="page">
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HERO — 이름 / 생년월일 수정
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="hero">
+    <div class="hero-rings">
+      <div class="hero-ring" style="width:500px;height:500px;animation-delay:0s"></div>
+      <div class="hero-ring" style="width:360px;height:360px;animation-delay:1s"></div>
+      <div class="hero-ring" style="width:220px;height:220px;animation-delay:2s"></div>
+    </div>
+    <div class="brand-label">✦ The Saju Blueprint ✦</div>
+    <div class="hero-title">Your Personal<br>Destiny Report</div>
+    <div class="hero-name">Jane Doe</div><!-- ← 이름 -->
+    <div class="hero-date">Born in 1997. 10. 29 · 08:40pm</div><!-- ← 생년월일 -->
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ARCHETYPE — 아키타입 수정
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="archetype section">
+    <span class="archetype-icon">🌲</span><!-- ← 아이콘 -->
+    <div class="archetype-label">Your Archetype</div>
+    <div class="archetype-name">The Unyielding Pioneer</div><!-- ← 아키타입 이름 -->
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 01
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">01</span><div class="section-line"></div></div>
+    <span class="section-icon">🌲</span>
+    <div class="section-title">The Core Identity</div>
+    <div class="section-subtitle">A Lone Pine Conquering the Wilderness</div>
+
+    <div class="card">
+      <div class="card-title gold">✦ The Resilient Pioneer</div>
+      <div class="card-body">You are not just a wanderer — you are a resilient pioneer. Imagine a massive, ancient pine tree standing firmly in the middle of a vast, rugged wasteland. While others might avoid such harsh terrain, you possess the tenacity to take root and eventually bear fruit where no one else can.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Power of Earth</div>
+      <div class="card-body">This strength comes from an overwhelming presence of the <strong>"Earth"</strong> element in your chart — vast, solid, and immovable.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Spectacle of Life</div>
+      <div class="card-body">Your life is far from boring. With constant <strong>"clashes"</strong> in your chart, your journey is cinematic and high-stakes. Even when the ground beneath you shakes, you are the one who remains centered.</div>
+    </div>
+    <div class="card">
+      <div class="card-title orange">🏔 Strategic Advice</div>
+      <div class="card-body">Because your "land" is so vast, you have many ambitions, which can lead to burnout. Your life's mantra should be <strong>"Select & Focus"</strong> — conquering one territory at a time like a "boss level" in a game.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 02
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">02</span><div class="section-line"></div></div>
+    <span class="section-icon">💧</span>
+    <div class="section-title">The Missing Link</div>
+    <div class="section-subtitle">Finding Your "Flow" — The Water Element</div>
+
+    <!-- 오행 — present/missing 클래스로 조절 -->
+    <div class="element-grid">
+      <div class="el-item"><span class="el-emoji">🌳</span><span class="el-name wood" style="color:var(--wood)">Wood</span></div>
+      <div class="el-item"><span class="el-emoji">🔥</span><span class="el-name fire" style="color:var(--fire)">Fire</span></div>
+      <div class="el-item"><span class="el-emoji">🌍</span><span class="el-name earth" style="color:var(--gold)">Earth</span></div>
+      <div class="el-item"><span class="el-emoji">⚔️</span><span class="el-name metal" style="color:var(--metal)">Metal</span></div>
+      <div class="el-item missing"><span class="el-emoji" style="opacity:0.3">💧</span><span class="el-name" style="color:rgba(106,176,212,0.35)">Water</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title gold">✦ The Desert Forest</div>
+      <div class="card-body">In the Five Elements, your profile is essentially a desert forest — rich in wood and earth, but lacking the <strong>"Water"</strong> element entirely. This creates a high-pressure, dry internal environment.</div>
+    </div>
+    <div class="card">
+      <div class="card-title water">✦ The Need for Water</div>
+      <div class="card-body">You must intentionally bring Water into your life. <strong>Wear black or navy blue</strong>, keep your environment humidified, and practice <strong>"intentional zoning out"</strong> through meditation or long baths to cool your brain.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ Biohacking for Luck</div>
+      <div class="card-body">For you, the act of studying for certifications or deep reading acts as a <strong>"Water" source</strong> — providing the mental nourishment you lack. Intellectual hydration is your superpower.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 03
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">03</span><div class="section-line"></div></div>
+    <span class="section-icon">🐉</span>
+    <div class="section-title">The "Blue Dragon" Personality</div>
+    <div class="section-subtitle">Gap-Jin · Ambition & Drive</div>
+
+    <div class="card">
+      <div class="card-title gold">✦ The Visionary</div>
+      <div class="card-body">You were born on the day of the <strong>"Blue Dragon"</strong>. While you appear cool and easygoing, you harbor a fierce pride and massive professional ambition. You have a natural instinct for <strong>"big money"</strong> and large-scale projects — you aren't meant to be a simple salaryman.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Crisis Specialist</div>
+      <div class="card-body">Your chart contains the <strong>"White Tiger"</strong> (Baek-ho) energy. In the middle of a crisis, you don't panic — you explode with energy and flip the script to your advantage.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Hidden Perfectionist</div>
+      <div class="card-body">Despite your bold exterior, you care deeply about your social reputation and have a strict internal moral code. It's okay to loosen those standards sometimes — <strong>you are enough even when you aren't perfect.</strong></div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 04
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">04</span><div class="section-line"></div></div>
+    <span class="section-icon">🌑</span>
+    <div class="section-title">Shadow Work</div>
+    <div class="section-subtitle">Managing the Ego & Impatience</div>
+
+    <div class="card">
+      <div class="card-title red">✦ The "Hurry" Trap</div>
+      <div class="card-body">Others may see your "speed" as being overly dictatorial or impatient. You might find yourself saying, <strong>"Stop talking and just give me the conclusion."</strong></div>
+    </div>
+    <div class="card">
+      <div class="card-title red">✦ Greed vs. Management</div>
+      <div class="card-body">Your chart shows you have a lot of <strong>"territory"</strong> (Earth), but only one "Tree" (you) to manage it. If you try to grab everything at once, you'll lose the real substance.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ Collaboration is Key</div>
+      <div class="card-body">Don't view everyone as a competitor. By sharing and cooperating, that <strong>"vast land"</strong> truly becomes yours.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 05
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">05</span><div class="section-line"></div></div>
+    <span class="section-icon">🏆</span>
+    <div class="section-title">Recognition</div>
+    <div class="section-subtitle">Your "National Treasure" Resilience</div>
+
+    <div class="card">
+      <div class="card-title gold">✦ The Survivor</div>
+      <div class="card-body">While others had smooth paths, yours was often bumpy and rocky — yet you've navigated it with incredible mental strength. Your <strong>"Problem Solving"</strong> skills are world-class precisely because you've survived situations that "greenhouse flowers" couldn't imagine.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Natural Leader</div>
+      <div class="card-body">With energies like <strong>"Baek-ho" and "Goe-gang"</strong>, you are a person of significant presence. Your sense of responsibility — <em>"If I don't do it, who will?"</em> — has forged you into the strong person you are today.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 06
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">06</span><div class="section-line"></div></div>
+    <span class="section-icon">💼</span>
+    <div class="section-title">Career Path</div>
+    <div class="section-subtitle">The Professional Fixer</div>
+
+    <div class="card">
+      <div class="card-title gold">✦ High-Fit Industries</div>
+      <div class="card-body">Finance, accounting, and banking are excellent — you have a natural <strong>"vault"</strong> for money in your chart. Alternatively, <strong>real estate, architecture, or IT/Design</strong> suit your "Earth" and "Precision" energies perfectly.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Defense System</div>
+      <div class="card-body">Since your "Water/Education" energy is low, <strong>professional certifications are your best defense.</strong> Obtain your "license" first, then move toward freelancing or starting your own business.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 07
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">07</span><div class="section-line"></div></div>
+    <span class="section-icon">💰</span>
+    <div class="section-title">Wealth Management</div>
+    <div class="section-subtitle">Managing the "Vaults" — Jin · Sul · Chuk</div>
+
+    <div class="vault-grid">
+      <div class="vault-cell"><div class="vault-label">Vault 1</div><div class="vault-char">辰</div><div class="vault-name">Jin</div></div>
+      <div class="vault-cell"><div class="vault-label">Vault 2</div><div class="vault-char">戌</div><div class="vault-name">Sul</div></div>
+      <div class="vault-cell"><div class="vault-label">Vault 3</div><div class="vault-char">丑</div><div class="vault-name">Chuk</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title red">✦ The Leakage Risk</div>
+      <div class="card-body">The problem isn't making money — it's that it <strong>leaves as quickly as it enters.</strong> People might ask you for favors, or you might lose it in high-risk investments.</div>
+    </div>
+    <div class="card">
+      <div class="card-title gold">✦ The Strategy</div>
+      <div class="card-body">Avoid volatile markets like day-trading. Your wealth should be <strong>"buried"</strong> in Real Estate or locked in long-term savings.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 08
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">08</span><div class="section-line"></div></div>
+    <span class="section-icon">🌊</span>
+    <div class="section-title">Relationships</div>
+    <div class="section-subtitle">Seeking Emotional Stability</div>
+
+    <div class="card">
+      <div class="card-title red">✦ The Conflict Cycle</div>
+      <div class="card-body">You are often drawn to <strong>"Alpha" or intense</strong> types. But because of the <strong>Gyeong-Gap-Chung clash</strong> in your chart, these relationships often turn into power struggles that drain you.</div>
+    </div>
+    <div class="card">
+      <div class="card-title water">✦ The Better Match</div>
+      <div class="card-body">You need a <strong>"Water" type</strong> — someone soft, supportive, and a great listener who can calm your dry "Earth." Look for <strong>emotional stability</strong> rather than just a high-status profile.</div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       SECTION 09 — Lucky Prescriptions
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="section">
+    <div class="section-header"><span class="section-num">09</span><div class="section-line"></div></div>
+    <span class="section-icon">⭐</span>
+    <div class="section-title">Lucky Prescriptions</div>
+    <div class="section-subtitle">Your Blueprint for Luck</div>
+
+    <div class="rx-list">
+      <div class="rx-item"><span class="rx-icon">🗺</span><div class="rx-text"><strong>Geography</strong><br>Live near water — coastal cities, riverside properties, or places with "Water" or "River" in the name.</div></div>
+      <div class="rx-item"><span class="rx-icon">🧭</span><div class="rx-text"><strong>Direction</strong><br>The <strong>North</strong> is your lucky direction. Move or travel North to reset your energy.</div></div>
+      <div class="rx-item"><span class="rx-icon">🎨</span><div class="rx-text"><strong>Colors & Numbers</strong><br><strong>Black and Navy Blue</strong> are your power colors. Your lucky numbers are <strong>1 and 6</strong>.</div></div>
+      <div class="rx-item"><span class="rx-icon">🏊</span><div class="rx-text"><strong>Activities</strong><br>Swimming, surfing, night walks, and reading. These recharge your Water energy and restore balance.</div></div>
+    </div>
+  </div>
+
+  <!-- CLOSING QUOTE -->
+  <div class="quote-block section">
+    <span class="quote-mark">"</span>
+    <div class="quote-text">You are a giant tree destined to turn a wasteland into a forest. You may shake, but you will never break.</div><!-- ← 마지막 문구 -->
+    <div class="quote-attr">— Your Saju Blueprint</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section section">
+    <div class="cta-title">Know someone who needs their Blueprint?</div>
+    <div class="cta-sub">Every person carries a unique cosmic map.<br>Hand-crafted by a Korean Saju Master. 100% personal.</div>
+    <a class="cta-btn" href="https://saju-blueprint.vercel.app/" target="_blank">Get Your Blueprint</a><!-- ← Gumroad URL -->
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">✦ The Saju Blueprint ✦</div>
+    <div class="footer-note">@thesajublueprint · thesajublueprint.gumroad.com</div>
+  </div>
+
+</div>
+
+<!-- SHARE BAR -->
+<div class="share-bar">
+  <span>Share your Blueprint</span>
+  <button class="share-btn" onclick="copyLink()">Copy Link</button>
+</div>
+
+<script>
+// Stars
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 0.5;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.2+Math.random()*0.5}`;
+  starsEl.appendChild(s);
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// Copy link
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn');
+    btn.textContent = 'Copied!';
+    btn.style.background = 'var(--gold)';
+    btn.style.color = 'var(--navy)';
+    setTimeout(() => { btn.textContent = 'Copy Link'; btn.style.background = 'transparent'; btn.style.color = 'var(--gold)'; }, 2000);
+  });
+}
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

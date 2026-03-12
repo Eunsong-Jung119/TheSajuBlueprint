@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Your Saju Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── Loading screen ── */
+#loadingScreen {
+  position:fixed; inset:0; background:#0b0f1e; z-index:999;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:'EB Garamond',serif;
+}
+.loading-rings { position:relative; width:160px; height:160px; margin-bottom:32px; }
+.l-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  border:1px solid rgba(201,168,76,0.45); border-radius:50%;
+  animation:ring-pulse 3s infinite; }
+.l-ring:nth-child(1){ width:140px;height:140px;animation-delay:0s; }
+.l-ring:nth-child(2){ width:100px;height:100px;animation-delay:0.6s; }
+.l-ring:nth-child(3){ width:60px;height:60px;animation-delay:1.2s; }
+.l-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:30px; animation:float 2s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-5px)} }
+.loading-text { color:#e8dfc8; font-size:18px; letter-spacing:2px; }
+.loading-sub  { color:rgba(232,223,200,0.45); font-size:14px; margin-top:8px; }
+
+/* ── PDF/Share bar ── */
+.pdf-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  background:rgba(11,15,30,0.96); border-top:1px solid rgba(201,168,76,0.3);
+  padding-top:12px; padding-bottom:max(12px, env(safe-area-inset-bottom));
+  box-sizing:border-box;
+  display:flex; justify-content:center;
+}
+.pdf-bar-inner {
+  display:flex; gap:8px;
+  box-sizing:border-box;
+  /* width/left set by alignPdfBar() to exactly match .page */
+}
+.pdf-btn {
+  background:#c9a84c; border:none; color:#0b0f1e;
+  font-family:'EB Garamond',serif; font-size:14px; letter-spacing:2px;
+  padding:12px 0; cursor:pointer; text-transform:uppercase; font-weight:600;
+  transition:background 0.2s; flex:1; text-align:center; white-space:nowrap;
+}
+.pdf-btn:hover { background:#d4b060; }
+.copy-btn {
+  background:transparent; border:1px solid rgba(201,168,76,0.5); color:#c9a84c;
+  font-family:'EB Garamond',serif; font-size:14px; letter-spacing:2px;
+  padding:12px 0; cursor:pointer; text-transform:uppercase;
+  transition:all 0.2s; flex:1; text-align:center; white-space:nowrap;
+}
+.copy-btn:hover { background:rgba(201,168,76,0.08); border-color:#c9a84c; }
+.copy-btn.copied { color:#7ab87a; border-color:#7ab87a; }
+.pdf-note { color:rgba(232,223,200,0.45); font-size:13px; }
+
+/* ── Dark PDF print ── */
+@media print {
+  .pdf-bar, #loadingScreen { display:none !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { background:#0b0f1e !important; }
+  .page { padding-bottom:0 !important; }
+  .section { opacity:1 !important; transform:none !important; }
+}
+
+/* ── Blueprint CSS ── */
+:root {
+  --gold:#c9a84c; --gold-dim:rgba(201,168,76,0.45); --gold-faint:rgba(201,168,76,0.12);
+  --navy:#0b0f1e; --navy-card:#131929;
+  --text:#e8dfc8; --text-dim:rgba(232,223,200,0.65); --text-faint:rgba(232,223,200,0.38);
+  --water:#6ab0d4; --wood:#7ab87a; --fire:#e87070; --metal:#b0c4d8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; overflow-x:hidden; }
+body { background:var(--navy); color:var(--text); font-family:'EB Garamond',serif; overflow-x:hidden; }
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star { position:absolute; border-radius:50%; background:var(--gold); opacity:0;
+  animation:twinkle var(--d) ease-in-out infinite var(--delay); }
+@keyframes twinkle { 0%,100%{opacity:0;transform:scale(0.5)} 50%{opacity:var(--bright);transform:scale(1)} }
+.page { position:relative; z-index:1; max-width:680px; width:100%; margin:0 auto; padding:0 24px 120px; }
+.hero { text-align:center; padding:72px 0 48px; position:relative; }
+.hero-rings { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; width:1px; height:1px; }
+.hero-ring { position:absolute; border-radius:50%; border:1px solid var(--gold-faint); top:50%; left:50%; transform:translate(-50%,-50%); animation:ring-pulse 4s ease-in-out infinite; }
+@keyframes ring-pulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
+.brand-label { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:5px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:28px; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,8vw,52px); font-weight:300; color:var(--gold); letter-spacing:1px; line-height:1.15; margin-bottom:6px; }
+.hero-name { font-family:'Cormorant Garamond',serif; font-size:clamp(22px,5vw,30px); font-weight:300; color:var(--text); letter-spacing:3px; margin-bottom:16px; }
+.hero-name::before,.hero-name::after { content:' \2756 '; color:var(--gold-dim); font-size:14px; }
+.hero-date { font-size:14px; letter-spacing:2px; color:var(--text-faint); margin-bottom:40px; }
+.hero-divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,var(--gold-dim),transparent); }
+.archetype { text-align:center; padding:40px 0 32px; }
+.archetype-icon { font-size:42px; margin-bottom:12px; display:block; font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif; }
+.archetype-label { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:4px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:10px; }
+.archetype-name { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; font-style:italic; color:var(--gold); line-height:1.3; }
+.section { margin-bottom:2px; padding:48px 0; border-bottom:1px solid rgba(201,168,76,0.08); opacity:0; transform:translateY(24px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.section.visible { opacity:1; transform:none; }
+.section-header { display:flex; align-items:center; gap:16px; margin-bottom:20px; }
+.section-num { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:4px; color:var(--gold-dim); }
+.section-line { flex:1; height:1px; background:linear-gradient(90deg,var(--gold-dim),transparent); }
+.section-icon { font-size:32px; display:block; margin-bottom:12px; font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:clamp(22px,4vw,28px); font-weight:400; color:var(--text); margin-bottom:8px; }
+.section-subtitle { font-size:16px; color:var(--gold); font-style:italic; margin-bottom:28px; }
+.card { background:var(--navy-card); border:1px solid rgba(201,168,76,0.12); padding:28px; margin-bottom:14px; }
+.card-title { font-size:13px; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+.card-title.gold { color:var(--gold); }
+.card-body { font-size:17px; color:var(--text-dim); line-height:1.75; }
+.card-body strong { color:var(--text); font-weight:600; }
+.advice-box { border:1px solid var(--gold-dim); padding:20px 24px; margin-top:16px; background:var(--gold-faint); }
+.advice-label { font-size:11px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:10px; }
+.advice-body { font-size:17px; color:var(--text); line-height:1.7; }
+.element-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:24px 0; }
+@media(max-width:500px){ .element-grid { grid-template-columns:repeat(3,1fr); } }
+.element-pill { background:var(--navy-card); border:1px solid rgba(201,168,76,0.12); padding:14px 8px; text-align:center; }
+.element-pill.missing { border-color:rgba(232,223,200,0.15); opacity:0.45; }
+.el-emoji { font-size:22px; margin-bottom:6px; font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif; }
+.el-name { font-size:11px; letter-spacing:2px; color:var(--text-faint); text-transform:uppercase; margin-bottom:4px; }
+.el-count { font-size:20px; }
+.vault-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0; }
+.vault { background:var(--navy-card); border:1px solid rgba(201,168,76,0.15); padding:16px; text-align:center; }
+.vault-char { font-size:28px; color:var(--gold); margin-bottom:6px; }
+.vault-label { font-size:11px; letter-spacing:2px; color:var(--text-faint); text-transform:uppercase; margin-bottom:4px; }
+.vault-name { font-size:14px; color:var(--text-dim); }
+
+/* Relationship expanded */
+.rel-pattern { background:var(--navy-card); border-left:3px solid var(--fire); padding:20px 24px; margin-bottom:12px; }
+.rel-label { font-size:11px; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; }
+.rel-pattern .rel-label { color:var(--fire); }
+.rel-compatible { background:var(--navy-card); border-left:3px solid var(--wood); padding:20px 24px; margin-bottom:12px; }
+.rel-compatible .rel-label { color:var(--wood); }
+.rel-warning { background:var(--navy-card); border-left:3px solid rgba(232,112,112,0.6); padding:20px 24px; margin-bottom:12px; }
+.rel-warning .rel-label { color:#e87070; }
+.rel-endgame { background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03)); border:1px solid var(--gold-dim); padding:24px; margin-bottom:12px; }
+.rel-endgame .rel-label { color:var(--gold); }
+
+/* 대운 decade cards */
+.daewon-intro { font-size:17px; color:var(--text-dim); line-height:1.7; margin-bottom:28px; }
+.decade-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0; }
+@media(max-width:520px){ .decade-grid { grid-template-columns:1fr; } }
+.decade-card { background:var(--navy-card); border:1px solid rgba(201,168,76,0.12); padding:20px; position:relative; overflow:hidden; }
+.decade-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--gold-dim); }
+.decade-age { font-size:11px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:4px; }
+.decade-label { font-size:17px; color:var(--text); margin-bottom:4px; }
+.decade-energy { font-size:12px; color:var(--text-faint); margin-bottom:12px; }
+.decade-icon { position:absolute; top:16px; right:16px; font-size:22px; }
+.decade-body { font-size:15px; color:var(--text-dim); line-height:1.65; }
+.peak-box { background:rgba(201,168,76,0.08); border:1px solid var(--gold-dim); padding:20px 24px; margin:16px 0; }
+.peak-label { font-size:11px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:8px; }
+.caution-box { background:rgba(232,112,112,0.06); border:1px solid rgba(232,112,112,0.3); padding:20px 24px; margin:12px 0; }
+.caution-label { font-size:11px; letter-spacing:3px; color:#e87070; text-transform:uppercase; margin-bottom:8px; }
+
+/* ── Life Activation Map ── */
+.lam-graph-wrap { position:relative; margin:28px 0 8px; }
+.lam-graph { position:relative; background:var(--navy-card); border:1px solid rgba(201,168,76,0.12); padding:24px 20px 16px; overflow:hidden; }
+#lamGraphWrap { width:100%; min-height:180px; background:var(--navy-card); border:1px solid rgba(201,168,76,0.1); margin-bottom:8px; overflow:hidden; }
+.lam-y-labels { position:absolute; left:0; top:24px; bottom:32px; display:flex; flex-direction:column; justify-content:space-between; padding:0; }
+.lam-y-label { font-size:10px; color:var(--text-faint); letter-spacing:1px; width:28px; text-align:right; }
+.lam-chart-area { margin-left:36px; position:relative; }
+.lam-grid-lines { position:absolute; inset:0; pointer-events:none; }
+.lam-grid-line { position:absolute; left:0; right:0; height:1px; background:rgba(255,255,255,0.04); }
+.lam-zones { position:absolute; inset:0; pointer-events:none; }
+.lam-zone { position:absolute; left:0; right:0; }
+.lam-svg-wrap { position:relative; width:100%; }
+.lam-svg-wrap svg { width:100%; display:block; }
+.lam-x-axis { display:flex; margin-left:36px; margin-top:6px; }
+.lam-x-label { flex:1; text-align:center; font-size:10px; color:var(--text-faint); letter-spacing:1px; }
+.lam-legend { display:flex; gap:16px; flex-wrap:wrap; margin:16px 0 24px; }
+.lam-legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-faint); }
+.lam-legend-dot { width:10px; height:10px; border-radius:50%; }
+.lam-decades { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.lam-decade { background:var(--navy-card); border:1px solid rgba(201,168,76,0.1); padding:16px 18px; position:relative; overflow:hidden; }
+.lam-decade::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; }
+.lam-decade.peak::before     { background:#f4a342; }
+.lam-decade.favorable::before{ background:#7ab87a; }
+.lam-decade.neutral::before  { background:#c9a84c; }
+.lam-decade.pressure::before { background:#e8a04a; }
+.lam-decade.risk::before     { background:#e87070; }
+.lam-decade-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; gap:8px; }
+.lam-decade-age { font-size:13px; letter-spacing:2px; color:var(--gold); }
+.lam-decade-left { display:flex; flex-direction:column; gap:3px; }
+.lam-decade-sub { font-size:11px; color:rgba(232,223,200,0.3); }
+.lam-decade-badge { display:flex; flex-direction:column; align-items:flex-end; gap:2px; font-size:12px; font-weight:600; letter-spacing:1px; text-align:right; flex-shrink:0; max-width:48%; }
+.lam-decade-badge-label { white-space:nowrap; }
+.lam-decade-badge-score { font-size:13px; white-space:nowrap; }
+.lam-decade-badge.peak     { color:#f4a342; }
+.lam-decade-badge.favorable{ color:#7ab87a; }
+.lam-decade-badge.neutral  { color:#c9a84c; }
+.lam-decade-badge.pressure { color:#e8a04a; }
+.lam-decade-badge.risk     { color:#e87070; }
+.lam-markers { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.lam-marker { font-size:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); padding:3px 10px; border-radius:2px; color:var(--text-dim); }
+.lam-decade-advice { font-size:14px; color:var(--text-faint); line-height:1.6; font-style:italic; }
+.lam-activation-row { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.lam-activation-year { font-size:11px; color:var(--text-faint); }
+.lam-activation-dots { color:var(--gold); letter-spacing:-2px; }
+.lam-section-label { font-size:11px; letter-spacing:3px; color:var(--gold-dim); text-transform:uppercase; margin:24px 0 12px; }
+
+@media(max-width:480px) {
+  .page { padding:0 16px 120px; }
+
+  .pdf-btn, .copy-btn { font-size:13px; letter-spacing:1px; padding:12px 14px; }
+  .hero-title { font-size:28px; }
+  .lam-legend { gap:10px; }
+  .lam-legend-item { font-size:11px; }
+  .decade-grid { grid-template-columns:1fr; }
+}
+
+/* ── Section 01: Core Energy System ── */
+.s1-graph-block {
+  background:var(--navy-card);
+  border:1px solid rgba(201,168,76,0.12);
+  padding:22px 22px;
+  margin-bottom:12px;
+}
+.s1-graph-title {
+  font-size:11px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+  margin-bottom:14px;
+}
+.s1-bar-row {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+.s1-bar-label { font-size:13px; color:var(--text-dim); width:130px; flex-shrink:0; }
+.s1-bar-track {
+  flex:1;
+  height:7px;
+  background:rgba(255,255,255,0.06);
+  border-radius:4px;
+  overflow:hidden;
+}
+.s1-bar-fill {
+  height:100%;
+  border-radius:4px;
+  transition:width 1s ease;
+}
+.s1-bar-energy   { background:linear-gradient(90deg,#c9a84c,#e8d08a); }
+.s1-bar-pressure { background:linear-gradient(90deg,#e87070,#f4a0a0); }
+.s1-bar-val { font-size:13px; color:var(--gold); width:28px; text-align:right; flex-shrink:0; font-weight:600; }
+.s1-state-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(201,168,76,0.1);
+}
+.s1-state-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-faint); }
+.s1-state-val { font-size:13px; color:var(--gold); font-weight:600; letter-spacing:1px; }
+/* Natural Behavior Pattern */
+.s1-pattern-header {
+  font-size:11px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+  margin:24px 0 12px;
+}
+.s1-behavior-block {
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  padding:16px 0;
+  border-bottom:1px solid rgba(201,168,76,0.08);
+}
+.s1-behavior-block:last-child { border-bottom:none; }
+.s1-behavior-emoji { font-size:22px; flex-shrink:0; margin-top:2px; width:32px; text-align:center; }
+.s1-behavior-content { flex:1; }
+.s1-behavior-title {
+  font-size:15px;
+  color:var(--text);
+  margin-bottom:7px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.s1-behavior-level {
+  font-size:11px;
+  color:var(--gold-dim);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-weight:normal;
+}
+.s1-behavior-body { font-size:14px; color:var(--text-dim); line-height:1.7; }
+/* ── END Section 01 ── */
+
+/* ── Section 02: Structural Blind Spots ── */
+.s2-blind-spot {
+  border-left:2px solid rgba(201,168,76,0.3);
+  padding:24px 0 24px 22px;
+  margin-bottom:10px;
+  position:relative;
+}
+.s2-blind-spot:last-child { margin-bottom:0; }
+.s2-spot-header {
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:12px;
+}
+.s2-spot-num {
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--gold);
+  font-weight:600;
+  flex-shrink:0;
+  padding-top:2px;
+}
+.s2-spot-meta { flex:1; }
+.s2-spot-title {
+  font-size:17px;
+  color:var(--text);
+  margin-bottom:4px;
+  font-family:'Cormorant Garamond',serif;
+}
+.s2-spot-cat {
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+}
+.s2-spot-body {
+  font-size:14px;
+  color:var(--text-dim);
+  line-height:1.75;
+}
+/* ── END Section 02 ── */
+
+/* ── Section 03: Love & Relationship ── */
+.s3-block-title {
+  font-size:11px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold-dim);
+  margin:32px 0 14px;
+}
+.s3-disclaimer {
+  font-size:14px;
+  color:var(--text-dim);
+  line-height:1.7;
+  margin-bottom:16px;
+}
+.s3-love-meta {
+  background:var(--navy-card);
+  border:1px solid rgba(201,168,76,0.1);
+  padding:20px 22px;
+  margin-bottom:14px;
+}
+.s3-meta-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px 0;
+}
+.s3-meta-row + .s3-meta-row { border-top:1px solid rgba(201,168,76,0.07); }
+.s3-meta-label { font-size:13px; color:var(--text-faint); letter-spacing:0.5px; }
+.s3-meta-val   { font-size:14px; color:var(--gold); text-align:right; max-width:60%; }
+.s3-body {
+  font-size:15px;
+  color:var(--text-dim);
+  line-height:1.8;
+  margin-bottom:6px;
+}
+/* Architecture grid */
+.s3-arch-grid {
+  background:var(--navy-card);
+  border:1px solid rgba(201,168,76,0.12);
+  padding:24px 22px;
+  margin-bottom:14px;
+}
+.s3-arch-row {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(201,168,76,0.07);
+}
+.s3-arch-row-last { border-bottom:none; }
+.s3-arch-label {
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  flex:1.4;
+  min-width:0;
+}
+.s3-arch-name { font-size:14px; color:var(--text); }
+.s3-arch-desc { font-size:12px; color:var(--text-faint); line-height:1.4; }
+.s3-arch-bar-wrap {
+  flex:0.8;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.s3-arch-bar-track {
+  flex:1;
+  height:7px;
+  background:rgba(255,255,255,0.06);
+  border-radius:4px;
+  overflow:hidden;
+}
+.s3-arch-bar-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+.s3-bar-stability  { background:linear-gradient(90deg,#7ab87a,#a8d4a8); }
+.s3-bar-attraction { background:linear-gradient(90deg,#e87070,#f4a0a0); }
+.s3-bar-commit     { background:linear-gradient(90deg,#c9a84c,#e8d08a); }
+.s3-bar-depth      { background:linear-gradient(90deg,#7aaed4,#a8cce8); }
+.s3-bar-volatility { background:linear-gradient(90deg,#b07ad4,#d4a8f0); }
+.s3-arch-score { font-size:14px; color:var(--gold); width:32px; text-align:right; flex-shrink:0; font-weight:600; }
+.s3-volatility-label { font-size:12px; letter-spacing:1px; text-transform:uppercase; width:64px; color:#b07ad4; text-align:right; flex-shrink:0; }
+/* Timing pills */
+.s3-timing-pills {
+  display:flex;
+  gap:10px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.s3-timing-pill {
+  flex:1;
+  min-width:130px;
+  padding:16px 18px;
+  border:1px solid rgba(201,168,76,0.15);
+  background:var(--navy-card);
+}
+.s3-pill-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-faint); margin-bottom:8px; }
+.s3-pill-val   { font-size:16px; color:var(--gold); font-weight:600; }
+.s3-pill-attraction { border-color:rgba(232,112,112,0.2); }
+.s3-pill-commit     { border-color:rgba(201,168,76,0.25); }
+@media(max-width:480px) {
+  .s3-arch-label { flex:1.2; }
+  .s3-arch-name  { font-size:13px; }
+  .s3-arch-bar-wrap { flex:0.9; }
+}
+/* ── END Section 03 ── */
+
+/* ── Section 04: Money, Work & Power ── */
+.s4-narrative-block {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.s4-narrative-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.s4-narrative-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 12px;
+}
+.s4-narrative-body {
+  font-size: 15px;
+  color: rgba(232,223,200,0.82);
+  line-height: 1.85;
+}
+.s4-turning-point {
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 8px;
+  padding: 24px 24px 22px;
+  margin-bottom: 32px;
+}
+.s4-turning-year {
+  font-size: 28px;
+  color: var(--gold);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.s4-turning-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 16px;
+}
+.s4-turning-body {
+  font-size: 14.5px;
+  color: rgba(232,223,200,0.8);
+  line-height: 1.8;
+}
+/* ── END Section 04 ── */
+.closing { text-align:center; padding:60px 0 40px; }
+.closing-quote { font-family:'Cormorant Garamond',serif; font-size:clamp(20px,3.5vw,26px); font-style:italic; color:var(--text); line-height:1.6; max-width:500px; margin:0 auto 32px; }
+.closing-divider { width:40px; height:1px; background:var(--gold-dim); margin:0 auto 24px; }
+.footer { text-align:center; padding:20px 0 40px; }
+.footer-brand { font-size:12px; letter-spacing:4px; color:var(--gold-dim); margin-bottom:8px; }
+.footer-note { font-size:12px; color:var(--text-faint); }
+.footer-cta { margin:40px 0 32px; padding:40px 24px; border:1px solid rgba(201,168,76,0.15); text-align:center; }
+.footer-cta-title { font-family:'Cormorant Garamond',serif; font-size:clamp(20px,4vw,26px); font-weight:400; color:var(--text); margin-bottom:10px; }
+.footer-cta-sub { font-size:14px; color:var(--text-faint); line-height:1.7; margin-bottom:28px; }
+.footer-cta-btn { display:inline-block; border:1px solid rgba(201,168,76,0.6); color:var(--gold); font-family:'EB Garamond',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; padding:14px 36px; text-decoration:none; transition:all 0.2s; }
+.footer-cta-btn:hover { background:rgba(201,168,76,0.08); border-color:var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loadingScreen">
+  <div class="loading-rings">
+    <div class="l-ring"></div>
+    <div class="l-ring"></div>
+    <div class="l-ring"></div>
+    <div class="l-center">✦</div>
+  </div>
+  <div class="loading-text">Loading Your Blueprint</div>
+  <div class="loading-sub">Just a moment...</div>
+</div>
+
+<!-- Stars -->
+<div id="stars"></div>
+
+<!-- PDF/Share bar -->
+<div class="pdf-bar" id="pdfBar" style="display:none;">
+  <div class="pdf-bar-inner">
+    <button class="copy-btn" id="copyBtn" onclick="copyLink()">🔗 Copy Link</button>
+    <button class="pdf-btn" onclick="downloadPDF()">↓ Save as PDF</button>
+  </div>
+</div>
+
+<!-- Blueprint content injected here -->
+<div id="blueprintRoot"></div>
+
+<script>
+function sanitize(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/\u2019|\u2018/g, "'")
+    .replace(/\u201C|\u201D/g, '"')
+    .replace(/\u2014/g, '--')
+    .replace(/\u2013/g, '-')
+    .replace(/\u2026/g, '...')
+    .replace(/[\u0080-\u009F]/g, '');
+}
+
+function g(obj, ...keys) {
+  let v = obj;
+  for (const k of keys) { if (v == null) break; v = v[k]; }
+  if (v === undefined || v === null || v === '') return '--';
+  return sanitize(String(v));
+}
+
+function buildBlueprint(step1, step2, birth, chartSummary) {
+  const d = step1;
+  const s = step2;
+
+  // Date display
+  const [_y,_m,_dd] = (birth.date||'').split('-');
+  const dateStr = _y
+    ? `${_y}. ${String(parseInt(_m)).padStart(2,'0')}. ${String(parseInt(_dd)).padStart(2,'0')}`
+    : (birth.date||'');
+
+  // decade cards from s5.decadeCards
+  const decades = s?.s5?.decadeCards || [];
+  const ELEM_ICON = {Wood:'🌳',Fire:'🔥',Earth:'🌍',Metal:'⚔️',Water:'💧'};
+  const decadeCardsHTML = decades.map(dec =>
+    `<div class="decade-card">
+      <div class="decade-icon">${ELEM_ICON[dec.energy]||'✦'}</div>
+      <div class="decade-age">${dec.age||''}</div>
+      <div class="decade-label">${dec.label||''}</div>
+      <div class="decade-energy">${dec.energy||''} energy</div>
+      <div class="decade-body">${dec.body||''}</div>
+    </div>`
+  ).join('');
+
+  return `
+<div class="page">
+  <div class="hero">
+    <div class="hero-rings">
+      <div class="hero-ring" style="width:480px;height:480px;animation-delay:0s"></div>
+      <div class="hero-ring" style="width:340px;height:340px;animation-delay:1.2s"></div>
+      <div class="hero-ring" style="width:200px;height:200px;animation-delay:2.4s"></div>
+    </div>
+    <div class="brand-label">✦ The Saju Blueprint ✦</div>
+    <div class="hero-title">Your Personal<br>Destiny Report</div>
+    <div class="hero-name">${birth.name||''}</div>
+    <div class="hero-date">Born ${dateStr} · ${birth.time||''}</div>
+    <div class="hero-divider"></div>
+  </div>
+
+  <div class="archetype section visible">
+    <span class="archetype-icon">✦</span>
+    <div class="archetype-label">Your Archetype</div>
+    <div class="archetype-name">${d.archetypeName||''}</div>
+  </div>
+
+  <!-- Section 01: Your Core Energy System -->
+  <div class="section" data-s="1">
+    <div class="section-header"><span class="section-num">01</span><div class="section-line"></div></div>
+    <span class="section-icon">⚡</span>
+    <div class="section-title">${g(s,'s1','title')}</div>
+
+    <!-- Block 1: Energy vs Pressure -->
+    <div class="s1-graph-block">
+      <div class="s1-graph-title">Energy vs Pressure</div>
+      <div class="s1-bar-row">
+        <span class="s1-bar-label">Internal Energy</span>
+        <div class="s1-bar-track">
+          <div class="s1-bar-fill s1-bar-energy" style="width:${g(s,'s1','energyScore')}%"></div>
+        </div>
+        <span class="s1-bar-val">${g(s,'s1','energyScore')}</span>
+      </div>
+      <div class="s1-bar-row">
+        <span class="s1-bar-label">External Pressure</span>
+        <div class="s1-bar-track">
+          <div class="s1-bar-fill s1-bar-pressure" style="width:${g(s,'s1','pressureScore')}%"></div>
+        </div>
+        <span class="s1-bar-val">${g(s,'s1','pressureScore')}</span>
+      </div>
+      <div class="s1-state-row">
+        <span class="s1-state-label">System State</span>
+        <span class="s1-state-val">${g(s,'s1','systemState')}</span>
+      </div>
+    </div>
+
+    <!-- Analysis paragraphs -->
+    <div class="s4-block">
+      <div class="s4-block-label">Analysis</div>
+      <div class="card-body">${g(s,'s1','energyAnalysis')}</div>
+    </div>
+
+    <!-- Block 2: Natural Behavior Pattern -->
+    <div class="s1-pattern-header">Your Natural Behavior Pattern</div>
+
+    <div class="s1-behavior-block">
+      <div class="s1-behavior-emoji">🧘</div>
+      <div class="s1-behavior-content">
+        <div class="s1-behavior-title">Recharge <span class="s1-behavior-level">${g(s,'s1','resourceLevel')}</span></div>
+        <div class="s1-behavior-body">${g(s,'s1','rechargeBody')}</div>
+      </div>
+    </div>
+
+    <div class="s1-behavior-block">
+      <div class="s1-behavior-emoji">🎤</div>
+      <div class="s1-behavior-content">
+        <div class="s1-behavior-title">Expression <span class="s1-behavior-level">${g(s,'s1','outputLevel')}</span></div>
+        <div class="s1-behavior-body">${g(s,'s1','expressionBody')}</div>
+      </div>
+    </div>
+
+    <div class="s1-behavior-block">
+      <div class="s1-behavior-emoji">💰</div>
+      <div class="s1-behavior-content">
+        <div class="s1-behavior-title">Opportunity <span class="s1-behavior-level">${g(s,'s1','wealthLevel')}</span></div>
+        <div class="s1-behavior-body">${g(s,'s1','opportunityBody')}</div>
+      </div>
+    </div>
+
+    <div class="s1-behavior-block">
+      <div class="s1-behavior-emoji">🏢</div>
+      <div class="s1-behavior-content">
+        <div class="s1-behavior-title">Structure <span class="s1-behavior-level">${g(s,'s1','authorityLevel')}</span></div>
+        <div class="s1-behavior-body">${g(s,'s1','structureBody')}</div>
+      </div>
+    </div>
+
+    <div class="s1-behavior-block">
+      <div class="s1-behavior-emoji">🤜</div>
+      <div class="s1-behavior-content">
+        <div class="s1-behavior-title">Competition <span class="s1-behavior-level">${g(s,'s1','peerLevel')}</span></div>
+        <div class="s1-behavior-body">${g(s,'s1','competitionBody')}</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Section 02: Structural Blind Spots -->
+  <div class="section" data-s="2">
+    <div class="section-header"><span class="section-num">02</span><div class="section-line"></div></div>
+    <span class="section-icon">🔍</span>
+    <div class="section-title">${g(s,'s2','title')}</div>
+
+    <div class="s2-blind-spot">
+      <div class="s2-spot-header">
+        <span class="s2-spot-num">01</span>
+        <div class="s2-spot-meta">
+          <div class="s2-spot-title">${g(s,'s2','spot1Title')}</div>
+          <div class="s2-spot-cat">${g(s,'s2','spot1Category')}</div>
+        </div>
+      </div>
+      <div class="s2-spot-body">${g(s,'s2','spot1Body')}</div>
+    </div>
+
+    <div class="s2-blind-spot">
+      <div class="s2-spot-header">
+        <span class="s2-spot-num">02</span>
+        <div class="s2-spot-meta">
+          <div class="s2-spot-title">${g(s,'s2','spot2Title')}</div>
+          <div class="s2-spot-cat">${g(s,'s2','spot2Category')}</div>
+        </div>
+      </div>
+      <div class="s2-spot-body">${g(s,'s2','spot2Body')}</div>
+    </div>
+
+    <div class="s2-blind-spot">
+      <div class="s2-spot-header">
+        <span class="s2-spot-num">03</span>
+        <div class="s2-spot-meta">
+          <div class="s2-spot-title">${g(s,'s2','spot3Title')}</div>
+          <div class="s2-spot-cat">${g(s,'s2','spot3Category')}</div>
+        </div>
+      </div>
+      <div class="s2-spot-body">${g(s,'s2','spot3Body')}</div>
+    </div>
+  </div>
+
+  <!-- Section 03: Love & Relationship -->
+  <div class="section" data-s="3">
+    <div class="section-header"><span class="section-num">03</span><div class="section-line"></div></div>
+    <span class="section-icon">💞</span>
+    <div class="section-title">${g(s,'s3','title')}</div>
+
+    <!-- Block 1: Your Love Pattern -->
+    <div class="s3-block-title">Your Love Pattern</div>
+    <div class="s3-love-meta">
+      <div class="s3-meta-row">
+        <span class="s3-meta-label">You are drawn to</span>
+        <span class="s3-meta-val">${g(s,'s3','attractionType')}</span>
+      </div>
+      <div class="s3-meta-row">
+        <span class="s3-meta-label">Stability comes from</span>
+        <span class="s3-meta-val">${g(s,'s3','stabilityType')}</span>
+      </div>
+    </div>
+    <div class="s3-body">${g(s,'s3','lovePatternBody')}</div>
+
+    <!-- Block 2: Relationship Architecture -->
+    <div class="s3-block-title">Relationship Architecture</div>
+    <div class="s3-disclaimer">These scores describe your natural relationship tendencies. They are not compatibility scores with a specific person.</div>
+
+    <div class="s3-arch-grid">
+      <div class="s3-arch-row">
+        <div class="s3-arch-label">
+          <span class="s3-arch-name">Relationship Stability</span>
+          <span class="s3-arch-desc">Structural stability of long-term partnerships</span>
+        </div>
+        <div class="s3-arch-bar-wrap">
+          <div class="s3-arch-bar-track">
+            <div class="s3-arch-bar-fill s3-bar-stability" style="width:${g(s,'s3','relationshipStability')}%"></div>
+          </div>
+          <span class="s3-arch-score">${g(s,'s3','relationshipStability')}</span>
+        </div>
+      </div>
+      <div class="s3-arch-row">
+        <div class="s3-arch-label">
+          <span class="s3-arch-name">Attraction Intensity</span>
+          <span class="s3-arch-desc">Strength of romantic attraction patterns</span>
+        </div>
+        <div class="s3-arch-bar-wrap">
+          <div class="s3-arch-bar-track">
+            <div class="s3-arch-bar-fill s3-bar-attraction" style="width:${g(s,'s3','attractionIntensity')}%"></div>
+          </div>
+          <span class="s3-arch-score">${g(s,'s3','attractionIntensity')}</span>
+        </div>
+      </div>
+      <div class="s3-arch-row">
+        <div class="s3-arch-label">
+          <span class="s3-arch-name">Commitment Readiness</span>
+          <span class="s3-arch-desc">Natural tendency toward long-term commitment</span>
+        </div>
+        <div class="s3-arch-bar-wrap">
+          <div class="s3-arch-bar-track">
+            <div class="s3-arch-bar-fill s3-bar-commit" style="width:${g(s,'s3','commitmentReadiness')}%"></div>
+          </div>
+          <span class="s3-arch-score">${g(s,'s3','commitmentReadiness')}</span>
+        </div>
+      </div>
+      <div class="s3-arch-row">
+        <div class="s3-arch-label">
+          <span class="s3-arch-name">Emotional Depth</span>
+          <span class="s3-arch-desc">Capacity for emotional bonding</span>
+        </div>
+        <div class="s3-arch-bar-wrap">
+          <div class="s3-arch-bar-track">
+            <div class="s3-arch-bar-fill s3-bar-depth" style="width:${g(s,'s3','emotionalDepth')}%"></div>
+          </div>
+          <span class="s3-arch-score">${g(s,'s3','emotionalDepth')}</span>
+        </div>
+      </div>
+      <div class="s3-arch-row s3-arch-row-last">
+        <div class="s3-arch-label">
+          <span class="s3-arch-name">Relationship Volatility</span>
+          <span class="s3-arch-desc">Emotional intensity and fluctuation tendency</span>
+        </div>
+        <div class="s3-arch-bar-wrap">
+          <div class="s3-arch-bar-track">
+            <div class="s3-arch-bar-fill s3-bar-volatility" style="width:${g(s,'s3','volatilityScore')}%"></div>
+          </div>
+          <span class="s3-arch-score s3-volatility-label">${g(s,'s3','volatilityLabel')}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block 3: Hidden Relationship Tensions -->
+    <div class="s3-block-title">Hidden Relationship Tensions</div>
+    <div class="s3-body">${g(s,'s3','tensionBody')}</div>
+
+    <!-- Block 4: Relationship Timing -->
+    <div class="s3-block-title">Relationship Timing</div>
+    <div class="s3-timing-pills">
+      <div class="s3-timing-pill s3-pill-attraction">
+        <div class="s3-pill-label">Attraction Windows</div>
+        <div class="s3-pill-val">${g(s,'s3','passionYears')}</div>
+      </div>
+      <div class="s3-timing-pill s3-pill-commit">
+        <div class="s3-pill-label">Commitment Window</div>
+        <div class="s3-pill-val">${g(s,'s3','commitWindow')}</div>
+      </div>
+    </div>
+    <div class="s3-body">${g(s,'s3','timingBody')}</div>
+
+  </div>
+
+  <!-- Section 04: Money, Work & Power -->
+  <div class="section" data-s="4">
+    <div class="section-header"><span class="section-num">04</span><div class="section-line"></div></div>
+    <span class="section-icon">💼</span>
+    <div class="section-title">${g(s,'s4','title')}</div>
+
+    <!-- 1. Your Financial Nature -->
+    <div class="s4-narrative-block">
+      <div class="s4-narrative-label">Your Financial Nature</div>
+      <div class="s4-narrative-body">${g(s,'s4','financialNature')}</div>
+    </div>
+
+    <!-- 2. Why Money Feels Uneven -->
+    <div class="s4-narrative-block">
+      <div class="s4-narrative-label">Why Money Sometimes Feels Uneven</div>
+      <div class="s4-narrative-body">${g(s,'s4','moneyFriction')}</div>
+    </div>
+
+    <!-- 3. Hidden Advantage -->
+    <div class="s4-narrative-block">
+      <div class="s4-narrative-label">Your Hidden Financial Advantage</div>
+      <div class="s4-narrative-body">${g(s,'s4','hiddenAdvantage')}</div>
+    </div>
+
+    <!-- 4. The Pattern That Costs You -->
+    <div class="s4-narrative-block">
+      <div class="s4-narrative-label">The Pattern That Costs You Money</div>
+      <div class="s4-narrative-body">${g(s,'s4','costlyPattern')}</div>
+    </div>
+
+    <!-- 5. Financial Turning Point (primary) -->
+    <div class="s4-narrative-label" style="margin-bottom:14px">Your Financial Turning Point</div>
+    <div class="s4-turning-point" id="turningPointCard">
+      <div class="s4-turning-year" id="turningYear">—</div>
+      <div class="s4-turning-label" id="turningLabel"></div>
+      <div class="s4-turning-body">${g(s,'s4','turningPoint')}</div>
+    </div>
+
+
+  </div>
+  <!-- Section 05: Life Activation Map -->
+  <div class="section" data-s="5">
+    <div class="section-header"><span class="section-num">05</span><div class="section-line"></div></div>
+    <span class="section-icon">📈</span>
+    <div class="section-title">Your Life Activation Map</div>
+    <div class="section-subtitle">${g(s,'s5','subtitle')}</div>
+
+    <!-- Energy Curve SVG -->
+    <div class="lam-legend">
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#f4a342"></div>Peak (75+)</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#7ab87a"></div>Favorable (60–74)</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#c9a84c"></div>Neutral (45–59)</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#e8a04a"></div>Pressure (30–44)</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#e87070"></div>Risk (&lt;30)</div>
+    </div>
+    <div id="lamGraphWrap"></div>
+
+    <!-- Decade detail cards -->
+    <div class="lam-section-label">✦ Decade Breakdown</div>
+    <div id="lamDecades"></div>
+
+    <div class="peak-box" style="margin-top:20px">
+      <div class="peak-label">⭐ Strategic Peak Window</div>
+      <div class="card-body">${g(s,'s5','peakWindow')}</div>
+    </div>
+    <div class="caution-box">
+      <div class="caution-label">⚠️ Period of Caution</div>
+      <div class="card-body">${g(s,'s5','cautionWindow')}</div>
+    </div>
+  </div>
+
+  <!-- Closing -->
+  <div class="closing section visible">
+    <div class="closing-divider"></div>
+    <div class="closing-quote">"${s?.s5?.closingLine||d.closingQuote||''}"</div>
+    <div class="closing-divider"></div>
+  </div>
+
+  <div class="footer-cta">
+    <div class="footer-cta-title">Know someone who needs their Blueprint?</div>
+    <div class="footer-cta-sub">Every person carries a unique cosmic map.<br>Hand-crafted by a Korean Saju Master. 100% personal.</div>
+    <a class="footer-cta-btn" href="https://saju-blueprint.vercel.app/" target="_blank">Get Your Blueprint</a>
+  </div>
+  <div class="footer">
+    <div class="footer-brand">✦ The Saju Blueprint ✦</div>
+    <div class="footer-note">@thesajublueprint · thesajublueprint@gmail.com</div>
+  </div>
+
+</div>`;
+}
+
+// ── PDF download (dark background preserved)
+function downloadPDF() {
+  document.getElementById('pdfBar').style.display = 'none';
+  window.print();
+  setTimeout(() => { document.getElementById('pdfBar').style.display = 'flex'; alignPdfBar(); }, 1000);
+}
+
+// ── Copy link (reportId 기반 — 짧고 영구적, KV 없으면 hash 폴백)
+function copyLink() {
+  try {
+    const reportId = sessionStorage.getItem('saju_report_id');
+    const raw = sessionStorage.getItem('saju_result');
+    if (!raw) { alert('No result to share.'); return; }
+
+    const url = reportId
+      ? window.location.origin + '/result?id=' + reportId
+      : window.location.origin + '/result#' + encodeURIComponent(raw);
+
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '\uD83D\uDD17 Copy Link';
+        btn.classList.remove('copied');
+      }, 2500);
+    });
+  } catch(e) {
+    alert('Could not copy link.');
+  }
+}
+
+// ── Scroll reveal
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold:0.06, rootMargin:'0px 0px -30px 0px' });
+  document.querySelectorAll('.section:not(.visible)').forEach(el => obs.observe(el));
+}
+
+// ── Life Activation Map
+function renderLifeActivationMap(augmented) {
+  if (!augmented || !augmented.length) return;
+
+  // ── 등급
+  function getGrade(score) {
+    if (score >= 75) return { key:'peak',      label:'🔥 Peak',            color:'#f4a342' };
+    if (score >= 60) return { key:'favorable', label:'🟢 Favorable',       color:'#7ab87a' };
+    if (score >= 45) return { key:'neutral',   label:'🟡 Neutral',         color:'#c9a84c' };
+    if (score >= 30) return { key:'pressure',  label:'🟠 Pressure',        color:'#e8a04a' };
+    return                   { key:'risk',     label:'🔴 Structural Risk',  color:'#e87070' };
+  }
+
+  // ── 이벤트 마커
+  function getMarkers(d) {
+    var mk = [], ev = d.interaction.events || [], log = d.interaction.scoreLog || [];
+    var logStr = log.join(' ');
+    var score  = d.interaction.score;
+    var evTypes = ev.map(function(e){ return e.type; });
+
+    var hasClash   = logStr.indexOf('clash') > -1 || logStr.indexOf('REACTIVATION') > -1;
+    var hasBreak   = logStr.indexOf('Break') > -1;
+    var hasGishin  = logStr.indexOf('Gishin') > -1;
+    var hasOfficer = logStr.indexOf('Officer') > -1 || logStr.indexOf('정관') > -1;
+    var hasSikSang = logStr.indexOf('Output') > -1 || logStr.indexOf('Expression') > -1;
+    var hasWealth  = logStr.indexOf('Wealth') > -1 || logStr.indexOf('재') > -1;
+    var hasYong    = logStr.indexOf('Yongshin') > -1;
+    var hasIndep   = evTypes.indexOf('INDEPENDENCE_SURGE') > -1;
+    var hasCareerL = evTypes.indexOf('CAREER_LOCK_IN') > -1;
+    var hasCareerD = evTypes.indexOf('CAREER_DISRUPTION') > -1;
+    var hasCompete = evTypes.indexOf('COMPETITION_EXPANSION') > -1;
+    var hasEnvShift= evTypes.indexOf('ENVIRONMENTAL_SHIFT') > -1;
+
+    if (hasOfficer && !hasClash && score > 55)         mk.push('💍 Marriage Window');
+    else if ((hasSikSang || hasWealth) && score > 45)  mk.push('❤️ High Romance Activity');
+    if (hasClash || hasBreak || hasEnvShift)           mk.push('✈ Relocation / Life Shift');
+    if (hasCareerL || (hasIndep && score > 65))        mk.push('💼 Career Expansion');
+    else if (hasCompete && score > 60)                 mk.push('💰 Expansion / Risk Window');
+    else if (hasCareerD)                               mk.push('⚠ Career Disruption');
+    if (hasGishin && hasClash && score < 30)           mk.push('🏥 Health Watch');
+    if (hasIndep && score >= 75)                       mk.push('🌱 Personal Authority Peak');
+    return mk;
+  }
+
+  // ── Activation dots
+  function getDots(d) {
+    var n = 0, log = d.interaction.scoreLog || [], ev = d.interaction.events || [];
+    if (log.some(function(l){ return l.indexOf('clash') > -1; }))        n += 2;
+    if (log.some(function(l){ return l.indexOf('REACTIVATION') > -1; })) n += 2;
+    if (log.some(function(l){ return l.indexOf('Yongshin') > -1; }))     n += 1;
+    if (ev.length > 1) n += 1;
+    return '●'.repeat(Math.min(n, 4));
+  }
+
+  // ── Canvas 그래프 (SVG innerHTML 대신 — 모든 브라우저 지원)
+  var wrap = document.getElementById('lamGraphWrap');
+  if (!wrap) return;
+
+  var DPR    = window.devicePixelRatio || 1;
+  var W_CSS  = wrap.clientWidth || 320;
+  var H_CSS  = 180;
+  var W      = W_CSS * DPR;
+  var H      = H_CSS * DPR;
+
+  var canvas = document.createElement('canvas');
+  canvas.width  = W;
+  canvas.height = H;
+  canvas.style.width  = W_CSS + 'px';
+  canvas.style.height = H_CSS + 'px';
+  canvas.style.display = 'block';
+  canvas.style.width = '100%';
+
+  var ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);
+
+  var PAD = { t:24, b:28, l:28, r:8 };
+  var n   = augmented.length;
+  var gW  = W_CSS - PAD.l - PAD.r;
+  var gH  = H_CSS - PAD.t - PAD.b;
+  var xStep = n > 1 ? gW / (n - 1) : gW;
+
+  function toX(i) { return PAD.l + i * xStep; }
+  function toY(score) {
+    // 10점 미만 보정 (saju-engine에서 이미 처리되지만 방어적으로 재적용)
+    var s = score < 10 ? score + 10 : score;
+    return PAD.t + (1 - s / 100) * gH;
+  }
+
+  // Zone bands
+  var ZONES = [
+    [75, 100, 'rgba(244,163,66,0.08)'],
+    [60,  75, 'rgba(122,184,122,0.08)'],
+    [45,  60, 'rgba(201,168,76,0.05)'],
+    [30,  45, 'rgba(232,160,74,0.07)'],
+    [0,   30, 'rgba(232,112,112,0.09)'],
+  ];
+  ZONES.forEach(function(z) {
+    ctx.fillStyle = z[2];
+    var y1 = toY(z[1]), y2 = toY(z[0]);
+    ctx.fillRect(PAD.l, y1, gW, y2 - y1);
+  });
+
+  // Grid lines + Y labels
+  [25, 50, 75].forEach(function(v) {
+    var y = toY(v);
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.setLineDash([3, 4]);
+    ctx.lineWidth = 1;
+    ctx.moveTo(PAD.l, y); ctx.lineTo(PAD.l + gW, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(232,223,200,0.25)';
+    ctx.font = (DPR > 1 ? '9' : '10') + 'px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(v, PAD.l - 4, y + 3.5);
+  });
+
+  // Current decade highlight
+  var curIdx = augmented.findIndex(function(d){ return d.isCurrent; });
+  if (curIdx < 0) {
+    var now = new Date().getFullYear();
+    curIdx = augmented.findIndex(function(d){ return d.startYear <= now && now <= d.endYear; });
+  }
+  if (curIdx >= 0) {
+    var cx = toX(curIdx);
+    ctx.fillStyle = 'rgba(201,168,76,0.07)';
+    ctx.strokeStyle = 'rgba(201,168,76,0.2)';
+    ctx.lineWidth = 1;
+    ctx.fillRect(cx - xStep * 0.45, PAD.t, xStep * 0.9, gH);
+    ctx.strokeRect(cx - xStep * 0.45, PAD.t, xStep * 0.9, gH);
+  }
+
+  // Area fill under line
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(0));
+  augmented.forEach(function(d, i){ ctx.lineTo(toX(i), toY(d.interaction.score)); });
+  ctx.lineTo(toX(n-1), toY(0));
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(201,168,76,0.06)';
+  ctx.fill();
+
+  // Dashed shadow line
+  ctx.beginPath();
+  ctx.setLineDash([4, 3]);
+  ctx.strokeStyle = 'rgba(201,168,76,0.25)';
+  ctx.lineWidth = 1.5;
+  augmented.forEach(function(d, i){
+    i === 0 ? ctx.moveTo(toX(i), toY(d.interaction.score))
+            : ctx.lineTo(toX(i), toY(d.interaction.score));
+  });
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Main line
+  ctx.beginPath();
+  ctx.strokeStyle = '#c9a84c';
+  ctx.lineWidth = 2;
+  augmented.forEach(function(d, i){
+    i === 0 ? ctx.moveTo(toX(i), toY(d.interaction.score))
+            : ctx.lineTo(toX(i), toY(d.interaction.score));
+  });
+  ctx.stroke();
+
+  // Dots + score labels
+  augmented.forEach(function(d, i) {
+    var g    = getGrade(d.interaction.score);
+    var x    = toX(i);
+    var y    = toY(d.interaction.score);
+    var isCur = (i === curIdx);
+    var r    = isCur ? 6 : 4.5;
+
+    // Glow ring for current
+    if (isCur) {
+      ctx.beginPath();
+      ctx.arc(x, y, r + 5, 0, Math.PI * 2);
+      ctx.strokeStyle = g.color.replace(')', ',0.35)').replace('rgb','rgba');
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = g.color;
+    ctx.fill();
+    ctx.strokeStyle = '#0b0f1e';
+    ctx.lineWidth = isCur ? 2 : 1.5;
+    ctx.stroke();
+
+    // Score label
+    ctx.fillStyle = g.color;
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(d.interaction.score, x, y - (isCur ? 13 : 11));
+  });
+
+  // X-axis age labels
+  ctx.fillStyle = 'rgba(232,223,200,0.35)';
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'center';
+  augmented.forEach(function(d, i){
+    ctx.fillText(d.age + 's', toX(i), H_CSS - 4);
+  });
+
+  // Inject canvas
+  wrap.innerHTML = '';
+  wrap.appendChild(canvas);
+
+  // ── Decade cards (Event Prediction v2)
+  var decadesEl = document.getElementById('lamDecades');
+  if (!decadesEl) return;
+
+  var CAT_COLOR = {
+    '💍':'rgba(255,200,150,0.12)', '💔':'rgba(232,112,112,0.1)',
+    '❤️':'rgba(255,140,160,0.12)', '⚡':'rgba(255,180,80,0.1)',
+    '🏆':'rgba(201,168,76,0.12)',  '🚀':'rgba(122,184,122,0.12)',
+    '⚠️':'rgba(232,112,112,0.1)', '🔄':'rgba(140,180,255,0.1)',
+    '💰':'rgba(122,184,122,0.12)', '📉':'rgba(232,112,112,0.1)',
+    '🏦':'rgba(201,168,76,0.1)',   '✈️':'rgba(140,200,255,0.1)',
+    '🌑':'rgba(160,140,200,0.1)',  '🏥':'rgba(232,112,112,0.12)',
+  };
+
+  // 부정 이벤트 cat 목록
+  var NEGATIVE_CATS = {'💔':1,'⚡':1,'⚠️':1,'📉':1,'🏥':1,'🌑':1};
+  var NEUTRAL_CATS  = {'✈️':1,'🔄':1};
+
+  function probColor(p, cat) {
+    if (NEGATIVE_CATS[cat]) {
+      // 부정 이벤트: 확률 높을수록 더 빨간색
+      if (p >= 70) return '#e87070';
+      if (p >= 50) return '#d4886a';
+      return '#c9a07a';
+    }
+    if (NEUTRAL_CATS[cat]) {
+      return '#8cc8ff';  // 이동/변화: 파란색 유지
+    }
+    // 긍정 이벤트: 확률 높을수록 초록색
+    if (p >= 70) return '#7ab87a';
+    if (p >= 50) return '#6aaa8a';
+    return '#c9a84c';
+  }
+
+  var nowYear = new Date().getFullYear();
+
+  var cardsHTML = augmented.map(function(d) {
+    var score = d.score !== undefined ? d.score : (d.interaction ? d.interaction.score : 50);
+    var g     = getGrade(score);
+    var pct   = Math.max(0, Math.min(100, score));
+    var isCur = d.startYear <= nowYear && nowYear <= d.endYear;
+    var evList = d.events || [];
+
+    var evHTML = '';
+    if (evList.length > 0) {
+      evHTML = '<div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">';
+      evList.forEach(function(ev) {
+        var bg = CAT_COLOR[ev.cat] || 'rgba(255,255,255,0.04)';
+        var pc = probColor(ev.prob, ev.cat);
+        var trigHTML = ev.triggers && ev.triggers.length
+          ? '<div style="margin-top:4px">' +
+              ev.triggers.map(function(t){ return '<div style="font-size:11px;color:rgba(232,223,200,0.35);padding-left:8px">↳ ' + t + '</div>'; }).join('') +
+            '</div>'
+          : '';
+        evHTML +=
+          '<div style="background:' + bg + ';border:1px solid rgba(255,255,255,0.06);padding:10px 12px">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">' +
+              '<div style="font-size:13px;color:rgba(232,223,200,0.85)">' + (ev.cat||'') + ' ' + (ev.label||'') + '</div>' +
+              '<div style="font-size:12px;font-weight:600;color:' + pc + ';white-space:nowrap;margin-left:8px">' + ev.prob + '%</div>' +
+            '</div>' +
+            '<div style="height:2px;background:rgba(255,255,255,0.06);margin-bottom:4px">' +
+              '<div style="height:2px;width:' + ev.prob + '%;background:' + pc + '"></div>' +
+            '</div>' +
+            trigHTML +
+          '</div>';
+      });
+      evHTML += '</div>';
+    } else {
+      evHTML = '<div style="margin-top:10px;font-size:13px;color:rgba(232,223,200,0.28);font-style:italic">No dominant events flagged this decade</div>';
+    }
+
+    var palaceHTML = '';
+    if (d.palaceClashes) {
+      var pc2 = d.palaceClashes;
+      var badges = [];
+      if (pc2.spouse === 'CLASH') badges.push('<span style="font-size:10px;padding:2px 7px;background:rgba(232,112,112,0.15);border:1px solid rgba(232,112,112,0.3);color:#e87070">⚡ Relationship Axis</span>');
+      if (pc2.career === 'CLASH') badges.push('<span style="font-size:10px;padding:2px 7px;background:rgba(232,112,112,0.15);border:1px solid rgba(232,112,112,0.3);color:#e87070">⚡ Career Axis</span>');
+      if (pc2.invest === 'CLASH') badges.push('<span style="font-size:10px;padding:2px 7px;background:rgba(232,112,112,0.15);border:1px solid rgba(232,112,112,0.3);color:#e87070">⚡ Financial Axis</span>');
+      if (d.isYeokma)             badges.push('<span style="font-size:10px;padding:2px 7px;background:rgba(140,200,255,0.12);border:1px solid rgba(140,200,255,0.25);color:#8cc8ff">✈ Movement Star</span>');
+      if (badges.length) palaceHTML = '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">' + badges.join('') + '</div>';
+    }
+
+    return '<div class="lam-decade ' + g.key + (isCur ? ' current' : '') + '">' +
+      '<div class="lam-decade-header">' +
+        '<div class="lam-decade-left">' +
+          '<div class="lam-decade-age">Ages ' + d.age + '–' + (d.age+9) + (isCur ? '  ← NOW' : '') + '</div>' +
+          '<div class="lam-decade-sub">' + d.startYear + '–' + d.endYear + (d.stemGod ? ' · ' + d.stemGod : '') + '</div>' +
+        '</div>' +
+        '<div class="lam-decade-badge ' + g.key + '">' +
+          '<span class="lam-decade-badge-label">' + g.label + '</span>' +
+          '<span class="lam-decade-badge-score">' + score + '/100</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="height:3px;background:rgba(255,255,255,0.06);margin-bottom:2px">' +
+        '<div style="height:3px;width:' + pct + '%;background:' + g.color + '"></div>' +
+      '</div>' +
+      palaceHTML + evHTML +
+    '</div>';
+  }).join('');
+
+  decadesEl.innerHTML = cardsHTML;
+}
+
+
+
+// ── Stars
+function initStars() {
+  const s = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div'); el.className = 'star';
+    const sz = Math.random()*2+0.5;
+    el.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.2+Math.random()*0.5}`;
+    s.appendChild(el);
+  }
+}
+
+// ── Main: load from ?id= (priority) OR sessionStorage OR URL hash
+async function loadResult() {
+  try {
+    let raw = null;
+
+    // 1순위: ?id= 쿼리 파라미터 (항상 fetch — 최신 데이터 보장)
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) {
+      const resp = await fetch('/api/get-result?id=' + id);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.payload) {
+          raw = data.payload;
+          sessionStorage.setItem('saju_result', raw);
+          sessionStorage.setItem('saju_report_id', id);
+        }
+      } else {
+        throw new Error('Report not found or expired');
+      }
+    }
+
+    // 2순위: sessionStorage 캐시 (?id= 없을 때만)
+    if (!raw) {
+      raw = sessionStorage.getItem('saju_result');
+    }
+
+    // 3순위: URL hash 폴백 (구형 링크 호환)
+    if (!raw && window.location.hash) {
+      raw = decodeURIComponent(window.location.hash.slice(1));
+      if (raw) sessionStorage.setItem('saju_result', raw);
+    }
+
+    if (!raw) throw new Error('Result not found');
+
+    let decoded = raw;
+    try { decoded = atob(decoded); } catch(e) {}
+    // Handle double-encoded base64
+    try { if (decoded.startsWith('ey')) decoded = atob(decoded); } catch(e) {}
+    const { step1, step2, birth, chartSummary } = JSON.parse(decoded);
+
+    // Pass decade cards to window for LAM advice lookup
+    window._s5DecadeCards = step2?.s5?.decadeCards || [];
+
+    const html = buildBlueprint(step1, step2, birth, chartSummary);
+    document.getElementById('blueprintRoot').innerHTML = html;
+
+    // Render Financial Activation Windows + Turning Point card
+    (function() {
+      const timing = chartSummary && chartSummary.moneyEngine && chartSummary.moneyEngine.wealthTiming;
+
+      // ── Turning Point card (primary window) ──
+      function labelToTitle(type, label) {
+        var map = {
+          'output_to_wealth_flow':     'Creative Income Window',
+          'opportunistic_wealth_year': 'Opportunity Window',
+          'structured_wealth_year':    'Stable Income Expansion',
+          'major_wealth_cycle':        'Peak Wealth Cycle',
+          'wealth_activation':         'Financial Activation Window',
+        };
+        return map[type] || label || 'Financial Opportunity Window';
+      }
+
+      const tyEl = document.getElementById('turningYear');
+      const tlEl = document.getElementById('turningLabel');
+      if (tyEl && timing && timing.length) {
+        const primary = timing.slice().sort((a,b) => b.score - a.score)[0];
+        const yearStr = primary.endYear && primary.endYear !== primary.year
+          ? `${primary.year}–${primary.endYear}` : `${primary.year}`;
+        tyEl.textContent = yearStr;
+        if (tlEl) tlEl.textContent = labelToTitle(primary.type, primary.label);
+      }
+
+
+    })();
+
+    // Render Life Activation Map — requestAnimationFrame으로 DOM paint 후 실행 보장
+    if (chartSummary && chartSummary.lamData && chartSummary.lamData.length) {
+      var _lamData = chartSummary.lamData;
+      requestAnimationFrame(function() {
+        try { renderLifeActivationMap(_lamData); }
+        catch(e) { console.error('LAM render error:', e); }
+      });
+    } else {
+      var gw = document.getElementById('lamGraphWrap');
+      var ld = document.getElementById('lamDecades');
+      if (gw) gw.style.display = 'none';
+      if (ld) ld.style.display = 'none';
+    }
+
+    initStars();
+    initReveal();
+
+    const ls = document.getElementById('loadingScreen');
+    ls.style.transition = 'opacity 0.6s';
+    ls.style.opacity = '0';
+    setTimeout(() => { ls.style.display = 'none'; }, 650);
+
+    document.getElementById('pdfBar').style.display = 'flex'; alignPdfBar();
+  } catch (err) {
+    document.getElementById('loadingScreen').innerHTML = `
+      <div style="text-align:center;padding:40px;font-family:'EB Garamond',serif">
+        <div style="font-size:32px;margin-bottom:16px">✦</div>
+        <div style="color:#e8dfc8;font-size:20px;margin-bottom:12px">Result not found</div>
+        <div style="color:rgba(232,223,200,0.5);font-size:15px;margin-bottom:32px">This link may have expired. Please contact support.</div>
+        <a href="/" style="color:#c9a84c;font-size:14px;letter-spacing:2px">← Back to Home</a>
+      </div>`;
+  }
+}
+
+loadResult();
+
+
+
+
+// ── Align pdf-bar-inner to exactly match .page width & left offset
+function alignPdfBar() {
+  var bar = document.getElementById('pdfBar');
+  if (!bar || bar.style.display === 'none') return;
+  var page = document.querySelector('.page');
+  if (!page) return;
+  var r = page.getBoundingClientRect();
+  var inner = bar.querySelector('.pdf-bar-inner');
+  if (!inner) return;
+  inner.style.width = r.width + 'px';
+  inner.style.marginLeft = r.left + 'px';
+  inner.style.marginRight = 'auto';
+}
+window.addEventListener('resize', alignPdfBar);
+// ── S4 Snapshot toggle
+function toggleSnap(el) {
+  el.parentElement.classList.toggle('open');
+}
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+
+</body>
+</html>

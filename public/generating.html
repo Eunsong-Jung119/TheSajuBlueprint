@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generating Your Blueprint — The Saju Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c9a84c; --gold-dim: rgba(201,168,76,0.45); --gold-faint: rgba(201,168,76,0.12);
+  --navy: #0b0f1e; --navy-card: #131929;
+  --text: #e8dfc8; --text-dim: rgba(232,223,200,0.65); --text-faint: rgba(232,223,200,0.38);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--navy); color:var(--text); font-family:'EB Garamond',serif;
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 24px; overflow-x:hidden; }
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star { position:absolute; background:#fff; border-radius:50%;
+  animation:twinkle var(--d,4s) var(--delay,0s) infinite alternate; opacity:var(--bright,0.3); }
+@keyframes twinkle { from{opacity:var(--bright,0.3)} to{opacity:0.05} }
+
+.wrap { position:relative; z-index:1; text-align:center; max-width:480px; width:100%; }
+
+.rings { position:relative; width:240px; height:240px; margin:0 auto 48px; }
+.ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  border:1px solid var(--gold-dim); border-radius:50%; }
+.ring:nth-child(1){ width:220px;height:220px; animation:ring-breathe 3.6s ease-in-out infinite 0s; }
+.ring:nth-child(2){ width:160px;height:160px; animation:ring-breathe 3.6s ease-in-out infinite 0.9s; }
+.ring:nth-child(3){ width:100px;height:100px; animation:ring-breathe 3.6s ease-in-out infinite 1.8s; }
+.ring-halo { position:absolute; top:50%; left:50%;
+  border-radius:50%; border:1px solid rgba(201,168,76,0); pointer-events:none; }
+.ring-halo:nth-child(4){ width:100px;height:100px; animation:halo-pulse 3.6s ease-out infinite 0s; }
+.ring-halo:nth-child(5){ width:100px;height:100px; animation:halo-pulse 3.6s ease-out infinite 1.2s; }
+.ring-halo:nth-child(6){ width:100px;height:100px; animation:halo-pulse 3.6s ease-out infinite 2.4s; }
+.ring-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:40px; animation:float 3s ease-in-out infinite; }
+@keyframes ring-breathe { 0%,100%{opacity:0.25} 50%{opacity:0.7} }
+@keyframes halo-pulse {
+  0%  { transform:translate(-50%,-50%) scale(1);   border-color:rgba(201,168,76,0.55); }
+  70% { transform:translate(-50%,-50%) scale(2.15); border-color:rgba(201,168,76,0.08); }
+  100%{ transform:translate(-50%,-50%) scale(2.3);  border-color:rgba(201,168,76,0); }
+}
+@keyframes float { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-6px)} }
+
+.brand { font-size:12px; letter-spacing:4px; color:var(--gold); margin-bottom:24px; }
+h1 { font-size:clamp(24px,4vw,32px); font-weight:500; margin-bottom:12px; }
+.subtitle { font-size:17px; color:var(--text-dim); line-height:1.6; margin-bottom:48px; }
+
+.steps { text-align:left; background:var(--navy-card); border:1px solid rgba(201,168,76,0.15);
+  padding:24px 28px; margin-bottom:32px; }
+.step { display:flex; align-items:center; gap:14px; padding:8px 0;
+  font-size:16px; color:var(--text-faint); transition:color 0.4s; }
+.step.active { color:var(--text); }
+.step.done { color:rgba(201,168,76,0.7); }
+.step-dot { width:20px; height:20px; border-radius:50%; border:1px solid currentColor;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; flex-shrink:0; transition:all 0.4s; }
+.step.active .step-dot { border-color:var(--gold); background:var(--gold-faint);
+  animation:dot-pulse 1.2s infinite; }
+.step.done .step-dot { background:var(--gold); border-color:var(--gold); color:var(--navy); }
+@keyframes dot-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4)} 50%{box-shadow:0 0 0 6px rgba(201,168,76,0)} }
+
+.wisdom { font-size:15px; color:var(--text-faint); font-style:italic; line-height:1.7; }
+.wisdom strong { color:var(--gold); font-style:normal; }
+.error-box { display:none; background:rgba(232,112,112,0.1); border:1px solid rgba(232,112,112,0.3);
+  padding:16px 20px; color:#e87070; font-size:15px; margin-top:20px; line-height:1.5; }
+
+@media(max-width:480px){
+  body { padding:32px 16px; }
+  .subtitle { font-size:15px; margin-bottom:40px; }
+  .steps { padding:20px 18px; }
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="wrap">
+  <div class="brand">✦ The Saju Blueprint ✦</div>
+  <div class="rings">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring-halo"></div>
+    <div class="ring-halo"></div>
+    <div class="ring-halo"></div>
+    <div class="ring-center">✦</div>
+  </div>
+  <h1>Generating Your Blueprint</h1>
+  <p class="subtitle">Reading the cosmic patterns of your birth moment.<br>This may take a minute or two.</p>
+  <div class="steps">
+    <div class="step" id="step1"><div class="step-dot" id="d1">1</div><span>Calculating your Four Pillars chart</span></div>
+    <div class="step" id="step2"><div class="step-dot" id="d2">2</div><span>Interpreting your elemental blueprint</span></div>
+    <div class="step" id="step3"><div class="step-dot" id="d3">3</div><span>Writing your personal story</span></div>
+    <div class="step" id="step4"><div class="step-dot" id="d4">4</div><span>Completing your report</span></div>
+  </div>
+  <p class="wisdom" id="wisdomText">
+    <strong>Ancient wisdom.</strong> The Four Pillars of Destiny has guided millions for over a thousand years...
+  </p>
+  <div class="error-box" id="errorBox"></div>
+</div>
+
+<script>
+// Stars
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement('div'); s.className = 'star';
+  const sz = Math.random()*2+0.5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.2+Math.random()*0.5}`;
+  starsEl.appendChild(s);
+}
+
+// Wisdom rotation
+const wisdoms = [
+  '<strong>Ancient wisdom.</strong> The Four Pillars of Destiny has guided millions for over a thousand years — your moment of birth holds more information than you know.',
+  '<strong>The elements speak.</strong> Wood grows upward. Fire illuminates. Earth grounds. Metal refines. Water flows. Together, they compose the music of your life.',
+  '<strong>Not fate — nature.</strong> Your chart reveals your natural grain. The goal is not to predict your future, but to understand yourself so deeply that you stop working against your own design.',
+  '<strong>Every void has a purpose.</strong> The element you were born without is not a weakness. It is the hunger that drives your most meaningful growth.',
+  '<strong>Almost there.</strong> Your blueprint is taking shape — weaving your unique elemental signature into a story only you can live.',
+];
+let wIdx = 0;
+document.getElementById('wisdomText').style.transition = 'opacity 0.4s';
+setInterval(() => {
+  wIdx = (wIdx + 1) % wisdoms.length;
+  const el = document.getElementById('wisdomText');
+  el.style.opacity = 0;
+  setTimeout(() => { el.innerHTML = wisdoms[wIdx]; el.style.opacity = 1; }, 400);
+}, 5000);
+
+function stepActive(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('step'+i).className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+    document.getElementById('d'+i).textContent = i < n ? '✓' : i;
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.style.display = 'block';
+  box.innerHTML = msg;
+}
+
+async function run() {
+  const txnId = sessionStorage.getItem('paddle_txn_id');
+
+  if (!txnId) {
+    window.location.href = '/order';
+    return;
+  }
+
+  // paddle_txn_id가 있으면 새 구매 → saju_report_id 초기화 후 새로 generate
+  sessionStorage.removeItem('saju_report_id');
+
+  stepActive(1);
+
+  // 스텝 애니메이션
+  setTimeout(() => stepActive(2), 15000);
+  setTimeout(() => stepActive(3), 35000);
+  setTimeout(() => stepActive(4), 55000);
+
+  try {
+    // 1. Paddle에서 birth 데이터 가져오기
+    const paddleRes = await fetch(`/api/get-paddle-data?txn_id=${txnId}`);
+    if (!paddleRes.ok) {
+      throw new Error('Failed to retrieve order details. Please contact hello@saju-blueprint.com');
+    }
+    const { birth } = await paddleRes.json();
+
+    if (!birth || !birth.date) {
+      throw new Error('Order details incomplete. Please contact hello@saju-blueprint.com');
+    }
+
+    // 2. Generate 호출 (GPT-4o 2번 — 60~90초 소요)
+    const genRes = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        paymentIntentId: `paddle_${txnId}`,
+        birth,
+      }),
+    });
+
+    if (!genRes.ok) {
+      const err = await genRes.json().catch(() => ({}));
+      throw new Error(err.error || 'Generation failed. Please contact hello@saju-blueprint.com');
+    }
+
+    const data = await genRes.json();
+
+    if (!data.reportId) {
+      throw new Error('Report ID missing. Please contact hello@saju-blueprint.com');
+    }
+
+    // 3. 완료 — result로 이동
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('step'+i).className = 'step done';
+      document.getElementById('d'+i).textContent = '✓';
+    }
+
+    sessionStorage.setItem('saju_report_id', data.reportId);
+    sessionStorage.removeItem('paddle_txn_id');
+
+    setTimeout(() => {
+      window.location.href = `/result?id=${data.reportId}`;
+    }, 800);
+
+  } catch (err) {
+    console.error('Generating error:', err);
+    showError(
+      err.message || 'Something went wrong. Please contact <a href="mailto:hello@saju-blueprint.com" style="color:#e87070">hello@saju-blueprint.com</a>'
+    );
+  }
+}
+
+run();
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

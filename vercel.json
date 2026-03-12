@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/order",      "destination": "/order.html" },
+    { "source": "/checkout",   "destination": "/checkout.html" },
+    { "source": "/generating", "destination": "/generating.html" },
+    { "source": "/result",     "destination": "/result.html" },
+    { "source": "/success",    "destination": "/success.html" }
+  ]
+}
