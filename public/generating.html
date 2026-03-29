@@ -18,9 +18,7 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
 .star { position:absolute; background:#fff; border-radius:50%;
   animation:twinkle var(--d,4s) var(--delay,0s) infinite alternate; opacity:var(--bright,0.3); }
 @keyframes twinkle { from{opacity:var(--bright,0.3)} to{opacity:0.05} }
-
 .wrap { position:relative; z-index:1; text-align:center; max-width:480px; width:100%; }
-
 .rings { position:relative; width:240px; height:240px; margin:0 auto 48px; }
 .ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   border:1px solid var(--gold-dim); border-radius:50%; }
@@ -41,11 +39,9 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
   100%{ transform:translate(-50%,-50%) scale(2.3);  border-color:rgba(201,168,76,0); }
 }
 @keyframes float { 0%,100%{transform:translate(-50%,-50%) translateY(0)} 50%{transform:translate(-50%,-50%) translateY(-6px)} }
-
 .brand { font-size:12px; letter-spacing:4px; color:var(--gold); margin-bottom:24px; }
 h1 { font-size:clamp(24px,4vw,32px); font-weight:500; margin-bottom:12px; }
 .subtitle { font-size:17px; color:var(--text-dim); line-height:1.6; margin-bottom:48px; }
-
 .steps { text-align:left; background:var(--navy-card); border:1px solid rgba(201,168,76,0.15);
   padding:24px 28px; margin-bottom:32px; }
 .step { display:flex; align-items:center; gap:14px; padding:8px 0;
@@ -59,12 +55,10 @@ h1 { font-size:clamp(24px,4vw,32px); font-weight:500; margin-bottom:12px; }
   animation:dot-pulse 1.2s infinite; }
 .step.done .step-dot { background:var(--gold); border-color:var(--gold); color:var(--navy); }
 @keyframes dot-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4)} 50%{box-shadow:0 0 0 6px rgba(201,168,76,0)} }
-
 .wisdom { font-size:15px; color:var(--text-faint); font-style:italic; line-height:1.7; }
 .wisdom strong { color:var(--gold); font-style:normal; }
 .error-box { display:none; background:rgba(232,112,112,0.1); border:1px solid rgba(232,112,112,0.3);
   padding:16px 20px; color:#e87070; font-size:15px; margin-top:20px; line-height:1.5; }
-
 @media(max-width:480px){
   body { padding:32px 16px; }
   .subtitle { font-size:15px; margin-bottom:40px; }
@@ -100,7 +94,6 @@ h1 { font-size:clamp(24px,4vw,32px); font-weight:500; margin-bottom:12px; }
 </div>
 
 <script>
-// Stars
 const starsEl = document.getElementById('stars');
 for (let i = 0; i < 80; i++) {
   const s = document.createElement('div'); s.className = 'star';
@@ -109,7 +102,6 @@ for (let i = 0; i < 80; i++) {
   starsEl.appendChild(s);
 }
 
-// Wisdom rotation
 const wisdoms = [
   '<strong>Ancient wisdom.</strong> The Four Pillars of Destiny has guided millions for over a thousand years — your moment of birth holds more information than you know.',
   '<strong>The elements speak.</strong> Wood grows upward. Fire illuminates. Earth grounds. Metal refines. Water flows. Together, they compose the music of your life.',
@@ -140,73 +132,54 @@ function showError(msg) {
 }
 
 async function run() {
-  const txnId = sessionStorage.getItem('paddle_txn_id');
-
-  if (!txnId) {
+  // sessionStorage에서 birth 데이터 읽기
+  const birthRaw = sessionStorage.getItem('saju_birth');
+  if (!birthRaw) {
     window.location.href = '/order';
     return;
   }
 
-  // paddle_txn_id가 있으면 새 구매 → saju_report_id 초기화 후 새로 generate
-  sessionStorage.removeItem('saju_report_id');
-
+  const birth = JSON.parse(birthRaw);
   stepActive(1);
 
-  // 스텝 애니메이션
   setTimeout(() => stepActive(2), 15000);
   setTimeout(() => stepActive(3), 35000);
   setTimeout(() => stepActive(4), 55000);
 
   try {
-    // 1. Paddle에서 birth 데이터 가져오기
-    const paddleRes = await fetch(`/api/get-paddle-data?txn_id=${txnId}`);
-    if (!paddleRes.ok) {
-      throw new Error('Failed to retrieve order details. Please contact hello@saju-blueprint.com');
-    }
-    const { birth } = await paddleRes.json();
-
-    if (!birth || !birth.date) {
-      throw new Error('Order details incomplete. Please contact hello@saju-blueprint.com');
-    }
-
-    // 2. Generate 호출 (GPT-4o 2번 — 60~90초 소요)
     const genRes = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        paymentIntentId: `paddle_${txnId}`,
+        paymentIntentId: 'mock_free_promo',
         birth,
       }),
     });
 
     if (!genRes.ok) {
       const err = await genRes.json().catch(() => ({}));
-      throw new Error(err.error || 'Generation failed. Please contact hello@saju-blueprint.com');
+      throw new Error(err.error || 'Generation failed. Please contact thesajublueprint@gmail.com');
     }
 
     const data = await genRes.json();
+    if (!data.reportId) throw new Error('Report ID missing. Please contact thesajublueprint@gmail.com');
 
-    if (!data.reportId) {
-      throw new Error('Report ID missing. Please contact hello@saju-blueprint.com');
-    }
-
-    // 3. 완료 — result로 이동
+    // 완료
     for (let i = 1; i <= 4; i++) {
       document.getElementById('step'+i).className = 'step done';
       document.getElementById('d'+i).textContent = '✓';
     }
 
-    sessionStorage.setItem('saju_report_id', data.reportId);
-    sessionStorage.removeItem('paddle_txn_id');
+    sessionStorage.removeItem('saju_birth');
 
     setTimeout(() => {
-      window.location.href = `/result?id=${data.reportId}`;
+      window.location.href = '/result?id=' + data.reportId;
     }, 800);
 
   } catch (err) {
     console.error('Generating error:', err);
     showError(
-      err.message || 'Something went wrong. Please contact <a href="mailto:hello@saju-blueprint.com" style="color:#e87070">hello@saju-blueprint.com</a>'
+      err.message || 'Something went wrong. Please contact <a href="mailto:thesajublueprint@gmail.com" style="color:#e87070">thesajublueprint@gmail.com</a>'
     );
   }
 }

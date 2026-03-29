@@ -173,8 +173,8 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
 .lam-decade.peak::before     { background:#f4a342; }
 .lam-decade.favorable::before{ background:#7ab87a; }
 .lam-decade.neutral::before  { background:#c9a84c; }
-.lam-decade.pressure::before { background:#e8a04a; }
-.lam-decade.risk::before     { background:#e87070; }
+.lam-decade.pressure::before { background:#b0c4d8; }
+.lam-decade.risk::before     { background:#9b8ec4; }
 .lam-decade-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; gap:8px; }
 .lam-decade-age { font-size:13px; letter-spacing:2px; color:var(--gold); }
 .lam-decade-left { display:flex; flex-direction:column; gap:3px; }
@@ -185,8 +185,8 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
 .lam-decade-badge.peak     { color:#f4a342; }
 .lam-decade-badge.favorable{ color:#7ab87a; }
 .lam-decade-badge.neutral  { color:#c9a84c; }
-.lam-decade-badge.pressure { color:#e8a04a; }
-.lam-decade-badge.risk     { color:#e87070; }
+.lam-decade-badge.pressure { color:#b0c4d8; }
+.lam-decade-badge.risk     { color:#9b8ec4; }
 .lam-markers { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
 .lam-marker { font-size:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); padding:3px 10px; border-radius:2px; color:var(--text-dim); }
 .lam-decade-advice { font-size:14px; color:var(--text-faint); line-height:1.6; font-style:italic; }
@@ -409,6 +409,26 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
 .s3-bar-volatility { background:linear-gradient(90deg,#b07ad4,#d4a8f0); }
 .s3-arch-score { font-size:14px; color:var(--gold); width:32px; text-align:right; flex-shrink:0; font-weight:600; }
 .s3-volatility-label { font-size:12px; letter-spacing:1px; text-transform:uppercase; width:64px; color:#b07ad4; text-align:right; flex-shrink:0; }
+/* s3 trait cards */
+.s3-trait-card { padding:16px 0; border-bottom:1px solid rgba(201,168,76,0.08); }
+.s3-trait-card:last-child { border-bottom:none; }
+.s3-trait-title { font-size:15px; color:var(--text); font-weight:500; margin-bottom:6px; letter-spacing:0.3px; }
+.s3-trait-body { font-size:14px; color:var(--text-dim); line-height:1.75; }
+.s3-heartbreak-label { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-dim); margin-bottom:6px; margin-top:20px; }
+.s3-heartbreak-label:first-child { margin-top:0; }
+.s3-heartbreak-body { font-size:14px; color:var(--text-dim); line-height:1.75; margin-bottom:4px; }
+.s3-bullet-item { display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid rgba(201,168,76,0.07); }
+.s3-bullet-item:last-child { border-bottom:none; }
+.s3-bullet-icon { font-size:14px; flex-shrink:0; margin-top:1px; }
+.s3-bullet-content { flex:1; }
+.s3-bullet-title { font-size:15px; color:var(--text); font-weight:500; margin-bottom:4px; }
+.s3-bullet-body { font-size:14px; color:var(--text-dim); line-height:1.7; }
+/* Red Flag single card */
+.s3-redflag-card { padding:20px 0; }
+.s3-redflag-title { font-size:15px; color:var(--text); font-weight:500; margin-bottom:12px; letter-spacing:0.3px; }
+.s3-redflag-body { font-size:14px; color:var(--text-dim); line-height:1.85; }
+/* Love Nature title */
+.s3-ln-title { font-size:16px; color:var(--text); font-weight:500; margin-bottom:10px; font-family:'Cormorant Garamond',serif; font-style:italic; }
 /* Timing pills */
 .s3-timing-pills {
   display:flex;
@@ -495,6 +515,74 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
 .footer-cta-sub { font-size:14px; color:var(--text-faint); line-height:1.7; margin-bottom:28px; }
 .footer-cta-btn { display:inline-block; border:1px solid rgba(201,168,76,0.6); color:var(--gold); font-family:'EB Garamond',serif; font-size:13px; letter-spacing:3px; text-transform:uppercase; padding:14px 36px; text-decoration:none; transition:all 0.2s; }
 .footer-cta-btn:hover { background:rgba(201,168,76,0.08); border-color:var(--gold); }
+
+/* ── Feedback Section ── */
+.feedback-section {
+  margin: 40px 0 32px;
+  padding: 36px 28px;
+  border: 1px solid rgba(201,168,76,0.12);
+  background: var(--navy-card);
+  display: none;
+}
+.feedback-section.visible {
+  display: block;
+  animation: fbFadeIn 0.6s ease forwards;
+}
+@keyframes fbFadeIn {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:none; }
+}
+.feedback-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.feedback-sub {
+  font-size: 13px;
+  color: var(--text-faint);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.feedback-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,168,76,0.2);
+  color: var(--text);
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  line-height: 1.7;
+  padding: 14px 16px;
+  resize: vertical;
+  min-height: 100px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.feedback-textarea:focus { border-color: rgba(201,168,76,0.5); }
+.feedback-textarea::placeholder { color: rgba(232,223,200,0.25); }
+.feedback-submit {
+  margin-top: 12px;
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.5);
+  color: var(--gold);
+  font-family: 'EB Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 11px 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.feedback-submit:hover { background: rgba(201,168,76,0.08); border-color: var(--gold); }
+.feedback-submit:disabled { opacity: 0.4; cursor: default; }
+.feedback-thanks {
+  font-size: 14px;
+  color: var(--wood);
+  margin-top: 14px;
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -526,6 +614,28 @@ body { background:var(--navy); color:var(--text); font-family:'EB Garamond',seri
 <div id="blueprintRoot"></div>
 
 <script>
+// ── Tracking (인라인 — import 없음, 에러 없음)
+async function trackEvent(eventName, metadata = {}) {
+  const p = new URLSearchParams(window.location.search);
+  try {
+    await fetch('/api/track', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        event: eventName,
+        metadata: {
+          ...metadata,
+          session_id: getSessionId(),
+          source:   p.get('utm_source')   || 'direct',
+          medium:   p.get('utm_medium')   || 'none',
+          campaign: p.get('utm_campaign') || 'none',
+          referrer: document.referrer     || 'none',
+        }
+      })
+    });
+  } catch(e) {}
+}
+
 function sanitize(str) {
   if (typeof str !== 'string') return str;
   return str
@@ -714,92 +824,18 @@ function buildBlueprint(step1, step2, birth, chartSummary) {
     <span class="section-icon">💞</span>
     <div class="section-title">${g(s,'s3','title')}</div>
 
-    <!-- Block 1: Your Love Pattern -->
-    <div class="s3-block-title">Your Love Pattern</div>
-    <div class="s3-love-meta">
-      <div class="s3-meta-row">
-        <span class="s3-meta-label">You are drawn to</span>
-        <span class="s3-meta-val">${g(s,'s3','attractionType')}</span>
-      </div>
-      <div class="s3-meta-row">
-        <span class="s3-meta-label">Stability comes from</span>
-        <span class="s3-meta-val">${g(s,'s3','stabilityType')}</span>
-      </div>
-    </div>
-    <div class="s3-body">${g(s,'s3','lovePatternBody')}</div>
+    <!-- 1: Love Nature -->
+    <div class="s3-block-title">Your Love Nature</div>
+    <div id="s3LoveNature"></div>
 
-    <!-- Block 2: Relationship Architecture -->
-    <div class="s3-block-title">Relationship Architecture</div>
-    <div class="s3-disclaimer">These scores describe your natural relationship tendencies. They are not compatibility scores with a specific person.</div>
+    <!-- 3: Red Flag Pattern -->
+    <div class="s3-block-title">Your Red Flag Pattern</div>
+    <div id="s3RedFlagCards"></div>
 
-    <div class="s3-arch-grid">
-      <div class="s3-arch-row">
-        <div class="s3-arch-label">
-          <span class="s3-arch-name">Relationship Stability</span>
-          <span class="s3-arch-desc">Structural stability of long-term partnerships</span>
-        </div>
-        <div class="s3-arch-bar-wrap">
-          <div class="s3-arch-bar-track">
-            <div class="s3-arch-bar-fill s3-bar-stability" style="width:${g(s,'s3','relationshipStability')}%"></div>
-          </div>
-          <span class="s3-arch-score">${g(s,'s3','relationshipStability')}</span>
-        </div>
-      </div>
-      <div class="s3-arch-row">
-        <div class="s3-arch-label">
-          <span class="s3-arch-name">Attraction Intensity</span>
-          <span class="s3-arch-desc">Strength of romantic attraction patterns</span>
-        </div>
-        <div class="s3-arch-bar-wrap">
-          <div class="s3-arch-bar-track">
-            <div class="s3-arch-bar-fill s3-bar-attraction" style="width:${g(s,'s3','attractionIntensity')}%"></div>
-          </div>
-          <span class="s3-arch-score">${g(s,'s3','attractionIntensity')}</span>
-        </div>
-      </div>
-      <div class="s3-arch-row">
-        <div class="s3-arch-label">
-          <span class="s3-arch-name">Commitment Readiness</span>
-          <span class="s3-arch-desc">Natural tendency toward long-term commitment</span>
-        </div>
-        <div class="s3-arch-bar-wrap">
-          <div class="s3-arch-bar-track">
-            <div class="s3-arch-bar-fill s3-bar-commit" style="width:${g(s,'s3','commitmentReadiness')}%"></div>
-          </div>
-          <span class="s3-arch-score">${g(s,'s3','commitmentReadiness')}</span>
-        </div>
-      </div>
-      <div class="s3-arch-row">
-        <div class="s3-arch-label">
-          <span class="s3-arch-name">Emotional Depth</span>
-          <span class="s3-arch-desc">Capacity for emotional bonding</span>
-        </div>
-        <div class="s3-arch-bar-wrap">
-          <div class="s3-arch-bar-track">
-            <div class="s3-arch-bar-fill s3-bar-depth" style="width:${g(s,'s3','emotionalDepth')}%"></div>
-          </div>
-          <span class="s3-arch-score">${g(s,'s3','emotionalDepth')}</span>
-        </div>
-      </div>
-      <div class="s3-arch-row s3-arch-row-last">
-        <div class="s3-arch-label">
-          <span class="s3-arch-name">Relationship Volatility</span>
-          <span class="s3-arch-desc">Emotional intensity and fluctuation tendency</span>
-        </div>
-        <div class="s3-arch-bar-wrap">
-          <div class="s3-arch-bar-track">
-            <div class="s3-arch-bar-fill s3-bar-volatility" style="width:${g(s,'s3','volatilityScore')}%"></div>
-          </div>
-          <span class="s3-arch-score s3-volatility-label">${g(s,'s3','volatilityLabel')}</span>
-        </div>
-      </div>
-    </div>
+    <!-- 4: Who Breaks Your Heart -->
+    <div id="s3HeartbreakCards"></div>
 
-    <!-- Block 3: Hidden Relationship Tensions -->
-    <div class="s3-block-title">Hidden Relationship Tensions</div>
-    <div class="s3-body">${g(s,'s3','tensionBody')}</div>
-
-    <!-- Block 4: Relationship Timing -->
+    <!-- 5: Relationship Timing -->
     <div class="s3-block-title">Relationship Timing</div>
     <div class="s3-timing-pills">
       <div class="s3-timing-pill s3-pill-attraction">
@@ -811,7 +847,7 @@ function buildBlueprint(step1, step2, birth, chartSummary) {
         <div class="s3-pill-val">${g(s,'s3','commitWindow')}</div>
       </div>
     </div>
-    <div class="s3-body">${g(s,'s3','timingBody')}</div>
+    <div id="s3TimingBody"></div>
 
   </div>
 
@@ -864,12 +900,13 @@ function buildBlueprint(step1, step2, birth, chartSummary) {
 
     <!-- Energy Curve SVG -->
     <div class="lam-legend">
-      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#f4a342"></div>Peak (75+)</div>
-      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#7ab87a"></div>Favorable (60–74)</div>
-      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#c9a84c"></div>Neutral (45–59)</div>
-      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#e8a04a"></div>Pressure (30–44)</div>
-      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#e87070"></div>Risk (&lt;30)</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#f4a342"></div>Peak Window</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#7ab87a"></div>Growth Phase</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#c9a84c"></div>Neutral Phase</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#b0c4d8"></div>Learning Phase</div>
+      <div class="lam-legend-item"><div class="lam-legend-dot" style="background:#9b8ec4"></div>Transformation Phase</div>
     </div>
+    <p style="font-size:13px;color:rgba(232,223,200,0.4);line-height:1.6;margin-bottom:20px;font-style:italic;">Your life path moves through cycles of growth, challenge, and transformation. Each phase prepares the ground for the next.</p>
     <div id="lamGraphWrap"></div>
 
     <!-- Decade detail cards -->
@@ -893,6 +930,16 @@ function buildBlueprint(step1, step2, birth, chartSummary) {
     <div class="closing-divider"></div>
   </div>
 
+  <!-- Feedback -->
+  <div class="feedback-section" id="feedbackSection">
+    <div class="feedback-title">How did this feel?</div>
+    <div class="feedback-sub">Your honest reaction helps us improve. Takes 30 seconds.</div>
+    <textarea class="feedback-textarea" id="feedbackText" placeholder="What resonated? What felt off? Anything you'd add..."></textarea>
+    <br>
+    <button class="feedback-submit" id="feedbackSubmit" onclick="submitFeedback()">Send Feedback</button>
+    <div class="feedback-thanks" id="feedbackThanks">✦ Thank you — your feedback means a lot.</div>
+  </div>
+
   <div class="footer-cta">
     <div class="footer-cta-title">Know someone who needs their Blueprint?</div>
     <div class="footer-cta-sub">Every person carries a unique cosmic map.<br>Hand-crafted by a Korean Saju Master. 100% personal.</div>
@@ -900,7 +947,7 @@ function buildBlueprint(step1, step2, birth, chartSummary) {
   </div>
   <div class="footer">
     <div class="footer-brand">✦ The Saju Blueprint ✦</div>
-    <div class="footer-note">@thesajublueprint · thesajublueprint@gmail.com</div>
+    <div class="footer-note">@thesajublueprint · saju-blueprint.vercel.app </div>
   </div>
 
 </div>`;
@@ -908,28 +955,35 @@ function buildBlueprint(step1, step2, birth, chartSummary) {
 
 // ── PDF download (dark background preserved)
 function downloadPDF() {
+  trackEvent('pdf_downloaded');
   document.getElementById('pdfBar').style.display = 'none';
   window.print();
   setTimeout(() => { document.getElementById('pdfBar').style.display = 'flex'; alignPdfBar(); }, 1000);
 }
 
 // ── Copy link (reportId 기반 — 짧고 영구적, KV 없으면 hash 폴백)
+// ── Copy link (utm_source=shared 추가 버전)
+
 function copyLink() {
   try {
+    trackEvent('link_copied');
     const reportId = sessionStorage.getItem('saju_report_id');
     const raw = sessionStorage.getItem('saju_result');
     if (!raw) { alert('No result to share.'); return; }
-
-    const url = reportId
-      ? window.location.origin + '/result?id=' + reportId
-      : window.location.origin + '/result#' + encodeURIComponent(raw);
-
+ 
+    let url = window.location.origin + '/result';
+    if (reportId) {
+      url += '?id=' + reportId + '&utm_source=shared';
+    } else {
+      url += '#' + encodeURIComponent(raw);
+    }
+ 
     navigator.clipboard.writeText(url).then(() => {
       const btn = document.getElementById('copyBtn');
       btn.textContent = '✓ Copied!';
       btn.classList.add('copied');
       setTimeout(() => {
-        btn.innerHTML = '\uD83D\uDD17 Copy Link';
+        btn.innerHTML = '🔗 Copy Link';
         btn.classList.remove('copied');
       }, 2500);
     });
@@ -952,11 +1006,11 @@ function renderLifeActivationMap(augmented) {
 
   // ── 등급
   function getGrade(score) {
-    if (score >= 75) return { key:'peak',      label:'🔥 Peak',            color:'#f4a342' };
-    if (score >= 60) return { key:'favorable', label:'🟢 Favorable',       color:'#7ab87a' };
-    if (score >= 45) return { key:'neutral',   label:'🟡 Neutral',         color:'#c9a84c' };
-    if (score >= 30) return { key:'pressure',  label:'🟠 Pressure',        color:'#e8a04a' };
-    return                   { key:'risk',     label:'🔴 Structural Risk',  color:'#e87070' };
+    if (score >= 70) return { key:'peak',      label:'⭐ Peak Window',         color:'#f4a342' };
+    if (score >= 58) return { key:'favorable', label:'✦ Growth Phase',         color:'#7ab87a' };
+    if (score >= 46) return { key:'neutral',   label:'◎ Neutral Phase',        color:'#c9a84c' };
+    if (score >= 34) return { key:'pressure',  label:'◇ Learning Phase',       color:'#b0c4d8' };
+    return                   { key:'risk',     label:'○ Transformation Phase', color:'#9b8ec4' };
   }
 
   // ── 이벤트 마커
@@ -1203,22 +1257,9 @@ function renderLifeActivationMap(augmented) {
       evHTML = '<div style="display:flex;flex-direction:column;gap:7px;margin-top:12px">';
       evList.forEach(function(ev) {
         var bg = CAT_COLOR[ev.cat] || 'rgba(255,255,255,0.04)';
-        var pc = probColor(ev.prob, ev.cat);
-        var trigHTML = ev.triggers && ev.triggers.length
-          ? '<div style="margin-top:4px">' +
-              ev.triggers.map(function(t){ return '<div style="font-size:11px;color:rgba(232,223,200,0.35);padding-left:8px">↳ ' + t + '</div>'; }).join('') +
-            '</div>'
-          : '';
         evHTML +=
-          '<div style="background:' + bg + ';border:1px solid rgba(255,255,255,0.06);padding:10px 12px">' +
-            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">' +
-              '<div style="font-size:13px;color:rgba(232,223,200,0.85)">' + (ev.cat||'') + ' ' + (ev.label||'') + '</div>' +
-              '<div style="font-size:12px;font-weight:600;color:' + pc + ';white-space:nowrap;margin-left:8px">' + ev.prob + '%</div>' +
-            '</div>' +
-            '<div style="height:2px;background:rgba(255,255,255,0.06);margin-bottom:4px">' +
-              '<div style="height:2px;width:' + ev.prob + '%;background:' + pc + '"></div>' +
-            '</div>' +
-            trigHTML +
+          '<div style="background:' + bg + ';border:1px solid rgba(255,255,255,0.06);padding:9px 12px;margin-bottom:3px">' +
+            '<div style="font-size:13px;color:rgba(232,223,200,0.85)">' + (ev.cat||'') + ' ' + (ev.label||'') + '</div>' +
           '</div>';
       });
       evHTML += '</div>';
@@ -1241,7 +1282,7 @@ function renderLifeActivationMap(augmented) {
       '<div class="lam-decade-header">' +
         '<div class="lam-decade-left">' +
           '<div class="lam-decade-age">Ages ' + d.age + '–' + (d.age+9) + (isCur ? '  ← NOW' : '') + '</div>' +
-          '<div class="lam-decade-sub">' + d.startYear + '–' + d.endYear + (d.stemGod ? ' · ' + d.stemGod : '') + '</div>' +
+          '<div class="lam-decade-sub">' + d.startYear + '–' + d.endYear + '</div>' +
         '</div>' +
         '<div class="lam-decade-badge ' + g.key + '">' +
           '<span class="lam-decade-badge-label">' + g.label + '</span>' +
@@ -1306,10 +1347,20 @@ async function loadResult() {
 
     if (!raw) throw new Error('Result not found');
 
-    let decoded = raw;
-    try { decoded = atob(decoded); } catch(e) {}
-    // Handle double-encoded base64
-    try { if (decoded.startsWith('ey')) decoded = atob(decoded); } catch(e) {}
+    // base64 → UTF-8 디코딩 (한글/유니코드 포함)
+    let decoded;
+    try {
+      const bytes = Uint8Array.from(atob(raw), c => c.charCodeAt(0));
+      decoded = new TextDecoder('utf-8').decode(bytes);
+    } catch(e) {
+      decoded = raw;
+    }
+    if (decoded.startsWith('ey')) {
+      try {
+        const bytes2 = Uint8Array.from(atob(decoded), c => c.charCodeAt(0));
+        decoded = new TextDecoder('utf-8').decode(bytes2);
+      } catch(e) {}
+    }
     const { step1, step2, birth, chartSummary } = JSON.parse(decoded);
 
     // Pass decade cards to window for LAM advice lookup
@@ -1322,7 +1373,6 @@ async function loadResult() {
     (function() {
       const timing = chartSummary && chartSummary.moneyEngine && chartSummary.moneyEngine.wealthTiming;
 
-      // ── Turning Point card (primary window) ──
       function labelToTitle(type, label) {
         var map = {
           'output_to_wealth_flow':     'Creative Income Window',
@@ -1334,6 +1384,7 @@ async function loadResult() {
         return map[type] || label || 'Financial Opportunity Window';
       }
 
+      // ── Turning Point card (primary window) ──
       const tyEl = document.getElementById('turningYear');
       const tlEl = document.getElementById('turningLabel');
       if (tyEl && timing && timing.length) {
@@ -1361,8 +1412,108 @@ async function loadResult() {
       if (ld) ld.style.display = 'none';
     }
 
+    // s3 카드 렌더링 (step2에서 직접 접근)
+    (function() {
+      var s3 = step2 && step2.s3 ? step2.s3 : {};
+      function getS3(key) {
+        var v = s3[key];
+        return (v !== undefined && v !== null && v !== '') ? String(v) : '';
+      }
+
+      function renderS3Cards(elId, text, type) {
+        var el = document.getElementById(elId);
+        if (!el || !text) return;
+        var html = '';
+
+        if (type === 'heartbreak') {
+          // 포맷: "THE TYPE THAT BREAKS YOUR HEART\nThe Dramatic Romantic\n본문\n\nTHE TYPE THAT LOVES YOU RIGHT\nThe Reliable Planner\n본문"
+          function parseHBPart(raw) {
+            // 첫 줄이 타이틀(짧고 마침표 없음), 나머지 본문
+            var lines = raw.replace(/^[\s\n:\-]+/, '').trim().split('\n').filter(function(l){ return l.trim(); });
+            if (lines.length >= 2 && lines[0].length < 60 && !lines[0].endsWith('.')) {
+              return { title: lines[0].trim(), body: lines.slice(1).join(' ').trim() };
+            }
+            // 타이틀 없이 그냥 본문만
+            return { title: '', body: lines.join(' ').trim() };
+          }
+
+          var breakIdx = text.search(/THE TYPE THAT BREAKS YOUR HEART/i);
+          var lovesIdx = text.search(/THE TYPE THAT LOVES YOU RIGHT/i);
+          if (breakIdx > -1 && lovesIdx > -1) {
+            var breakRaw = text.slice(breakIdx + 'THE TYPE THAT BREAKS YOUR HEART'.length, lovesIdx);
+            var lovesRaw = text.slice(lovesIdx + 'THE TYPE THAT LOVES YOU RIGHT'.length);
+            var bp = parseHBPart(breakRaw);
+            var lp = parseHBPart(lovesRaw);
+            html += '<div class="s3-heartbreak-label">The Type That Breaks Your Heart</div>';
+            if (bp.title) html += '<div class="s3-ln-title">' + bp.title + '</div>';
+            html += '<div class="s3-heartbreak-body">' + bp.body + '</div>';
+            html += '<div class="s3-heartbreak-label" style="margin-top:24px">The Type That Loves You Right</div>';
+            if (lp.title) html += '<div class="s3-ln-title">' + lp.title + '</div>';
+            html += '<div class="s3-heartbreak-body">' + lp.body + '</div>';
+          } else {
+            html = '<div class="s3-heartbreak-body">' + text + '</div>';
+          }
+          el.innerHTML = html;
+          return;
+        }
+
+        if (type === 'timing') {
+          var parts = text.split(/(?=Attraction Windows|Commitment Window|Overall)/g).filter(Boolean);
+          html = parts.map(function(part) {
+            var di = part.indexOf(' -- ');
+            if (di > -1) {
+              return '<div class="s3-trait-card"><div class="s3-trait-title">' + part.slice(0,di).trim() + '</div><div class="s3-trait-body">' + part.slice(di+4).trim() + '</div></div>';
+            }
+            return '<div class="s3-trait-card"><div class="s3-trait-body">' + part.trim() + '</div></div>';
+          }).join('');
+          el.innerHTML = html;
+          return;
+        }
+
+        // redflag: TITLE\n본문 단일 카드
+        var rfLines = text.split('\n').filter(function(l){ return l.trim(); });
+        var rfTitle = '';
+        var rfBodyParts = [];
+        if (rfLines.length >= 2 && rfLines[0].length < 60 && !rfLines[0].endsWith('.')) {
+          rfTitle = rfLines[0].trim();
+          rfBodyParts = rfLines.slice(1);
+        } else {
+          rfBodyParts = rfLines;
+        }
+        var rfBody = rfBodyParts.join(' ').trim();
+        html = '<div class="s3-redflag-card">' +
+          (rfTitle ? '<div class="s3-redflag-title">⚠ ' + rfTitle + '</div>' : '') +
+          '<div class="s3-redflag-body">' + rfBody + '</div>' +
+          '</div>';
+        el.innerHTML = html || '<div class="s3-redflag-body">' + text + '</div>';
+      }
+
+      // Love Nature: TITLE\n본문 형태 렌더링
+      (function() {
+        var el = document.getElementById('s3LoveNature');
+        if (!el) return;
+        var text = getS3('loveNature');
+        if (!text) return;
+        var lines = text.split('\n').filter(function(l){ return l.trim(); });
+        var html = '';
+        if (lines.length >= 2 && lines[0].length < 60 && !lines[0].endsWith('.')) {
+          html = '<div class="s3-ln-title">' + lines[0] + '</div>' +
+                 '<div class="s3-body">' + lines.slice(1).join(' ') + '</div>';
+        } else {
+          html = '<div class="s3-body">' + text + '</div>';
+        }
+        el.innerHTML = html;
+      })();
+
+      renderS3Cards('s3RedFlagCards',    getS3('redFlagPattern'),  'redflag');
+      renderS3Cards('s3HeartbreakCards', getS3('heartbreakPattern'), 'heartbreak');
+      renderS3Cards('s3TimingBody',      getS3('timingBody'), 'timing');
+    })();
+
     initStars();
     initReveal();
+
+    trackEvent('report_viewed');
 
     const ls = document.getElementById('loadingScreen');
     ls.style.transition = 'opacity 0.6s';
@@ -1400,12 +1551,70 @@ function alignPdfBar() {
   inner.style.marginRight = 'auto';
 }
 window.addEventListener('resize', alignPdfBar);
+
+// ── Feedback: 스크롤 끝 자동 노출
+(function() {
+  var shown = false;
+  function showFeedback() {
+    if (shown) return;
+    shown = true;
+    var fb = document.getElementById('feedbackSection');
+    if (fb) fb.classList.add('visible');
+  }
+
+  // closing quote 섹션 감지 (feedback 바로 위)
+  function checkScroll() {
+    var closing = document.querySelector('.closing');
+    if (!closing) return;
+    var rect = closing.getBoundingClientRect();
+    // closing 섹션 하단이 화면 안에 들어오면 피드백 노출
+    if (rect.bottom < window.innerHeight + 50) {
+      showFeedback();
+      window.removeEventListener('scroll', checkScroll);
+    }
+  }
+
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  // 이미 스크롤된 상태일 수 있으니 즉시도 체크
+  setTimeout(checkScroll, 500);
+})();
+
+// ── Feedback 제출
+async function submitFeedback() {
+  var text = (document.getElementById('feedbackText') || {}).value || '';
+  text = text.trim();
+  if (!text) return;
+
+  var btn = document.getElementById('feedbackSubmit');
+  var thanks = document.getElementById('feedbackThanks');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+  try {
+    var reportId = sessionStorage.getItem('saju_report_id') || '';
+    var resp = await fetch('/api/submit-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reportId: reportId, feedback: text })
+    });
+    if (resp.ok) {
+      if (thanks) thanks.style.display = 'block';
+      if (btn) btn.style.display = 'none';
+      var ta = document.getElementById('feedbackText');
+      if (ta) ta.style.display = 'none';
+    } else {
+      throw new Error('Failed');
+    }
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Feedback'; }
+    alert('Could not send feedback. Please try again.');
+  }
+}
+
 // ── S4 Snapshot toggle
 function toggleSnap(el) {
   el.parentElement.classList.toggle('open');
 }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
-
 </body>
 </html>

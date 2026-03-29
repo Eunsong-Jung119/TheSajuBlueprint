@@ -85,7 +85,8 @@ module.exports = async function handler(req, res) {
   try {
     // 1. Verify payment with Stripe (skip for mock in dev)
     let email = birth.email || null;
-    if (!paymentIntentId.startsWith('mock_') && !paymentIntentId.startsWith('paddle_')) {
+    if (!paymentIntentId.startsWith('mock_') && !paymentIntentId.startsWith('paddle_')&&
+    !paymentIntentId.startsWith('gumroad_')) {
       const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
       if (pi.status !== 'succeeded') {
         return res.status(402).json({ error: 'Payment not completed' });
@@ -202,6 +203,32 @@ module.exports = async function handler(req, res) {
         marriageWindow: false,
       }
     }));
+
+    // ── LAM Peak / Caution 계산 (GPT에 실제 데이터 주입용)
+    (function() {
+      const lam = chartSummary.lamData;
+      if (!lam || !lam.length) return;
+      const nowYear = new Date().getFullYear();
+
+      // Peak: 전체 중 최고 score 대운
+      const sorted = [...lam].sort((a, b) => b.score - a.score);
+      const peak   = sorted[0];
+
+      // Caution: 전체 중 최저 score 대운
+      const caution = sorted[sorted.length - 1];
+
+      // 현재 대운
+      const current = lam.find(d => d.startYear <= nowYear && nowYear <= d.endYear) || lam[0];
+
+      // 현재 기준 미래 중 peak가 있으면 그것 우선
+      const futurePeak = [...lam]
+        .filter(d => d.endYear > nowYear)
+        .sort((a, b) => b.score - a.score)[0];
+
+      chartSummary.lamPeak    = futurePeak || peak;
+      chartSummary.lamCaution = caution;
+      chartSummary.lamCurrent = current;
+    })();
 
     // 3. Step 1 - Chart analysis + narrative anchors
     const SYSTEM_BASE = `You are a warm, wise Korean Four Pillars of Destiny (Saju) master — like a trusted older mentor who genuinely cares about the reader.
@@ -399,28 +426,18 @@ Generate exactly 5 sections. Return ONLY valid JSON (no markdown, no backticks).
     "volatilityLabel":       "${chartSummary.relStruct ? chartSummary.relStruct.volatilityLabel : 'Moderate'}",
     "attractionType":        "${chartSummary.relStruct ? chartSummary.relStruct.attractionType : 'Independent & Self-Directed'}",
     "stabilityType":         "${chartSummary.relStruct ? chartSummary.relStruct.stabilityType : 'Calm & Grounded'}",
-    "intimacyStyle":         "${chartSummary.relStruct ? chartSummary.relStruct.intimacyStyle : 'adaptable'}",
-    "relationshipRisk":      "${chartSummary.relStruct ? chartSummary.relStruct.relationshipRisk : 'Expectation mismatch'}",
-    "attractionArchetypeLabel": "${chartSummary.relStruct ? chartSummary.relStruct.attractionArchetypeLabel : ''}",
-    "attractionArchetypeDesc":  "${chartSummary.relStruct ? chartSummary.relStruct.attractionArchetypeDesc : ''}",
-    "stabilityArchetypeLabel":  "${chartSummary.relStruct ? chartSummary.relStruct.stabilityArchetypeLabel : ''}",
-    "relationshipBehavior":  "${chartSummary.relStruct ? chartSummary.relStruct.relationshipBehavior : ''}",
-    "attractionStabilityGap": "${chartSummary.relStruct ? chartSummary.relStruct.attractionStabilityGap : ''}",
-    "radicalHonestyCore":    "${chartSummary.relStruct ? chartSummary.relStruct.radicalHonesty : ''}",
-    "radicalHonestySoft":    "${chartSummary.relStruct ? chartSummary.relStruct.radicalHonestySoft : ''}",
-    "stabilityArchetypeDesc":  "${chartSummary.relStruct ? chartSummary.relStruct.stabilityArchetypeDesc : ''}",
-    "hasClash":              "${chartSummary.relStruct ? chartSummary.relStruct.hasClash : false}",
-    "hasTension":            "${chartSummary.relStruct ? (chartSummary.relStruct.hasClash || chartSummary.relStruct.hasXing || chartSummary.relStruct.hasPo) : false}",
-    "structuralNotes":       "${chartSummary.relStruct ? chartSummary.relStruct.structuralNotes.join(' | ') : ''}",
     "passionYears":          "${chartSummary.loveCtx ? chartSummary.loveCtx.timing.passionYears.slice(0,3).join(', ') : ''}",
-    "commitYears":           "${chartSummary.loveCtx ? chartSummary.loveCtx.timing.commitYears.slice(0,2).join(', ') : ''}",
     "commitWindow":          "${chartSummary.loveCtx ? chartSummary.loveCtx.timing.commitWindow : ''}",
 
-    "lovePatternBody": "<You are writing the Love & Relationship section of a personalized Saju reading. Tone: psychologically insightful, slightly direct, Co-Star level — NOT flattering, NOT horoscope language. Goal: reader feels 'how did this know that about me?'. Write exactly 5 short paragraphs (2-3 sentences each). Max 160 words total. NO headers. NO saju terms. NO generic phrases like 'you value deep connections' or 'you seek meaningful relationships'. Each sentence must describe OBSERVABLE relationship behavior.\n\nINPUTS (use all of these — do NOT restate labels verbatim, translate into behavioral language):\n- Attraction Archetype: ${chartSummary.relStruct ? chartSummary.relStruct.attractionArchetypeLabel : ''} — ${chartSummary.relStruct ? chartSummary.relStruct.attractionArchetypeBehavior : ''}\n- Relationship Behavior hint: ${chartSummary.relStruct ? chartSummary.relStruct.relationshipBehavior : ''}\n- Attraction-Stability Gap (use this sentence VERBATIM as the core of paragraph 3, then add 1 original sentence): ${chartSummary.relStruct ? chartSummary.relStruct.attractionStabilityGap : ''}\n- Radical Honesty core (use VERBATIM as paragraph 4 opening, then append soft layer verbatim on new line): ${chartSummary.relStruct ? chartSummary.relStruct.radicalHonesty : ''} // soft: ${chartSummary.relStruct ? chartSummary.relStruct.radicalHonestySoft : ''}\n- Stability Archetype: ${chartSummary.relStruct ? chartSummary.relStruct.stabilityArchetypeLabel : ''} — ${chartSummary.relStruct ? chartSummary.relStruct.stabilityArchetypeDesc : ''}\n\nSTRUCTURE:\nParagraph 1 — Attraction: Why this type of partner draws them in. Use the attraction archetype behavior as a foundation but write it freshly.\nParagraph 2 — Relationship Dynamic: How they actually behave inside relationships. Based on relationship behavior hint — GPT writes this paragraph freely using the hint as direction.\nParagraph 3 — The Gap: Use the attraction-stability gap sentence verbatim, then add one original sentence that makes it feel personal.\nParagraph 4 — Radical Honesty: Use the core sentence verbatim. Start new line with the soft layer sentence verbatim. Do not add anything else to this paragraph.\nParagraph 5 — What Actually Works: Based on stability archetype. 2 sentences. Concrete and specific — what kind of person, what kind of dynamic.>",
+    "loveNature": "PLACEHOLDER",
 
-    "tensionBody": "<Write exactly 4 sentences. Maximum 90 words total. Each sentence under 20 words. Based on structural notes: ${chartSummary.relStruct ? chartSummary.relStruct.structuralNotes.join(', ') : 'none'}, hasClash=${chartSummary.relStruct ? chartSummary.relStruct.hasClash : false}. Structure: Sentence 1 — what structural tension exists in the relationship foundation and what it creates in practice. Sentence 2 — how this repeats as a behavioral pattern (not a flaw — a structural tendency). Sentence 3 — what the person mistakes this for vs what it actually is. Sentence 4 — what changes when this is understood. If no significant tension, describe the chart's relationship strength instead. Tone: diagnostic, direct. No saju terms. No metaphors.>",
+    "attractedToYou": "",
 
-    "timingBody": "<Write 3 distinct time windows based on passionYears=${chartSummary.loveCtx ? chartSummary.loveCtx.timing.passionYears.slice(0,3).join(', ') : ''} and commitWindow=${chartSummary.loveCtx ? chartSummary.loveCtx.timing.commitWindow : ''}. For each window: state the year range, then 2 sentences on what kind of relationship energy activates and what to do with it. End with one sentence on the overall arc. No mystical language. No saju terms. Write as a forward-looking strategic map, not a prediction. 90-110 words total.>"
+    "redFlagPattern": "PLACEHOLDER",
+
+    "heartbreakPattern": "PLACEHOLDER",
+
+    "timingBody": "<SECTION 6 — Relationship Timing. 70-100 words. Attraction Windows (${chartSummary.loveCtx ? chartSummary.loveCtx.timing.passionYears.slice(0,3).join(', ') : ''}) -- describe what romantic energy activates and what to do with it. Commitment Window (${chartSummary.loveCtx ? chartSummary.loveCtx.timing.commitWindow : ''}) -- describe stability energy and long-term potential. End with one sentence on the overall romantic arc. Tone: encouraging and optimistic. No mystical language. No saju terms. Format: Attraction Windows (years) -- body. Commitment Window (years) -- body. Overall, ...>"
   },
   "s4": {
     "title": "Money, Work & Power",
@@ -440,8 +457,8 @@ Generate exactly 5 sections. Return ONLY valid JSON (no markdown, no backticks).
   "s5": {
     "title": "Your Life Activation Map",
     "subtitle": "<one line — the overall arc of this life in plain English>",
-    "peakWindow": "<100 words — identify the peak window precisely. What years? What should be initiated, consolidated, or locked in? Be concrete and urgent if the person is currently in it.>",
-    "cautionWindow": "<80 words — identify the caution period. What's the risk pattern? What should be preserved or avoided? Frame as preparation, not doom.>",
+    "peakWindow": "<80 words. Peak window: ${chartSummary.lamPeak ? chartSummary.lamPeak.startYear + '–' + chartSummary.lamPeak.endYear + ' (score ' + chartSummary.lamPeak.score + '/100, ages ' + chartSummary.lamPeak.age + '–' + (chartSummary.lamPeak.age+9) + ')' : 'upcoming'}. ${chartSummary.lamPeak && chartSummary.lamPeak.startYear <= new Date().getFullYear() && new Date().getFullYear() <= chartSummary.lamPeak.endYear ? 'You are currently IN this peak.' : ''} What makes this period powerful? What should be initiated or locked in? Be specific and concrete. No saju terms.>",
+    "cautionWindow": "<70 words. Caution period: ${chartSummary.lamCaution ? chartSummary.lamCaution.startYear + '–' + chartSummary.lamCaution.endYear + ' (score ' + chartSummary.lamCaution.score + '/100, ages ' + chartSummary.lamCaution.age + '–' + (chartSummary.lamCaution.age+9) + ')' : 'a period ahead'}. What slows down during this time? What should be preserved rather than pushed? Frame as a season for consolidation, not failure. No saju terms.>",
     "closingLine": "<one powerful sentence that captures the essence of this chart's life purpose — metaphorical, memorable, not generic>"
   }
 }
@@ -457,6 +474,16 @@ RULES:
 
     const raw2 = await callGPT(SYSTEM_BASE, PROMPT_STEP2, 4000);
     const step2 = parseJSON(raw2);
+
+    // Inject relationship templates from engine (deterministic)
+    if (step2 && step2.s3 && chartSummary.relStruct) {
+      const rs = chartSummary.relStruct;
+      if (rs.redFlagKey)       step2.s3.redFlagPattern    = rs.redFlagKey + '\n' + rs.redFlagBody;
+      if (rs.loveNatureKey)    step2.s3.loveNature        = rs.loveNatureKey + '\n' + rs.loveNatureBody;
+      if (rs.heartbreakKey)    step2.s3.heartbreakPattern =
+        'THE TYPE THAT BREAKS YOUR HEART\n' + rs.heartbreakKey + '\n' + rs.heartbreakBody + '\n\n' +
+        'THE TYPE THAT LOVES YOU RIGHT\n' + (rs.lovesYouRightKey || '') + '\n' + (rs.lovesYouRightBody || '');
+    }
 
     // 6. Build payload - escape all non-ASCII to avoid encoding issues
     function escapeNonASCII(str) {
@@ -492,6 +519,91 @@ RULES:
     } catch (dbEx) {
       console.error('Supabase exception:', dbEx.message);
       reportId = null;
+    }
+
+    // ── 이메일 발송 (리포트 저장 직후)
+    console.log('Email debug:', { email, reportId, birthEmail: birth.email });
+    if (email && email !== 'unknown' && reportId) {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://saju-blueprint.vercel.app';
+      const reportUrl = `${baseUrl}/result?id=${reportId}`;
+      const name = birth.name || 'there';
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'The Saju Blueprint <hello@sajublueprint.com>',
+          to: email,
+          subject: 'Your Saju Blueprint is ready ✦',
+          html: `<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0b0f1e;font-family:'Georgia',serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0b0f1e;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+
+        <tr><td align="center" style="padding-bottom:28px;">
+          <p style="margin:0;font-size:11px;letter-spacing:5px;color:#c9a84c;text-transform:uppercase;">✦ The Saju Blueprint ✦</p>
+        </td></tr>
+
+        <tr><td style="background:#131929;border:1px solid rgba(201,168,76,0.3);padding:44px 40px;">
+
+          <h1 style="margin:0 0 12px;font-size:28px;font-weight:400;color:#e8dfc8;text-align:center;letter-spacing:0.5px;">
+            Your Blueprint is ready.
+          </h1>
+          <p style="margin:0 0 36px;font-size:15px;color:rgba(232,223,200,0.55);text-align:center;line-height:1.7;">
+            Hi ${name} — your personalized Saju destiny report<br>has been generated and is waiting for you.
+          </p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:36px;">
+            <tr><td align="center">
+              <a href="${reportUrl}"
+                style="display:inline-block;background:#c9a84c;color:#0b0f1e;
+                font-family:'Georgia',serif;font-size:14px;letter-spacing:3px;
+                font-weight:700;text-transform:uppercase;padding:18px 52px;
+                text-decoration:none;">
+                View My Blueprint ✦
+              </a>
+            </td></tr>
+          </table>
+
+          <p style="margin:0 0 6px;font-size:12px;color:rgba(232,223,200,0.3);text-align:center;">
+            Or open this link in your browser:
+          </p>
+          <p style="margin:0 0 36px;font-size:12px;color:rgba(201,168,76,0.7);text-align:center;word-break:break-all;line-height:1.6;">
+            ${reportUrl}
+          </p>
+
+          <hr style="border:none;border-top:1px solid rgba(201,168,76,0.08);margin:0 0 28px;">
+
+          <p style="margin:0;font-size:13px;color:rgba(232,223,200,0.35);text-align:center;line-height:1.8;">
+            Bookmark your link — it's your permanent access to this report.<br>
+            If you run into any issues, reach us at<br>
+            <a href="mailto:thesajublueprint@gmail.com"
+              style="color:rgba(201,168,76,0.6);text-decoration:none;">
+              thesajublueprint@gmail.com
+            </a>
+          </p>
+
+        </td></tr>
+
+        <tr><td align="center" style="padding-top:24px;">
+          <p style="margin:0;font-size:11px;color:rgba(232,223,200,0.2);letter-spacing:2px;text-transform:uppercase;">
+            The Saju Blueprint &nbsp;·&nbsp; Korean Four Pillars Destiny Report
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
+        }),
+      });
+      console.log('Email sent to:', email);
     }
 
     res.json({ payload, reportId, success: true });

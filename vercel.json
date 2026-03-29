@@ -1,10 +1,22 @@
 {
   "version": 2,
+  "headers": [
+    {
+      "source": "/.well-known/apple-developer-merchantid-domain-association",
+      "headers": [{ "key": "Content-Type", "value": "text/plain" }]
+    }
+  ],
   "rewrites": [
-    { "source": "/order",      "destination": "/order.html" },
-    { "source": "/checkout",   "destination": "/checkout.html" },
-    { "source": "/generating", "destination": "/generating.html" },
-    { "source": "/result",     "destination": "/result.html" },
-    { "source": "/success",    "destination": "/success.html" }
+    { "source": "/",             "destination": "/index2.html" },
+    { "source": "/order",        "destination": "/order.html" },
+    { "source": "/checkout",     "destination": "/checkout.html" },
+    { "source": "/generating",   "destination": "/generating.html" },
+    { "source": "/result",       "destination": "/result.html" },
+    { "source": "/success",      "destination": "/success.html" },
+    { "source": "/terms",        "destination": "/terms.html" },
+    { "source": "/privacy",      "destination": "/privacy.html" },
+    { "source": "/refund",       "destination": "/refund.html" },
+    { "source": "/compatibility","destination": "/compatibility.html" },
+    { "source": "/shortresult",  "destination": "/shortresult.html" }
   ]
 }
