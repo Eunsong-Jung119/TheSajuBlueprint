@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rate Dashboard · 에벌리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Nanum+Myeongjo:wght@700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #E8547A;
+  --pink-light: #F9E4EA;
+  --pink-dark: #C23A60;
+  --deep: #0D0608;
+  --surface: #13090C;
+  --surface-2: #1C0E13;
+  --surface-3: #251219;
+  --border: rgba(232,84,122,0.15);
+  --border-bright: rgba(232,84,122,0.35);
+  --text: #F5E8EC;
+  --text-muted: #A07080;
+  --text-hint: #5A3040;
+  --green: #2ECC71;
+  --yellow: #F1C40F;
+  --blue: #5DADE2;
+  --mono: 'DM Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--deep); color: var(--text); font-family: 'Pretendard', sans-serif; min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(232,84,122,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(232,84,122,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+.container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 36px; height: 36px; background: var(--pink); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.logo-text { font-family: 'Nanum Myeongjo', serif; font-size: 18px; font-weight: 700; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--text-muted); font-family: var(--mono); margin-top: 1px; }
+.filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filter-btn { padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: var(--mono); cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.2s; }
+.filter-btn:hover { border-color: var(--pink); color: var(--pink); }
+.filter-btn.active { background: var(--pink); border-color: var(--pink); color: #fff; }
+.filter-divider { width: 1px; height: 24px; background: var(--border); }
+.date-input { padding: 7px 12px; border-radius: 8px; font-size: 12px; font-family: var(--mono); background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; }
+.date-input:focus { outline: none; border-color: var(--pink); }
+.refresh-btn { padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: var(--mono); cursor: pointer; background: var(--surface-2); border: 1px solid var(--border-bright); color: var(--pink); transition: all 0.2s; }
+.refresh-btn:hover { background: var(--pink); color: #fff; }
+.section-title { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.funnel-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; margin-bottom: 32px; }
+.funnel-step { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; position: relative; transition: border-color 0.2s; }
+.funnel-step:hover { border-color: var(--border-bright); }
+.funnel-step::after { content: '→'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--text-hint); font-size: 14px; z-index: 2; }
+.funnel-step:last-child::after { display: none; }
+.funnel-label { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 8px; }
+.funnel-num { font-size: 28px; font-weight: 700; font-family: var(--mono); color: var(--text); line-height: 1; }
+.funnel-rate { font-size: 11px; font-family: var(--mono); margin-top: 6px; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+.funnel-rate.good { background: rgba(46,204,113,0.15); color: var(--green); }
+.funnel-rate.warn { background: rgba(241,196,15,0.15); color: var(--yellow); }
+.funnel-rate.bad { background: rgba(232,84,122,0.15); color: var(--pink); }
+.funnel-rate.base { background: var(--surface-3); color: var(--text-muted); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.card-title { font-size: 11px; font-family: var(--mono); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+.source-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.source-row:last-child { border-bottom: none; }
+.source-badge { padding: 3px 10px; border-radius: 6px; font-size: 11px; font-family: var(--mono); font-weight: 600; min-width: 70px; text-align: center; }
+.badge-ig { background: rgba(232,84,122,0.2); color: var(--pink); }
+.badge-fb { background: rgba(93,173,226,0.2); color: var(--blue); }
+.badge-organic { background: rgba(46,204,113,0.2); color: var(--green); }
+.badge-share { background: rgba(241,196,15,0.2); color: var(--yellow); }
+.badge-direct { background: rgba(90,48,64,0.4); color: var(--text-muted); }
+.badge-other { background: var(--surface-3); color: var(--text-hint); }
+.source-bar-wrap { width: 80px; height: 4px; background: var(--surface-3); border-radius: 2px; overflow: hidden; }
+.source-bar { height: 100%; border-radius: 2px; background: var(--pink); transition: width 0.8s ease; }
+.source-num { font-family: var(--mono); font-size: 13px; color: var(--text); min-width: 36px; text-align: right; }
+.source-cvr { font-family: var(--mono); font-size: 11px; color: var(--text-muted); min-width: 44px; text-align: right; }
+.chart-wrap { height: 120px; display: flex; align-items: flex-end; gap: 3px; }
+.chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.chart-bar { width: 100%; border-radius: 3px 3px 0 0; background: var(--pink); opacity: 0.7; transition: opacity 0.2s; min-height: 2px; }
+.chart-bar:hover { opacity: 1; }
+.chart-label { font-size: 9px; color: var(--text-hint); font-family: var(--mono); }
+.payment-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--mono); }
+.payment-row:last-child { border-bottom: none; }
+.payment-time { color: var(--text-muted); min-width: 100px; }
+.payment-id { color: var(--text-hint); flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.payment-amount { color: var(--pink); font-weight: 600; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { font-size: 12px; color: var(--text-muted); }
+.stat-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); }
+.report-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.report-row:last-child { border-bottom: none; }
+.report-time { color: var(--text-muted); font-family: var(--mono); min-width: 110px; }
+.report-link { color: var(--pink); text-decoration: none; font-family: var(--mono); font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.report-link:hover { text-decoration: underline; }
+.report-guys { color: var(--text-hint); font-size: 11px; }
+.loading { text-align: center; padding: 60px; color: var(--text-muted); font-family: var(--mono); font-size: 13px; }
+.spinner-sm { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.live-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.3); border-radius: 20px; font-size: 11px; font-family: var(--mono); color: var(--green); }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.src-filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.src-filter-label { font-size: 10px; font-family: var(--mono); color: var(--text-hint); text-transform: uppercase; letter-spacing: .08em; margin-right: 4px; }
+.src-filter-btn { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: var(--mono); cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.2s; }
+.src-filter-btn:hover { border-color: var(--pink); color: var(--pink); }
+.src-filter-btn.active { color: #fff; border-color: transparent; }
+.src-filter-btn.s-all.active { background: var(--text-muted); }
+.src-filter-btn.s-ig_paid.active { background: var(--pink); }
+.src-filter-btn.s-fb_paid.active { background: var(--blue); }
+.src-filter-btn.s-ig_organic.active { background: var(--green); }
+.src-filter-btn.s-fb_organic.active { background: #4a8ab0; }
+.src-filter-btn.s-share_link.active { background: var(--yellow); color: #1a0a00; }
+.src-filter-btn.s-direct.active { background: var(--surface-3); color: var(--text-muted); border-color: var(--border-bright); }
+@media (max-width: 768px) {
+  .funnel-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .funnel-step::after { display: none; }
+  .two-col { grid-template-columns: 1fr; }
+  header { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🔮</div>
+      <div>
+        <div class="logo-text">Rate Dashboard</div>
+        <div class="logo-sub">sajublueprint.com/rate</div>
+      </div>
+      <div class="live-badge" style="margin-left:12px;"><div class="live-dot"></div>LIVE</div>
+    </div>
+    <div class="filters">
+      <button class="filter-btn" onclick="setRange(0)">오늘</button>
+      <button class="filter-btn" onclick="setRange(1)">어제</button>
+      <button class="filter-btn active" onclick="setRange(7)">7일</button>
+      <button class="filter-btn" onclick="setRange(30)">30일</button>
+      <div class="filter-divider"></div>
+      <input type="date" class="date-input" id="date-from">
+      <span style="color:var(--text-hint);font-size:12px;">~</span>
+      <input type="date" class="date-input" id="date-to">
+      <button class="refresh-btn" onclick="loadAll()">↻ 새로고침</button>
+    </div>
+  </header>
+
+  <!-- 소스 필터 -->
+  <div class="src-filter-row">
+    <span class="src-filter-label">소스</span>
+    <button class="src-filter-btn s-all active" onclick="setSrcFilter('all', this)">전체</button>
+    <button class="src-filter-btn s-ig_paid" onclick="setSrcFilter('ig_paid', this)">인스타 유료</button>
+    <button class="src-filter-btn s-fb_paid" onclick="setSrcFilter('fb_paid', this)">페북 유료</button>
+    <button class="src-filter-btn s-ig_organic" onclick="setSrcFilter('ig_organic', this)">인스타 오가닉</button>
+    <button class="src-filter-btn s-fb_organic" onclick="setSrcFilter('fb_organic', this)">페북 오가닉</button>
+    <button class="src-filter-btn s-share_link" onclick="setSrcFilter('share_link', this)">공유 링크</button>
+    <button class="src-filter-btn s-direct" onclick="setSrcFilter('direct', this)">직접/기타</button>
+  </div>
+
+  <div class="section-title">퍼널 분석</div>
+  <div class="funnel-grid" id="funnel-grid">
+    <div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">유입 소스별 현황</div>
+      <div id="source-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">시간대별 page_view</div>
+      <div class="chart-wrap" id="hourly-chart"></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">최근 결제 내역</div>
+      <div id="payment-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">기간 요약</div>
+      <div id="summary-stats"><div class="loading"><span class="spinner-sm"></span></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:32px;">
+    <div class="card-title">생성된 리포트 URL</div>
+    <div id="report-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:32px;">
+    <div class="card-title">일별 page_view 트렌드</div>
+    <div class="chart-wrap" id="daily-chart" style="height:80px;"></div>
+    <div id="daily-labels" style="display:flex;gap:3px;margin-top:6px;"></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://rxntisncfnsgtjpbdmre.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4bnRpc25jZm5zZ3RqcGJkbXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MzAzMDYsImV4cCI6MjA4ODIwNjMwNn0.21UHPZZTP0IbDzXMAllitws_ezH7pXhE_S-MYXMMUzc';
+
+let fromDate = '', toDate = '', srcFilter = 'all';
+let allLogs = [], allPayments = [], allReports = [];
+
+function setSrcFilter(src, btn) {
+  srcFilter = src;
+  document.querySelectorAll('.src-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+function filterLogs(logs) {
+  if (srcFilter === 'all') return logs;
+  return logs.filter(l => parseSource(l.metadata, l.session_id) === srcFilter);
+}
+
+// metadata 안전하게 파싱 (string이든 object든 처리)
+function pm(meta) {
+  try {
+    return typeof meta === 'string' ? JSON.parse(meta) : (meta || {});
+  } catch { return {}; }
+}
+
+function toKST(d) {
+  const dt = new Date(d);
+  dt.setHours(dt.getHours() + 9);
+  return dt;
+}
+
+function fmtDate(d) {
+  return d.toISOString().slice(0,10);
+}
+
+function setRange(days) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const now = new Date();
+  toDate = fmtDate(now);
+  const from = new Date(now);
+  from.setDate(from.getDate() - days);
+  fromDate = fmtDate(from);
+  document.getElementById('date-from').value = fromDate;
+  document.getElementById('date-to').value = toDate;
+  loadAll();
+}
+
+(function initDates() {
+  const now = new Date();
+  toDate = fmtDate(now);
+  const from = new Date(now);
+  from.setDate(from.getDate() - 7);
+  fromDate = fmtDate(from);
+  document.getElementById('date-from').value = fromDate;
+  document.getElementById('date-to').value = toDate;
+})();
+
+document.getElementById('date-from').addEventListener('change', e => { fromDate = e.target.value; loadAll(); });
+document.getElementById('date-to').addEventListener('change', e => { toDate = e.target.value; loadAll(); });
+
+async function fetchLogs() {
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+  let offset = 0, ps = 1000, batch, result = [];
+  do {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/rate_logs?select=event_name,session_id,created_at,metadata&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=${ps}&offset=${offset}`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    const text = await res.text();
+    if (!res.ok) throw new Error(`${res.status} ${text}`);
+    batch = JSON.parse(text);
+    if (!Array.isArray(batch)) throw new Error(JSON.stringify(batch));
+    result = result.concat(batch);
+    offset += ps;
+  } while (batch.length === ps);
+  return result;
+}
+
+async function fetchPayments() {
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/rate_logs?select=created_at,metadata,session_id&event_name=eq.payment_confirmed&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=20`,
+    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+  );
+  const text = await res.text();
+  const data = JSON.parse(text);
+  return Array.isArray(data) ? data : [];
+}
+
+async function fetchReports() {
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/rate_analyses?select=id,created_at,partners&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=50`,
+    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+  );
+  const text = await res.text();
+  const data = JSON.parse(text);
+  return Array.isArray(data) ? data : [];
+}
+// 세션별 소스 캐시 먼저 빌드
+function buildSessionSourceMap(logs) {
+  const map = {};
+  // utm 있는 이벤트를 먼저 세션에 매핑
+  logs.forEach(l => {
+    const m = pm(l.metadata);
+    if (m.utm_medium || m.utm_source || m.fbclid) {
+      if (!map[l.session_id]) {
+        map[l.session_id] = parseSourceFromMeta(m);
+      }
+    }
+  });
+  // utm 없는 세션은 page_view referrer로 fallback
+  logs.forEach(l => {
+    if (!map[l.session_id]) {
+      map[l.session_id] = parseSourceFromMeta(pm(l.metadata));
+    }
+  });
+  return map;
+}
+
+function parseSourceFromMeta(m) {
+  if (m.utm_medium === 'paid' && m.utm_source === 'ig') return 'ig_paid';
+  if (m.utm_medium === 'paid' && m.utm_source === 'fb') return 'fb_paid';
+  if (m.utm_medium === 'social') return 'ig_organic';
+  if (m.fbclid) return 'fb_organic';
+  const ref = m.referrer || '';
+  if (ref.includes('?report=')) return 'share_link';
+  if (ref.includes('sajublueprint.com')) return 'direct';
+  if (ref) return 'other';
+  return 'direct';
+}
+
+
+function parseSource(meta, sessionId) {
+  if (sessionId && window._sessionSrcMap?.[sessionId]) {
+    return window._sessionSrcMap[sessionId];
+  }
+  return parseSourceFromMeta(pm(meta));
+}
+
+function renderFunnel(logs) {
+  const sessions = {};
+  logs.forEach(l => {
+    if (!sessions[l.session_id]) sessions[l.session_id] = new Set();
+    sessions[l.session_id].add(l.event_name);
+  });
+  const realSessions = Object.entries(sessions).filter(([sid]) => {
+    const log = logs.find(l => l.session_id === sid);
+    const m = pm(log?.metadata);
+    return !/(bot|crawler|AdsBot)/i.test(m.user_agent || '');
+  });
+  const count = (ev) => realSessions.filter(([,e]) => e.has(ev)).length;
+  const pv = count('page_view'), ar = count('analysis_requested'),
+        pw = count('paywall_shown'), pc = count('payment_confirmed'),
+        rs = count('result_shown'), rsh = count('result_shared');
+  const rate = (a, b) => b > 0 ? ((a/b)*100).toFixed(0)+'%' : '-';
+  const cls = (r) => r >= 60 ? 'good' : r >= 30 ? 'warn' : 'bad';
+  const steps = [
+    { label: 'PAGE VIEW', num: pv, rate: '기준', cls: 'base' },
+    { label: 'FORM 입력', num: ar, rate: rate(ar, pv), cls: cls(ar/pv*100) },
+    { label: 'PAYWALL', num: pw, rate: rate(pw, ar), cls: cls(pw/ar*100) },
+    { label: '결제 완료', num: pc, rate: rate(pc, pw), cls: cls(pc/pw*100) },
+    { label: '결과 확인', num: rs, rate: rate(rs, pc), cls: cls(rs/pc*100) },
+    { label: '공유', num: rsh, rate: rate(rsh, rs), cls: cls(rsh/rs*100) },
+  ];
+  document.getElementById('funnel-grid').innerHTML = steps.map(s => `
+    <div class="funnel-step">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-num">${s.num}</div>
+      <div class="funnel-rate ${s.cls}">${s.rate}</div>
+    </div>
+  `).join('');
+}
+
+function renderSources(logs) {
+  const pvLogs = logs.filter(l => l.event_name === 'page_view');
+  const pcLogs = logs.filter(l => l.event_name === 'payment_confirmed');
+  const srcCount = {}, srcPay = {};
+  pvLogs.forEach(l => { const s = parseSource(l.metadata, l.session_id); srcCount[s] = (srcCount[s]||0)+1; });
+  pcLogs.forEach(l => { const s = parseSource(l.metadata, l.session_id); srcPay[s] = (srcPay[s]||0)+1; });
+  const sorted = Object.entries(srcCount).sort((a,b) => b[1]-a[1]);
+  const max = sorted[0]?.[1] || 1;
+  const labels = {
+    ig_paid: { label: '인스타 유료', badge: 'badge-ig' },
+    fb_paid: { label: '페북 유료', badge: 'badge-fb' },
+    ig_organic: { label: '인스타 오가닉', badge: 'badge-organic' },
+    fb_organic: { label: '페북 오가닉', badge: 'badge-fb' },
+    share_link: { label: '공유 링크', badge: 'badge-share' },
+    direct: { label: '직접 유입', badge: 'badge-direct' },
+    other: { label: '기타', badge: 'badge-other' },
+  };
+  document.getElementById('source-list').innerHTML = sorted.map(([src, cnt]) => {
+    const info = labels[src] || { label: src, badge: 'badge-other' };
+    const pay = srcPay[src] || 0;
+    const cvr = cnt > 0 ? ((pay/cnt)*100).toFixed(1)+'%' : '-';
+    return `<div class="source-row">
+      <span class="source-badge ${info.badge}">${info.label}</span>
+      <div class="source-bar-wrap"><div class="source-bar" style="width:${(cnt/max*100).toFixed(0)}%"></div></div>
+      <span class="source-num">${cnt}</span>
+      <span class="source-cvr">${pay > 0 ? '💳'+pay : ''} ${cvr}</span>
+    </div>`;
+  }).join('') || '<div style="color:var(--text-hint);font-size:12px;padding:16px 0;">데이터 없음</div>';
+}
+
+function renderHourly(logs) {
+  const pvLogs = logs.filter(l => l.event_name === 'page_view');
+  const hours = Array(24).fill(0);
+  pvLogs.forEach(l => { hours[toKST(l.created_at).getHours()]++; });
+  const max = Math.max(...hours, 1);
+  document.getElementById('hourly-chart').innerHTML = hours.map((v, h) => `
+    <div class="chart-bar-col">
+      <div class="chart-bar" style="height:${(v/max*100).toFixed(0)}%;opacity:${v>0?0.7:0.1}" title="${h}시 ${v}건"></div>
+      <div class="chart-label">${h%6===0?h+'시':''}</div>
+    </div>
+  `).join('');
+}
+
+function renderPayments(payments) {
+  if (!payments.length) {
+    document.getElementById('payment-list').innerHTML = '<div style="color:var(--text-hint);font-size:12px;padding:16px 0;">결제 내역 없음</div>';
+    return;
+  }
+  const srcLabels = { ig_paid:'IG광고', fb_paid:'FB광고', ig_organic:'IG오가닉', share_link:'공유', direct:'직접', other:'기타' };
+  document.getElementById('payment-list').innerHTML = payments.map(p => {
+    const m = pm(p.metadata);
+    const kst = toKST(p.created_at);
+    const timeStr = `${String(kst.getMonth()+1).padStart(2,'0')}/${String(kst.getDate()).padStart(2,'0')} ${String(kst.getHours()).padStart(2,'0')}:${String(kst.getMinutes()).padStart(2,'0')}`;
+    const pid = m.payment_id || '-';
+    const src = parseSource(p.metadata, p.session_id); 
+    return `<div class="payment-row">
+      <span class="payment-time">${timeStr}</span>
+      <span class="payment-id">${pid.length > 18 ? pid.slice(0,18)+'...' : pid}</span>
+      <span class="source-badge badge-ig" style="font-size:10px;padding:2px 6px;">${srcLabels[src]||src}</span>
+      <span class="payment-amount">₩3,900</span>
+    </div>`;
+  }).join('');
+}
+
+function renderSummary(logs) {
+  const uniqueSessions = new Set(logs.map(l => l.session_id)).size;
+  const pv = logs.filter(l => l.event_name === 'page_view').length;
+  const ar = new Set(logs.filter(l => l.event_name === 'analysis_requested').map(l => l.session_id)).size;
+  const pc = new Set(logs.filter(l => l.event_name === 'payment_confirmed').map(l => l.session_id)).size;
+  const rs = new Set(logs.filter(l => l.event_name === 'result_shown').map(l => l.session_id)).size;
+  const fb = logs.filter(l => {
+    if (l.event_name !== 'feedback_submitted') return false;
+    return !!pm(l.metadata).text;
+  }).length;
+  const days = Math.max(1, Math.ceil((new Date(toDate) - new Date(fromDate)) / 86400000) + 1);
+  const overallCvr = pv > 0 ? ((pc/pv)*100).toFixed(1)+'%' : '-';
+  document.getElementById('summary-stats').innerHTML = `
+    <div class="stat-row"><span class="stat-label">총 세션 수</span><span class="stat-val">${uniqueSessions}</span></div>
+    <div class="stat-row"><span class="stat-label">총 page_view</span><span class="stat-val">${pv}</span></div>
+    <div class="stat-row"><span class="stat-label">일평균 PV</span><span class="stat-val">${(pv/days).toFixed(1)}</span></div>
+    <div class="stat-row"><span class="stat-label">폼 제출</span><span class="stat-val">${ar}</span></div>
+    <div class="stat-row"><span class="stat-label">결제 완료</span><span class="stat-val">${pc}</span></div>
+    <div class="stat-row"><span class="stat-label">결과 확인</span><span class="stat-val">${rs}</span></div>
+    <div class="stat-row"><span class="stat-label">전체 CVR</span><span class="stat-val" style="color:var(--pink)">${overallCvr}</span></div>
+    <div class="stat-row"><span class="stat-label">추정 매출</span><span class="stat-val" style="color:var(--green)">₩${(pc*3900).toLocaleString()}</span></div>
+    <div class="stat-row"><span class="stat-label">후기 수</span><span class="stat-val">${fb}</span></div>
+  `;
+}
+
+function renderReports(reports) {
+  if (!reports.length) {
+    document.getElementById('report-list').innerHTML = '<div style="color:var(--text-hint);font-size:12px;padding:16px 0;">리포트 없음</div>';
+    return;
+  }
+  document.getElementById('report-list').innerHTML = reports.map(r => {
+    const kst = toKST(r.created_at);
+    const timeStr = `${String(kst.getMonth()+1).padStart(2,'0')}/${String(kst.getDate()).padStart(2,'0')} ${String(kst.getHours()).padStart(2,'0')}:${String(kst.getMinutes()).padStart(2,'0')}`;
+    const url = `https://sajublueprint.com/rate?report=${r.id}`;
+    let partners = [];
+    try {
+      const p = typeof r.partners === 'string' ? JSON.parse(r.partners) : (r.partners || []);
+      partners = p.map(x => x.nickname || x.name || '?');
+    } catch {}
+    return `<div class="report-row">
+      <span class="report-time">${timeStr}</span>
+      <a class="report-link" href="${url}" target="_blank">${url}</a>
+      <span class="report-guys">${partners.length}명 · ${partners.join(', ').slice(0,20)}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderDaily(logs) {
+  const pvLogs = logs.filter(l => l.event_name === 'page_view');
+  const dailyCount = {};
+  pvLogs.forEach(l => {
+    const day = fmtDate(toKST(l.created_at));
+    dailyCount[day] = (dailyCount[day] || 0) + 1;
+  });
+  const days = Object.keys(dailyCount).sort();
+  if (!days.length) return;
+  const max = Math.max(...Object.values(dailyCount), 1);
+  document.getElementById('daily-chart').innerHTML = days.map(d => `
+    <div class="chart-bar-col" style="flex:1">
+      <div class="chart-bar" style="height:${(dailyCount[d]/max*100).toFixed(0)}%" title="${d}: ${dailyCount[d]}건"></div>
+    </div>
+  `).join('');
+  document.getElementById('daily-labels').innerHTML = days.map(d => `
+    <div style="flex:1;text-align:center;font-size:9px;color:var(--text-hint);font-family:var(--mono)">${d.slice(5)}</div>
+  `).join('');
+}
+
+async function loadAll() {
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+  fromDate = from; toDate = to;
+  document.getElementById('funnel-grid').innerHTML = '<div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>';
+  try {
+    [allLogs, allPayments, allReports] = await Promise.all([fetchLogs(), fetchPayments(), fetchReports()]);
+    renderAll();
+  } catch(e) {
+    document.getElementById('funnel-grid').innerHTML = `<div style="grid-column:1/-1;color:#f06a6a;font-family:var(--mono);font-size:12px;padding:20px;">에러: ${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+function renderAll() {
+  const logs = filterLogs(allLogs);
+  window._sessionSrcMap = buildSessionSourceMap(allLogs); // 전체 기준으로 빌드
+  const payments = srcFilter === 'all' ? allPayments : allPayments.filter(p => parseSource(p.metadata, p.session_id) === srcFilter); 
+  renderFunnel(logs);
+  renderSources(allLogs); // 소스 현황은 항상 전체 표시
+  renderHourly(logs);
+  renderPayments(payments);
+  renderSummary(logs);
+  renderReports(allReports);
+  renderDaily(logs);
+}
+
+loadAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rate My Exes — Enter Birth Dates</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script async defer src="https://js.whop.com/static/checkout/loader.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18045718869"></script>
+<script>
+
+function isInAppBrowser(){
+  var ua=navigator.userAgent||'';
+  return /Instagram|FBAN|FBAV|FB_IAB|Line|KAKAOTALK|TikTok/i.test(ua);
+}
+function showIABAlert(){
+  if(!isInAppBrowser()) return;
+  var overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
+  overlay.innerHTML=`
+    <div style="position:relative;background:#241640;border:1px solid rgba(227,192,138,0.4);border-radius:20px;padding:38px 26px 32px;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+      <button onclick="this.closest('[style*=fixed]').remove()" aria-label="Close" style="position:absolute;top:12px;right:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(227,192,138,0.4);border-radius:50%;color:#e3c08a;font-size:18px;line-height:1;cursor:pointer;font-family:'EB Garamond',serif;">✕</button>
+      <div style="font-size:42px;margin-bottom:16px;">🔮</div>
+      <div style="font-family:'EB Garamond',serif;font-size:22px;font-weight:600;color:#e3c08a;margin-bottom:14px;">Open in Safari or Chrome</div>
+      <div style="font-size:15px;color:rgba(243,236,255,0.68);line-height:1.75;">For the best experience and to make sure your reading loads correctly, open this page in Safari or Chrome.</div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+document.addEventListener("DOMContentLoaded",function(){
+  // 세션 ID 조기 생성 (null 방지)
+  if(typeof getSessionId === 'function') getSessionId();
+  showIABAlert();
+  startCountdown();
+});
+
+function startCountdown(){
+  var el=document.getElementById('cd-time');
+  if(!el) return;
+  function tick(){
+    var now=new Date();
+    var midnight=new Date(now);
+    midnight.setHours(24,0,0,0); // resets daily at local midnight
+    var diff=midnight-now;
+    var h=Math.floor(diff/3600000);
+    var m=Math.floor((diff%3600000)/60000);
+    var s=Math.floor((diff%60000)/1000);
+    el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick,1000);
+}
+
+function isInAppBrowser(){
+  var ua=navigator.userAgent||'';
+  return /Instagram|FBAN|FBAV|FB_IAB|Line|KAKAOTALK|TikTok/i.test(ua);
+}
+if(isInAppBrowser()){
+  var b=document.createElement('div');
+  b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;background:#e3c08a;color:#1e1430;padding:13px 16px;font-size:13px;text-align:center;font-family:sans-serif;line-height:1.6;';
+  b.innerHTML='🔮 For the best experience, open this in Safari or Chrome.&nbsp;&nbsp;<button onclick="window.open(location.href)" style="background:#1e1430;color:#e3c08a;border:none;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:600;">Open in Browser</button>';
+  document.body.prepend(b);
+}window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18045718869');</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNC8VKJZWG"></script>
+<script>gtag('config','G-PNC8VKJZWG');</script>
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1513677227103970');fbq('track','PageView');</script>
+<style>
+:root{
+  --gold:#e3c08a;--gold-dim:rgba(227,192,138,0.4);--gold-faint:rgba(227,192,138,0.1);
+  --navy:#1e1430;--navy-card:rgba(255,255,255,0.045);--navy-soft:rgba(255,255,255,0.04);
+  --text:#f3ecff;--text-dim:rgba(243,236,255,0.68);--text-faint:rgba(243,236,255,0.4);
+  --rose:#d99fb0;--rose-dim:rgba(217,159,176,0.5);
+  --lilac:#b89fd9;--lilac-soft:#cdb8e8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'EB Garamond',serif;background:linear-gradient(168deg,#241640 0%,#33214f 30%,#46305f 58%,#5a3f73 80%,#6b4d80 100%);background-attachment:fixed;color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* TOP BAR */
+.top-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(36,22,64,0.6);backdrop-filter:blur(16px);border-bottom:1px solid var(--gold-dim);padding:10px 16px;display:flex;align-items:center;gap:10px;}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--text-faint);font-size:13px;font-family:'EB Garamond',serif;cursor:pointer;padding:4px 0;letter-spacing:1px;flex-shrink:0;}
+.top-bar-title{flex:1;text-align:center;font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:1px;color:var(--text-dim);}
+.top-bar-step{font-size:11px;color:var(--text-faint);flex-shrink:0;letter-spacing:1px;}
+.page-top-offset{height:56px;}
+
+/* COUNTDOWN BANNER */
+.countdown-banner{position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,#3a2660,#52346e);border-bottom:1px solid var(--gold-dim);padding:9px 16px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'EB Garamond',serif;font-size:12.5px;color:var(--gold);letter-spacing:.3px;}
+.countdown-banner .cd-icon{font-size:13px;}
+.countdown-banner .cd-time{font-family:'Cormorant Garamond',serif;font-weight:600;color:#fff;letter-spacing:1px;min-width:64px;display:inline-block;text-align:center;}
+.countdown-offset{height:36px;}
+
+.wrap{position:relative;z-index:1;max-width:540px;margin:0 auto;padding:0 20px 80px;}
+
+/* STEP HEADER */
+.step-header{text-align:center;padding:32px 0 24px;}
+.step-label{font-size:10px;letter-spacing:4px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:12px;font-family:'Cormorant Garamond',serif;}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--text);margin-bottom:6px;}
+.step-sub{font-size:14px;color:var(--text-faint);font-family:'Cormorant Garamond',serif;}
+
+/* FORM */
+.form-section{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.18);border-radius:16px;padding:22px;margin-bottom:12px;}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;border:1px solid var(--gold-dim);}
+.card-title{font-size:16px;font-weight:500;color:var(--text);font-family:'Cormorant Garamond',serif;letter-spacing:0.5px;}
+.field-group{margin-bottom:14px;}
+.field-group:last-child{margin-bottom:0;}
+.field-label{display:block;font-size:10px;font-weight:500;color:var(--gold-dim);margin-bottom:7px;letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;}
+.field-label .req{color:var(--rose);margin-left:3px;}
+
+/* SELECT GRID */
+.select-row{display:grid;grid-template-columns:1.4fr 0.8fr 1fr;gap:8px;}
+.select-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+select,input[type="text"]{
+  width:100%;height:46px;padding:0 12px;
+  font-size:15px;font-family:'EB Garamond',serif;
+  color:var(--text);background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+  outline:none;transition:border-color .2s,background .2s;
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b89fd9' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:32px;
+}
+input[type="text"]{background-image:none;padding-right:12px;}
+select:focus,input[type="text"]:focus{border-color:var(--gold-dim);background:rgba(255,255,255,0.09);}
+select option{background:#241640;color:var(--text);}
+select.placeholder-selected{color:var(--text-faint);}
+
+/* NAME INPUT */
+input[type="text"]::placeholder{color:rgba(243,236,255,0.25);}
+input.input-error{border-color:var(--rose)!important;}
+
+/* EMAIL */
+.email-input-wrap{display:grid;grid-template-columns:1fr 18px 1.1fr;align-items:center;gap:6px;}
+.email-at-label{text-align:center;font-size:15px;color:var(--text-faint);}
+.email-hint{font-size:11px;color:var(--text-faint);margin-top:6px;font-style:italic;}
+.email-error{font-size:11px;color:var(--rose);margin-top:6px;display:none;}
+
+/* GUY CARD */
+.guy-card{position:relative;}
+.remove-btn{position:absolute;top:18px;right:18px;width:26px;height:26px;border-radius:50%;background:rgba(217,138,154,0.12);border:1px solid var(--rose-dim);color:var(--rose);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0 16px;}
+.divider hr{flex:1;border:none;border-top:1px solid var(--gold-dim);opacity:0.4;}
+.divider span{font-size:12px;color:var(--text-faint);white-space:nowrap;font-style:italic;font-family:'Cormorant Garamond',serif;}
+.add-btn{width:100%;padding:14px;background:transparent;border:1.5px dashed var(--gold-dim);border-radius:14px;color:var(--gold);font-size:14px;font-weight:500;font-family:'EB Garamond',serif;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:18px;}
+.cta-btn{width:100%;padding:18px;background:var(--gold);color:var(--navy);border:none;border-radius:14px;font-size:15px;font-weight:600;font-family:'EB Garamond',serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 24px rgba(227,192,138,0.3);}
+.cta-price-tag{display:inline-block;background:rgba(9,13,26,0.2);padding:3px 10px;border-radius:6px;font-size:14px;font-weight:700;}
+.cta-hint{text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px;font-style:italic;}
+
+/* LOADING */
+#loading-view{display:none;text-align:center;padding:80px 20px;}
+#loading-view.show{display:block;}
+.spinner{width:44px;height:44px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 22px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#loading-view p{font-size:18px;color:var(--text);margin-bottom:6px;font-family:'Cormorant Garamond',serif;}
+#loading-view .sub{font-size:14px;color:var(--text-faint);}
+
+/* RESULT */
+#result-view{display:none;}
+#result-view.show{display:block;}
+.result-hero{text-align:center;padding:44px 0 26px;}
+.winner-card{background:linear-gradient(150deg,rgba(184,159,217,0.18),rgba(227,192,138,0.08));backdrop-filter:blur(8px);border:1px solid rgba(227,192,138,0.3);border-radius:16px;padding:26px 22px;text-align:center;margin-bottom:16px;}
+.winner-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--gold);margin-bottom:10px;}
+.winner-comment{font-size:17px;color:var(--text-dim);line-height:1.7;}
+.rank-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.16);border-radius:16px;padding:20px;margin-bottom:10px;}
+.rank-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.rank-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+.r1{background:rgba(201,168,76,0.2);color:var(--gold);}.r2{background:rgba(192,192,192,0.15);color:#c0c0c0;}.r3{background:rgba(205,127,50,0.15);color:#cd7f32;}.r4,.r5{background:rgba(255,255,255,0.06);color:var(--text-dim);}
+.rank-name{font-size:18px;font-weight:500;color:var(--text);font-family:'Cormorant Garamond',serif;}
+.rank-label{font-size:14px;color:var(--rose);margin-top:1px;font-style:italic;}
+.rank-score{margin-left:auto;font-size:28px;font-weight:600;color:var(--text);font-family:'Cormorant Garamond',serif;}
+.rank-score span{font-size:14px;color:var(--text-faint);}
+.score-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:12px;}
+.score-fill{height:100%;border-radius:3px;background:var(--gold);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.verdict-section{border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;}
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.action-btn{padding:14px;border-radius:12px;font-size:15px;font-weight:500;font-family:'EB Garamond',serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-outline{background:transparent;border:1px solid var(--gold-dim);color:var(--text);}
+.btn-filled{background:var(--gold);border:none;color:var(--navy);}
+.disclaimer{text-align:center;font-size:13px;color:var(--text-faint);padding:18px 0 0;line-height:1.8;font-style:italic;}
+.disclaimer a{color:var(--text-faint);text-decoration:underline;}
+
+/* WHOP MODAL */
+.whop-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.whop-overlay.visible{display:flex;}
+.whop-modal{position:relative;width:min(540px,96vw);max-height:90vh;background:#241640;border:1px solid var(--gold-dim);display:flex;flex-direction:column;overflow:hidden;border-radius:8px;}
+.whop-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--gold-dim);flex-shrink:0;}
+.whop-modal-title{font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+.whop-modal-close{background:none;border:none;color:var(--text-faint);font-size:22px;cursor:pointer;line-height:1;}
+.whop-modal-body{flex:1;overflow-y:auto;padding:16px;min-height:480px;display:flex;align-items:flex-start;justify-content:center;}
+#whopCheckoutDiv{width:100%;min-height:460px;}
+.modal-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text-faint);font-size:14px;}
+.modal-spinner{width:32px;height:32px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <button class="back-btn" onclick="window.location.href='/'">← Back</button>
+  <div class="top-bar-title">Rate My Exes</div>
+  <div class="top-bar-step">$4.99</div>
+</div>
+<div class="countdown-banner">
+  <span class="cd-icon">🔥</span>
+  <span>Launch price ends in <span class="cd-time" id="cd-time">00:00:00</span></span>
+</div>
+<div class="page-top-offset"></div>
+<div class="countdown-offset"></div>
+
+<!-- FORM VIEW -->
+<div id="form-view">
+<div class="wrap">
+  <div class="step-header">
+    <div class="step-label">✦ Birth Chart Reading ✦</div>
+    <div class="step-title">Enter the birth dates</div>
+    <div class="step-sub">Yours first, then the guys</div>
+  </div>
+
+  <!-- ME -->
+  <div class="form-section" id="my-card">
+    <div class="card-header">
+      <div class="avatar" style="background:rgba(74,144,217,0.12);">🙋‍♀️</div>
+      <div class="card-title">About You</div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Birth Date</label>
+      <div class="select-row">
+        <select id="my-month" onfocus="trackFirstInput()" onchange="updateDays('my')">
+          <option value="" disabled selected>Month</option>
+          <option value="1">January</option><option value="2">February</option>
+          <option value="3">March</option><option value="4">April</option>
+          <option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option>
+          <option value="9">September</option><option value="10">October</option>
+          <option value="11">November</option><option value="12">December</option>
+        </select>
+        <select id="my-day">
+          <option value="" disabled selected>Day</option>
+        </select>
+        <input type="text" id="my-year" onfocus="trackFirstInput()" placeholder="YYYY" inputmode="numeric" pattern="[0-9]*" maxlength="4">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Birth Time (optional)</label>
+      <select id="my-hour">
+        <option value="">Don't know</option>
+        <option value="23">11pm – 1am</option><option value="1">1am – 3am</option>
+        <option value="3">3am – 5am</option><option value="5">5am – 7am</option>
+        <option value="7">7am – 9am</option><option value="9">9am – 11am</option>
+        <option value="11">11am – 1pm</option><option value="13">1pm – 3pm</option>
+        <option value="15">3pm – 5pm</option><option value="17">5pm – 7pm</option>
+        <option value="19">7pm – 9pm</option><option value="21">9pm – 11pm</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="divider"><hr><span>now the guys</span><hr></div>
+  <div id="guys-container"></div>
+  <button class="add-btn" onclick="addGuy()" id="add-guy-btn">+ Add another guy <span style="font-size:12px;opacity:.6;">(up to 5)</span></button>
+
+  <button class="cta-btn" onclick="onSubmit()">🔮 Reveal The Ranking <span class="cta-price-tag">$4.99</span></button>
+  <p class="cta-hint">Instant results · emailed to you · <s style="opacity:.6">$9.99</s> → $4.99</p>
+
+  <div class="disclaimer" style="margin-top:24px;">
+    <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a><br>
+    For entertainment and self-reflection purposes only.
+  </div>
+</div>
+</div>
+
+<!-- LOADING -->
+<div id="loading-view">
+  <div class="wrap" style="padding-top:60px;">
+    <div class="spinner"></div>
+    <p id="loading-text">Reading the charts…</p>
+    <p class="sub" id="loading-sub">Hang tight a moment</p>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result-view">
+  <div class="wrap" id="result-wrap" style="padding-top:40px;"></div>
+</div>
+
+<!-- WHOP MODAL -->
+<div class="whop-overlay" id="whopOverlay" onclick="handleOverlayClick(event)">
+  <div class="whop-modal">
+    <div class="whop-modal-header">
+      <span class="whop-modal-title">✦ Unlock Full Ranking · $4.99</span>
+      <button class="whop-modal-close" onclick="closeWhopModal()">×</button>
+    </div>
+    <div class="whop-modal-body">
+      <div class="modal-loading" id="modalLoading"><div class="modal-spinner"></div><span>Loading checkout…</span></div>
+      <div id="whopCheckoutDiv" data-whop-checkout-plan-id="plan_VegawRTWadrLi" data-whop-checkout-theme="dark" data-whop-checkout-on-complete="onCheckoutComplete" data-whop-checkout-style-container-padding-x="0" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Session & tracking ──────────────────────────────────────────
+function getSessionId(){let s=localStorage.getItem('ryex_en_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_en_sid',s);}return s;}
+function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign'),utm_content:p.get('utm_content'),utm_term:p.get('utm_term'),fbclid:p.get('fbclid'),gclid:p.get('gclid'),referrer:document.referrer||null};}
+
+// ── 폼 입력 시작 트래킹 ──
+var _formInputTracked = false;
+function trackFirstInput() {
+  if (_formInputTracked) return;
+  _formInputTracked = true;
+  trackEvent('form_input_started', { page: 'rate-en-form' });
+}
+function trackEvent(name,props){try{gtag('event',name,{session_id:getSessionId()});}catch(e){}fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_name:name,session_id:getSessionId(),metadata:Object.assign({lang:'en'},getUTM(),props||{})})}).catch(function(){});}
+
+// ── Year/Day selects population ─────────────────────────────────
+function populateYears(selectId) {
+  const sel = document.getElementById(selectId);
+  for (let y = 2006; y >= 1960; y--) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    sel.appendChild(o);
+  }
+}
+function populateDays(selectId, days) {
+  const sel = document.getElementById(selectId);
+  const cur = sel.value;
+  sel.innerHTML = '<option value="" disabled selected>Day</option>';
+  for (let d = 1; d <= days; d++) {
+    const o = document.createElement('option');
+    o.value = d; o.textContent = d;
+    sel.appendChild(o);
+  }
+  if (cur && parseInt(cur) <= days) sel.value = cur;
+}
+function updateDays(prefix) {
+  const month = parseInt(document.getElementById(prefix+'-month').value) || 0;
+  const year  = parseInt(document.getElementById(prefix+'-year').value)  || 2000;
+  const days  = month ? new Date(year, month, 0).getDate() : 31;
+  populateDays(prefix+'-day', days);
+}
+
+// ── Email helper ────────────────────────────────────────────────
+function validateEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+
+// ── Guy cards ───────────────────────────────────────────────────
+let guyCount=0, guyIds=[], formData=null, analysisRunning=false, _userEmail=null;
+const emojis=['💙','💚','💛','🧡','❤️'];
+const guyLabels=['The first guy','The second guy','The third guy','The fourth guy','The fifth guy'];
+
+function addGuy() {
+  if (guyIds.length >= 5) return;
+  const id = guyCount++; guyIds.push(id);
+  const div = document.createElement('div');
+  div.className = 'form-section guy-card'; div.id = 'guy-card-'+id;
+  div.innerHTML = (id > 0 ? '<button class="remove-btn" onclick="removeGuy('+id+')">✕</button>' : '') +
+    '<div class="card-header"><div class="avatar" style="background:rgba(217,138,154,0.12);">' + emojis[guyIds.indexOf(id)] + '</div>' +
+    '<div class="card-title">' + guyLabels[guyIds.indexOf(id)] + '</div></div>' +
+    '<div class="field-group"><label class="field-label">Name or nickname (optional)</label>' +
+    '<input type="text" id="gname-'+id+'" placeholder="the ex, the crush, hinge guy…"></div>' +
+    '<div class="field-group"><label class="field-label">Birth Date</label>' +
+    '<div class="select-row">' +
+      '<select id="gmonth-'+id+'" onchange="updateGuyDays('+id+')">' +
+        '<option value="" disabled selected>Month</option>' +
+        '<option value="1">January</option><option value="2">February</option>' +
+        '<option value="3">March</option><option value="4">April</option>' +
+        '<option value="5">May</option><option value="6">June</option>' +
+        '<option value="7">July</option><option value="8">August</option>' +
+        '<option value="9">September</option><option value="10">October</option>' +
+        '<option value="11">November</option><option value="12">December</option>' +
+      '</select>' +
+      '<select id="gday-'+id+'"><option value="" disabled selected>Day</option></select>' +
+      '<input type="text" id="gyear-'+id+'" placeholder="YYYY" inputmode="numeric" pattern="[0-9]*" maxlength="4">' +
+    '</div></div>' +
+    '<div class="field-group"><label class="field-label">Birth time (optional)</label>' +
+    '<select id="ghour-'+id+'">' +
+      '<option value="">Don\'t know</option>' +
+      '<option value="23">11pm – 1am</option><option value="1">1am – 3am</option>' +
+      '<option value="3">3am – 5am</option><option value="5">5am – 7am</option>' +
+      '<option value="7">7am – 9am</option><option value="9">9am – 11am</option>' +
+      '<option value="11">11am – 1pm</option><option value="13">1pm – 3pm</option>' +
+      '<option value="15">3pm – 5pm</option><option value="17">5pm – 7pm</option>' +
+      '<option value="19">7pm – 9pm</option><option value="21">9pm – 11pm</option>' +
+    '</select></div>';
+  document.getElementById('guys-container').appendChild(div);
+  populateDays('gday-'+id, 31);
+  if (guyIds.length >= 5) document.getElementById('add-guy-btn').style.display = 'none';
+}
+
+
+function removeGuy(id){
+  document.getElementById('guy-card-'+id)?.remove();
+  guyIds = guyIds.filter(g => g !== id);
+  document.getElementById('add-guy-btn').style.display = '';
+}
+function updateGuyDays(id){
+  const m = parseInt(document.getElementById('gmonth-'+id).value)||0;
+  const y = parseInt(document.getElementById('gyear-'+id).value)||2000;
+  populateDays('gday-'+id, m ? new Date(y,m,0).getDate() : 31);
+}
+
+// ── Collect form ────────────────────────────────────────────────
+function collectForm(){
+  const myYear=document.getElementById('my-year').value, myMonth=document.getElementById('my-month').value, myDay=document.getElementById('my-day').value, myHour=document.getElementById('my-hour').value;
+  const myTz='ET'; // hardcoded — Eastern Time default for all US traffic
+  if(!myYear||!myMonth||!myDay) return null;
+  const guys=[];
+  document.querySelectorAll('.guy-card').forEach(function(card){
+    const id=card.id.replace('guy-card-','');
+    const year=document.getElementById('gyear-'+id)?.value, month=document.getElementById('gmonth-'+id)?.value, day=document.getElementById('gday-'+id)?.value;
+    const name=document.getElementById('gname-'+id)?.value.trim()||guyLabels[guys.length], hour=document.getElementById('ghour-'+id)?.value;
+    const gTz='ET'; // hardcoded
+    if(year&&month&&day) guys.push({name,year,month,day,hour,timezone:gTz});
+  });
+  if(!guys.length) return null;
+  return {me:{year:myYear,month:myMonth,day:myDay,gender:'female',hour:myHour,timezone:myTz},guys};
+}
+
+// ── Submit ──────────────────────────────────────────────────────
+function onSubmit(){
+  const data=collectForm();
+  if(!data){alert('Please enter your birth date and at least one guy!');return;}
+  formData=data; trackEvent('form_started',{guy_count:data.guys.length});
+  localStorage.setItem('ryex_en_form',JSON.stringify(data));
+  openWhopModal();
+}
+
+// ── Whop ────────────────────────────────────────────────────────
+function openWhopModal(){
+  trackEvent('whop_checkout_started');
+  document.getElementById('whopOverlay').classList.add('visible');
+  document.body.style.overflow='hidden';
+  document.getElementById('modalLoading').style.display='flex';
+  document.getElementById('whopCheckoutDiv').style.display='none';
+  setTimeout(function(){document.getElementById('modalLoading').style.display='none';document.getElementById('whopCheckoutDiv').style.display='block';if(window.WhopSDK&&window.WhopSDK.init)window.WhopSDK.init();},600);
+}
+function closeWhopModal(){document.getElementById('whopOverlay').classList.remove('visible');document.body.style.overflow='';}
+function handleOverlayClick(e){if(e.target===document.getElementById('whopOverlay'))closeWhopModal();}
+
+window.onCheckoutComplete=async function(planId,receiptId){
+  closeWhopModal();
+  trackEvent('payment_completed',{plan_id:planId,receipt_id:receiptId});
+  try{gtag('event','conversion',{'send_to':'AW-18045718869','value':4.99,'currency':'USD','transaction_id':receiptId||''});}catch(e){}
+  fbq('track','Purchase',{value:4.99,currency:'USD',content_name:'Rate My Exes',content_type:'product'});
+  // Pull buyer email from Whop's payment record (no email field in our form anymore)
+  try{
+    const r=await fetch('/api/get-whop-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({receiptId})});
+    const j=await r.json();
+    if(j&&j.email){_userEmail=j.email; localStorage.setItem('ryex_en_email',j.email);}
+  }catch(e){console.error('[whop-email]',e);}
+  if(formData) runAnalysis(formData);
+};
+
+// ── analyzeCompatibilityEN ──────────────────────────────────────
+async function analyzeCompatibilityEN(myInfo, partners) {
+  const res = await fetch('/api/analyze-en', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ myInfo, partners }),
+  });
+  if (!res.ok) {
+    let detail = '';
+    try { const j = await res.json(); detail = j.error || JSON.stringify(j); } catch(_) {}
+    throw new Error('analyze-en ' + res.status + ': ' + detail);
+  }
+  return await res.json();
+}
+
+// ── Run analysis ────────────────────────────────────────────────
+const loadingSteps=[['Reading the charts…','Pulling the Four Pillars'],['Mapping the elements…','Wood, Fire, Earth, Metal, Water'],['Checking the chemistry…','Clashes and combinations'],['Finalizing the ranking…','Almost there!']];
+
+async function runAnalysis(data){
+  if(analysisRunning) return; analysisRunning=true;
+  document.getElementById('form-view').style.display='none';
+  document.getElementById('loading-view').classList.add('show');
+  window.scrollTo(0,0);
+  let step=0;
+  const iv=setInterval(function(){if(step<loadingSteps.length){document.getElementById('loading-text').textContent=loadingSteps[step][0];document.getElementById('loading-sub').textContent=loadingSteps[step][1];step++;}},3000);
+  try{
+    const myInfo={year:parseInt(data.me.year),month:parseInt(data.me.month),day:parseInt(data.me.day),hour:data.me.hour?parseInt(data.me.hour):null,gender:data.me.gender};
+    const partners=data.guys.map(function(g){return{nickname:g.name,year:parseInt(g.year),month:parseInt(g.month),day:parseInt(g.day),hour:g.hour?parseInt(g.hour):null};});
+    const result=await analyzeCompatibilityEN(myInfo,partners); clearInterval(iv);
+    let shareUrl=null;
+    const emailToSend=_userEmail||localStorage.getItem('ryex_en_email')||null;
+    try{
+      const saveRes=await fetch('/api/save-rating-report-en',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:getSessionId(),email:emailToSend,my_year:myInfo.year,my_month:myInfo.month,my_day:myInfo.day,my_hour:myInfo.hour,my_gender:myInfo.gender,partners,result})});
+      const saveJson=await saveRes.json(); shareUrl=saveJson.shareUrl||null;
+      if(emailToSend&&shareUrl){fetch('/api/send-rating-report-en',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailToSend,shareUrl,result})}).catch(function(e){console.error('[send]',e);});}
+    }catch(e){console.error('[save]',e);}
+    showResult(result,shareUrl); trackEvent('report_preview_viewed',{guy_count:partners.length});
+  }catch(e){
+    analysisRunning=false; clearInterval(iv);
+    document.getElementById('loading-view').classList.remove('show');
+    document.getElementById('form-view').style.display='block';
+    console.error(e); alert('Something went wrong: '+e.message+'\n\nPlease try again!');
+  }
+}
+
+// ── Show result ─────────────────────────────────────────────────
+const rankClass=['r1','r2','r3','r4','r5'], rankEmoji=['🥇','🥈','🥉','#4','#5'];
+const barColors=['#c9a84c','#8a9ed9','#7ac99a','#d98a9a','#b89ed9'];
+const SECTION_LABELS={heart:{emoji:'❤️',label:'Emotional Depth'},growth:{emoji:'🚀',label:'Growth'},stability:{emoji:'🏠',label:'Stability'},worldview:{emoji:'🪞',label:'Worldview'},timing:{emoji:'⏳',label:'Timing'}};
+
+function showResult(data,shareUrl){
+  window._shareUrl=shareUrl||null;
+  document.getElementById('loading-view').classList.remove('show');
+  setCountdownVisible(false);
+  const rv=document.getElementById('result-view'), wrap=document.getElementById('result-wrap');
+  const sorted=[...data.results].sort(function(a,b){return b.scores.total-a.scores.total;}), winner=sorted[0];
+  let html='<div class="result-hero"><div style="display:inline-flex;align-items:center;gap:6px;background:var(--gold-faint);border:1px solid var(--gold-dim);color:var(--gold);font-size:11px;font-weight:500;padding:5px 14px;border-radius:20px;margin-bottom:16px;letter-spacing:2px;text-transform:uppercase;">✦ Reading Complete</div><h1 style="font-family:\'Cormorant Garamond\',serif;font-size:28px;font-weight:500;color:var(--text);margin-bottom:6px;">The chart has spoken 👀</h1><p style="font-size:14px;color:var(--text-dim);font-style:italic;">Here\'s who actually fits</p></div>';
+  html+='<div class="winner-card"><div style="font-size:38px;margin-bottom:10px;">👑</div><div class="winner-name">'+winner.name+'</div><div style="font-size:15px;color:var(--rose);font-style:italic;margin-bottom:10px;">'+winner.archetype+'</div><p class="winner-comment">'+winner.overall+'</p></div>';
+  if(data.ranking_comment) html+='<div style="background:var(--gold-faint);border:1px solid var(--gold-dim);border-radius:16px;padding:16px 18px;margin-bottom:12px;font-size:13px;color:var(--text-dim);line-height:1.7;">📊 '+data.ranking_comment+'</div>';
+  sorted.forEach(function(r,i){
+    const total=Math.round(r.scores.total), s=r.scores;
+    const miniScores=Object.entries(SECTION_LABELS).map(function([key,meta]){return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:13px;width:20px;text-align:center;">'+meta.emoji+'</span><span style="font-size:14px;color:var(--text-faint);width:110px;flex-shrink:0;">'+meta.label+'</span><div style="flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;"><div style="height:100%;width:'+Math.round(s[key])+'%;background:'+barColors[i]+';border-radius:2px;"></div></div><span style="font-size:13px;color:var(--text-faint);width:24px;text-align:right;">'+Math.round(s[key])+'</span></div>';}).join('');
+    const sectionDetails=Object.entries(SECTION_LABELS).map(function([key,meta]){const sec=r.sections?.[key];if(!sec)return'';return'<div style="margin-bottom:14px;"><div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;">'+meta.emoji+' '+meta.label+'</div><p style="font-size:15px;color:var(--text-dim);line-height:1.7;margin-bottom:6px;">'+sec.text+'</p><div style="font-size:14px;color:var(--gold);font-style:italic;padding:8px 12px;background:var(--gold-faint);border-radius:8px;">→ '+sec.summary+'</div></div>';}).join('');
+    const did='detail-'+i;
+    html+='<div class="rank-card"><div class="rank-header"><div class="rank-badge '+rankClass[i]+'">'+rankEmoji[i]+'</div><div><div class="rank-name">'+r.name+'</div><div class="rank-label">'+r.archetype+'</div></div><div class="rank-score">'+total+'<span>/100</span></div></div><div class="score-bar"><div class="score-fill" data-width="'+total+'" style="background:'+barColors[i]+';"></div></div><div style="margin:12px 0 4px;">'+miniScores+'</div><div class="verdict-section"><button onclick="toggleDetail(\''+did+'\')" style="width:100%;background:none;border:1px solid var(--gold-dim);border-radius:8px;padding:10px;font-size:14px;color:var(--text-dim);cursor:pointer;font-family:\'EB Garamond\',serif;letter-spacing:1px;text-transform:uppercase;" id="btn-'+did+'">Read full analysis ▾</button><div id="'+did+'" style="display:none;padding-top:14px;">'+sectionDetails+'<div style="font-size:15px;color:var(--text-dim);line-height:1.7;border-top:1px solid rgba(255,255,255,0.05);padding-top:12px;margin-top:4px;">'+r.overall+'</div></div></div></div>';
+  });
+  html+='<div class="action-row"><button class="action-btn btn-outline" onclick="shareResult()">📤 Share</button><button class="action-btn btn-filled" onclick="resetAll()">🔄 Start over</button></div><div class="disclaimer">For entertainment and self-reflection only 🙏<br><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></div>';
+  wrap.innerHTML=html; rv.classList.add('show');
+  setTimeout(function(){document.querySelectorAll('.score-fill').forEach(function(el){el.style.width=el.dataset.width+'%';});},100);
+}
+
+function toggleDetail(id){const el=document.getElementById(id),btn=document.getElementById('btn-'+id);if(!el)return;const open=el.style.display!=='none';el.style.display=open?'none':'block';btn.textContent=open?'Read full analysis ▾':'Close analysis ▴';}
+function shareResult(){const url=window._shareUrl||window.location.href;navigator.clipboard.writeText(url).then(function(){alert('Link copied! Share it 💌');}).catch(function(){const el=document.createElement('textarea');el.value=url;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);alert('Link copied! Share it 💌');});trackEvent('result_shared');}
+function resetAll(){document.getElementById('result-view').classList.remove('show');document.getElementById('result-wrap').innerHTML='';document.getElementById('form-view').style.display='block';localStorage.removeItem('ryex_en_form');localStorage.removeItem('ryex_en_email');_userEmail=null;analysisRunning=false;setCountdownVisible(true);window.scrollTo(0,0);}
+function setCountdownVisible(visible){
+  const b=document.querySelector('.countdown-banner'), o=document.querySelector('.countdown-offset');
+  if(b) b.style.display=visible?'flex':'none';
+  if(o) o.style.display=visible?'block':'none';
+}
+
+// ── Init ────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async function(){
+  populateDays('my-day', 31);
+  addGuy();
+  trackEvent('form_page_viewed');
+
+  // report 파라미터 처리
+  const params=new URLSearchParams(window.location.search);
+  const reportId=params.get('report');
+  if(reportId){
+    document.getElementById('form-view').style.display='none';
+    document.getElementById('loading-view').classList.add('show');
+    document.getElementById('loading-text').textContent='Loading your reading…';
+    document.getElementById('loading-sub').textContent='One moment';
+    try{
+      const res=await fetch('/api/get-rating-report?id='+reportId);
+      if(!res.ok) throw new Error('not found');
+      const json=await res.json();
+      showResult(json.result,'https://sajublueprint.com?report='+reportId);
+    }catch(e){
+      document.getElementById('loading-view').classList.remove('show');
+      document.getElementById('form-view').style.display='block';
+      alert('Reading not found. Try again!');
+    }
+  }
+});
+</script>
+</body>
+</html>

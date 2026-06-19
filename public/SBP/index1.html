@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Saju Reading — The Saju Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script async defer src="https://js.whop.com/static/checkout/loader.js"></script>
+<style>
+:root {
+  --gold:#c9a84c; --gold-dim:rgba(201,168,76,0.35); --gold-faint:rgba(201,168,76,0.08);
+  --navy:#090d1a; --navy-card:#0f1526;
+  --text:#e8dfc8; --text-dim:rgba(232,223,200,0.65); --text-faint:rgba(232,223,200,0.35);
+  --water:#4a90d9;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--text);font-family:'EB Garamond',serif;min-height:100vh;overflow-x:hidden;}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:var(--gold);opacity:0;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--bright);transform:scale(1)}}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 20px 80px;}
+.hero{text-align:center;padding:60px 0 48px;}
+.brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:5px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:32px;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6vw,42px);font-weight:400;color:var(--text);line-height:1.25;margin-bottom:16px;letter-spacing:-0.5px;}
+.hero-title em{color:var(--gold);font-style:italic;}
+.hero-sub{font-size:18px;color:var(--text-dim);line-height:1.6;max-width:400px;margin:0 auto 40px;font-family:'Cormorant Garamond',serif;}
+.hero-sub span{color:var(--gold-dim);}
+.form-card{background:#111827;border:1px solid rgba(201,168,76,0.2);padding:32px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.05) inset;}
+.form-label{display:block;font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;letter-spacing:1px;color:var(--text);margin-bottom:20px;}
+.date-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+.date-field{display:flex;flex-direction:column;gap:8px;}
+.date-field label{font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:rgba(201,168,76,0.6);}
+.date-field input,.date-field select{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--text);font-family:'EB Garamond',serif;font-size:18px;padding:14px 16px;outline:none;transition:border-color 0.2s, background 0.2s, box-shadow 0.2s;width:100%;-webkit-appearance:none;box-shadow:0 2px 8px rgba(0,0,0,0.2) inset;}
+.date-field input:focus,.date-field select:focus{border-color:rgba(201,168,76,0.5);background:rgba(255,255,255,0.08);box-shadow:0 0 0 3px rgba(201,168,76,0.08), 0 2px 8px rgba(0,0,0,0.2) inset;}
+.date-field input::placeholder{color:rgba(232,223,200,0.25);}
+.date-field select option{background:#111827;color:var(--text);}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;}
+.extra-row{display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:20px;}
+.birth-time-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.time-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
+.time-toggle input[type="checkbox"]{display:none;}
+.toggle-box{width:18px;height:18px;border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.toggle-box::after{content:'✦';font-size:10px;color:var(--gold);opacity:0;transition:opacity 0.2s;}
+.time-toggle input:checked ~ .toggle-box::after{opacity:1;}
+.time-toggle-label{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text-faint);letter-spacing:1px;}
+.time-input-wrap{display:none;flex:1;}
+.time-input-wrap.visible{display:block;}
+.time-input-wrap input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--text);font-family:'EB Garamond',serif;font-size:18px;padding:14px 16px;outline:none;box-shadow:0 2px 8px rgba(0,0,0,0.2) inset;}
+.cta-btn{width:100%;background:var(--gold);border:none;color:var(--navy);font-family:'EB Garamond',serif;font-size:15px;letter-spacing:3px;text-transform:uppercase;padding:18px;cursor:pointer;font-weight:600;transition:background 0.2s, box-shadow 0.2s;border-radius:10px;margin-top:4px;box-shadow:0 0 18px rgba(201,168,76,0.35), 0 0 40px rgba(201,168,76,0.15);animation:ctaGlow 2.5s ease-in-out infinite;}
+@keyframes ctaGlow{0%,100%{box-shadow:0 0 18px rgba(201,168,76,0.35), 0 0 40px rgba(201,168,76,0.15);}50%{box-shadow:0 0 28px rgba(201,168,76,0.55), 0 0 60px rgba(201,168,76,0.25);}}
+.cta-btn:hover{background:#d4b060;box-shadow:0 0 32px rgba(201,168,76,0.6), 0 0 70px rgba(201,168,76,0.3);animation:none;}
+.cta-btn:disabled{opacity:0.6;cursor:not-allowed;animation:none;}
+.cta-note{text-align:center;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--text-faint);letter-spacing:1px;margin-top:12px;}
+#resultSection{display:none;margin-top:48px;animation:fadeUp 0.6s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+/* ── ARCHETYPE HEADER ── */
+.archetype-header-preview{padding:36px 0 32px;border-bottom:1px solid rgba(201,168,76,0.15);margin-bottom:24px;text-align:center;}
+.archetype-header-preview-date{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,4vw,24px);font-weight:400;color:var(--text);letter-spacing:1px;margin-bottom:20px;}
+.archetype-header-preview-content{display:flex;align-items:center;justify-content:center;gap:16px;}
+.archetype-header-preview-emoji{font-size:clamp(36px,7vw,48px);line-height:1;flex-shrink:0;}
+.archetype-header-preview-name{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,5vw,36px);font-weight:400;color:var(--gold);letter-spacing:1px;line-height:1.15;margin-bottom:4px;}
+.archetype-header-preview-elem{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-faint);}
+
+.spinner{display:none;width:24px;height:24px;border:2px solid rgba(9,13,26,0.3);border-top-color:var(--navy);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sample-section{margin-top:56px;text-align:center;}
+.sample-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:16px;}
+.sample-title{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,4vw,28px);font-weight:300;color:var(--text);margin-bottom:8px;line-height:1.4;}
+.sample-sub{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--text-faint);margin-bottom:28px;line-height:1.6;max-width:380px;margin-left:auto;margin-right:auto;}
+.sample-archetypes{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:28px;}
+.sample-chip{background:var(--navy-card);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px 20px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:16px;text-align:left;min-height:72px;}
+.sample-chip:hover{border-color:var(--gold-dim);background:rgba(201,168,76,0.06);}
+.sample-chip.active{border-color:var(--gold-dim);background:rgba(201,168,76,0.06);}
+.sample-chip-emoji{font-size:26px;line-height:1;flex-shrink:0;}
+.sample-chip-name{font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:0.5px;color:var(--text-dim);line-height:1.3;}
+.sample-chip:hover .sample-chip-name{color:var(--gold);}
+.sample-chip.active .sample-chip-name{color:var(--gold);}
+.sample-chip-arrow{margin-left:auto;color:var(--gold-dim);font-size:12px;transition:transform 0.2s;flex-shrink:0;}
+.sample-chip.active .sample-chip-arrow{transform:rotate(180deg);}
+.sample-expand{background:var(--navy-card);border:1px solid var(--gold-dim);border-radius:14px;padding:28px 24px;display:none;text-align:left;animation:fadeUp 0.3s ease;margin-top:-4px;}
+.sample-expand.open{display:block;}
+.sample-expand-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sample-expand-symbol{font-size:28px;}
+.sample-expand-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);}
+.sample-expand-elem{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint);margin-top:2px;}
+.sample-expand-divider{height:1px;background:var(--gold-dim);opacity:0.3;margin:16px 0;}
+.sample-expand-oneliner{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--text);margin-bottom:16px;line-height:1.5;}
+.sample-expand-block{margin-bottom:14px;}
+.sample-expand-block-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.sample-expand-block-text{font-size:14px;line-height:1.75;color:var(--text-dim);}
+.testimonials{margin-top:56px;padding-bottom:60px;}
+.testimonials-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-dim);text-align:center;margin-bottom:16px;}
+.testimonials-title{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,4vw,26px);font-weight:300;color:var(--text);text-align:center;margin-bottom:32px;line-height:1.4;}
+.testimonials-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.testimonial-card{background:var(--navy-card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:24px;}
+.testimonial-text{font-size:15px;color:var(--text-dim);line-height:1.75;margin-bottom:16px;font-style:italic;}
+.testimonial-text::before{content:'"';color:var(--gold-dim);font-size:20px;line-height:0;vertical-align:-4px;margin-right:3px;}
+.testimonial-meta{display:flex;align-items:center;gap:8px;}
+.testimonial-avatar{width:28px;height:28px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.testimonial-name{font-size:12px;letter-spacing:1px;color:var(--text-faint);}
+.testimonial-archetype{font-size:11px;color:var(--gold-dim);letter-spacing:1px;}
+@media(max-width:480px){
+  .hero{padding:40px 0 32px;}
+  .form-card{padding:24px 20px;}
+  #readingCard{padding:28px 24px;}
+  .testimonials-grid{grid-template-columns:1fr;}
+  .extra-row{grid-template-columns:1fr;}
+}
+/* ── MANSE CHART ── */
+.mc-section{margin-top:40px;}
+.mc-section-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold-dim);text-align:center;margin-bottom:20px;font-family:'Cormorant Garamond',serif;}
+.mc-pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:stretch;padding-top:14px;}
+.mc-pillar-card{background:var(--navy-card);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 10px 14px;display:flex;flex-direction:column;align-items:center;position:relative;transition:border-color 0.2s;}
+.mc-pillar-card:hover{border-color:var(--gold-dim);}
+.mc-pillar-label{font-size:9px;letter-spacing:0.16em;color:rgba(232,223,200,0.35);text-transform:uppercase;margin-bottom:14px;font-weight:500;text-align:center;font-family:'Cormorant Garamond',serif;}
+.mc-gold{color:var(--gold)!important;}
+.mc-day-master{border-color:var(--gold-dim)!important;background:#111827!important;}
+.mc-day-master::before{content:'✦ Your Main Character';position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:0.14em;text-transform:uppercase;background:var(--gold);color:var(--navy);padding:2px 10px;border-radius:10px;white-space:nowrap;font-family:'EB Garamond',serif;font-weight:600;}
+.mc-block{text-align:center;width:100%;}
+.mc-divider{width:100%;height:0.5px;background:rgba(255,255,255,0.06);margin:12px 0;}
+.mc-icon{font-size:20px;line-height:1;margin-bottom:7px;display:block;text-align:center;}
+.mc-badge{display:inline-block;font-size:7.5px;letter-spacing:0.1em;font-weight:500;text-transform:uppercase;padding:3px 7px;border-radius:20px;margin-bottom:7px;font-family:'Cormorant Garamond',serif;}
+.mc-elem-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;line-height:1.1;margin-bottom:4px;text-align:center;}
+.mc-branch-name{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:400;line-height:1.2;margin-bottom:4px;text-align:center;}
+.mc-elem-desc{font-size:9px;color:rgba(232,223,200,0.3);line-height:1.4;font-style:italic;font-family:'Cormorant Garamond',serif;text-align:center;}
+.mc-el-wood{color:#5db87a;}.mc-el-fire{color:#e07a4a;}
+.mc-el-earth{color:#c8a85a;}.mc-el-metal{color:#a0b8c8;}.mc-el-water{color:#5888cc;}
+.mc-bg-wood{background:rgba(93,184,122,0.12);color:#5db87a;}
+.mc-bg-fire{background:rgba(224,122,74,0.12);color:#e07a4a;}
+.mc-bg-earth{background:rgba(200,168,90,0.12);color:#c8a85a;}
+.mc-bg-metal{background:rgba(160,184,200,0.12);color:#a0b8c8;}
+.mc-bg-water{background:rgba(88,136,204,0.12);color:#5888cc;}
+/* ── PENTAGON ── */
+.pent-section{margin-top:36px;padding-bottom:8px;}
+.pent-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(232,223,200,0.25);margin-bottom:36px;font-family:'Cormorant Garamond',serif;text-align:center;}
+.pent-svg-wrap{display:flex;justify-content:center;overflow:visible;}
+.pent-legend{display:flex;justify-content:center;gap:20px;margin-top:16px;flex-wrap:wrap;}
+.pent-legend-item{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:0.1em;color:rgba(232,223,200,0.3);font-family:'Cormorant Garamond',serif;}
+.pent-legend-line{width:18px;height:1.5px;border-radius:1px;}
+@media(max-width:480px){.mc-pillars-grid{grid-template-columns:repeat(2,1fr);}}
+/* ── GENERATING UI ── */
+.gen-wrap{text-align:center;padding:48px 20px 32px;}
+.gen-rings{position:relative;width:180px;height:180px;margin:0 auto 36px;overflow:hidden;contain:layout paint;}
+.gen-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid var(--gold-dim);border-radius:50%;}
+.gen-ring:nth-child(1){width:170px;height:170px;animation:ring-breathe 3.6s ease-in-out infinite 0s;}
+.gen-ring:nth-child(2){width:118px;height:118px;animation:ring-breathe 3.6s ease-in-out infinite 0.9s;}
+.gen-ring:nth-child(3){width:70px;height:70px;animation:ring-breathe 3.6s ease-in-out infinite 1.8s;}
+.gen-halo{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(201,168,76,0);pointer-events:none;}
+.gen-halo:nth-child(4){width:70px;height:70px;animation:halo-pulse 3.6s ease-out infinite 0s;}
+.gen-halo:nth-child(5){width:70px;height:70px;animation:halo-pulse 3.6s ease-out infinite 1.2s;}
+.gen-halo:nth-child(6){width:70px;height:70px;animation:halo-pulse 3.6s ease-out infinite 2.4s;}
+.gen-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;animation:float 3s ease-in-out infinite;}
+@keyframes ring-breathe{0%,100%{opacity:0.25}50%{opacity:0.7}}
+@keyframes halo-pulse{0%{transform:translate(-50%,-50%) scale(1);border-color:rgba(201,168,76,0.55);}70%{transform:translate(-50%,-50%) scale(2.1);border-color:rgba(201,168,76,0.08);}100%{transform:translate(-50%,-50%) scale(2.3);border-color:rgba(201,168,76,0);}}
+@keyframes float{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-5px)}}
+.gen-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:8px;}
+.gen-sub{font-size:14px;color:var(--text-faint);margin-bottom:28px;line-height:1.6;}
+.gen-steps{text-align:left;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.12);padding:20px 24px;margin-bottom:24px;}
+.gen-step{display:flex;align-items:center;gap:12px;padding:7px 0;font-size:15px;color:var(--text-faint);transition:color 0.4s;}
+.gen-step.active{color:var(--text);}
+.gen-step.done{color:rgba(201,168,76,0.7);}
+.gen-dot{width:20px;height:20px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all 0.4s;}
+.gen-step.active .gen-dot{border-color:var(--gold);background:var(--gold-faint);animation:dot-pulse 1.2s infinite;}
+.gen-step.done .gen-dot{background:var(--gold);border-color:var(--gold);color:var(--navy);}
+@keyframes dot-pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4)}50%{box-shadow:0 0 0 6px rgba(201,168,76,0)}}
+/* ── REPORT PREVIEW ── */
+.report-section{background:var(--navy-card);border:1px solid rgba(255,255,255,0.05);padding:32px;margin-bottom:2px;}
+.section-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-tag::after{content:'';flex:1;height:1px;background:var(--gold-dim);opacity:0.4;}
+.section-body{font-size:17px;line-height:2.0;color:var(--text);}
+.section-body p{margin-bottom:20px;}
+.section-body p:last-child{margin-bottom:0;}
+.section-body strong{color:var(--text);font-weight:600;}
+.subsection-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dim);margin:16px 0 8px;display:block;}
+/* ── WHOP MODAL ── */
+.whop-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.whop-overlay.visible{display:flex;}
+.whop-modal{position:relative;width:min(540px,96vw);max-height:90vh;background:#0f1526;border:1px solid var(--gold-dim);display:flex;flex-direction:column;overflow:hidden;border-radius:4px;}
+.whop-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;}
+.whop-modal-title{font-size:13px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-family:'EB Garamond',serif;}
+.whop-modal-close{background:none;border:none;color:var(--text-faint);font-size:22px;cursor:pointer;line-height:1;padding:0 4px;}
+.whop-modal-close:hover{color:var(--text);}
+.whop-modal-body{flex:1;overflow-y:auto;padding:16px;min-height:480px;display:flex;align-items:flex-start;justify-content:center;}
+#whopCheckoutDiv{width:100%;min-height:460px;}
+.modal-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text-faint);font-size:14px;letter-spacing:1px;}
+.modal-spinner{width:32px;height:32px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18045718869"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18045718869');</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNC8VKJZWG"></script>
+<script>gtag('config','G-PNC8VKJZWG');</script>
+</head>
+<body>
+<div id="stars"></div>
+<div class="wrap">
+  <div class="hero">
+    <div class="brand">✦ The Saju Blueprint ✦</div>
+    <h1 class="hero-title">Your birth date knows things<br>about you that <em>you don't.</em></h1>
+    <p class="hero-sub">Astrology tells you who you are.<br><span>Saju tells you what to do about it.</span></p>
+  </div>
+  <div class="form-card">
+    <div class="form-label">Enter Your Birth Date</div>
+    <div class="date-row">
+      <div class="date-field"><label>Month</label><input type="number" id="birthMonth" placeholder="MM" min="1" max="12" oninput="trackFormStart()"></div>
+      <div class="date-field"><label>Day</label><input type="number" id="birthDay" placeholder="DD" min="1" max="31"></div>
+      <div class="date-field"><label>Year</label><input type="number" id="birthYear" placeholder="YYYY" min="1900" max="2025"></div>
+    </div>
+    <div class="extra-row">
+      <div class="date-field">
+        <label>Gender</label>
+        <select id="birthGender">
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+        </select>
+      </div>
+      <div class="date-field">
+        <label>Timezone</label>
+        <select id="birthTimezone">
+          <optgroup label="🇺🇸 United States">
+            <option value="America/New_York">Eastern — New York</option>
+            <option value="America/Chicago">Central — Chicago</option>
+            <option value="America/Denver">Mountain — Denver</option>
+            <option value="America/Los_Angeles">Pacific — Los Angeles</option>
+          </optgroup>
+          <optgroup label="🇬🇧 United Kingdom">
+            <option value="Europe/London">London</option>
+          </optgroup>
+          <optgroup label="🇸🇬 Singapore">
+            <option value="Asia/Singapore">Singapore (SGT)</option>
+          </optgroup>
+          <optgroup label="🇦🇺 Australia">
+            <option value="Australia/Sydney">Sydney / Melbourne</option>
+            <option value="Australia/Brisbane">Brisbane</option>
+            <option value="Australia/Perth">Perth</option>
+          </optgroup>
+          <optgroup label="🇨🇦 Canada">
+            <option value="America/Toronto">Toronto (ET)</option>
+            <option value="America/Vancouver">Vancouver (PT)</option>
+            <option value="America/Edmonton">Edmonton (MT)</option>
+          </optgroup>
+          <optgroup label="🌏 Other">
+            <option value="Asia/Kuala_Lumpur">Malaysia (MYT)</option>
+            <option value="Asia/Manila">Philippines (PHT)</option>
+            <option value="Asia/Seoul">Korea (KST)</option>
+            <option value="Asia/Tokyo">Japan (JST)</option>
+            <option value="Asia/Hong_Kong">Hong Kong</option>
+            <option value="Europe/Paris">Europe — Paris / Berlin</option>
+            <option value="UTC">UTC</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="birth-time-row">
+      <label class="time-toggle">
+        <input type="checkbox" id="knowTime" onchange="toggleTime()">
+        <div class="toggle-box"></div>
+        <span class="time-toggle-label">I know my birth time</span>
+      </label>
+      <div class="time-input-wrap" id="timeInputWrap">
+        <input type="time" id="birthTime" value="12:00">
+      </div>
+    </div>
+    <button class="cta-btn" id="getReadingBtn" onclick="getReading()">
+      <span id="btnText">✦ Get My Free Reading</span>
+      <div class="spinner" id="btnSpinner"></div>
+    </button>
+    <div class="cta-note">No email. No account. Instant.</div>
+    <div style="text-align:center;margin-top:16px;">
+      <a href="/bazi-chart" style="font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(201,168,76,0.45);letter-spacing:1px;text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.2);padding-bottom:1px;transition:color 0.2s;" onmouseover="this.style.color='rgba(201,168,76,0.8)'" onmouseout="this.style.color='rgba(201,168,76,0.45)'">View my Bazi Chart →</a>
+    </div>
+  </div>
+  <div id="resultSection">
+    <div id="archetypeHeaderPreview"></div>
+    <!-- GENERATING UI -->
+    <div id="generatingUI" style="display:none;margin-top:24px;background:var(--navy-card);border:1px solid rgba(201,168,76,0.15);">
+      <div class="gen-wrap">
+        <div class="gen-rings">
+          <div class="gen-ring"></div><div class="gen-ring"></div><div class="gen-ring"></div>
+          <div class="gen-halo"></div><div class="gen-halo"></div><div class="gen-halo"></div>
+          <div class="gen-center">✦</div>
+        </div>
+        <div class="gen-title">Generating Your Personalized Saju Reading</div>
+        <p class="gen-sub">Reading the patterns of your birth moment.<br>This takes about 30 seconds.</p>
+        <div class="gen-steps">
+          <div class="gen-step" id="gs1"><div class="gen-dot" id="gd1">1</div><span>Calculating your Bazi chart</span></div>
+          <div class="gen-step" id="gs2"><div class="gen-dot" id="gd2">2</div><span>Interpreting your elemental blueprint</span></div>
+          <div class="gen-step" id="gs3"><div class="gen-dot" id="gd3">3</div><span>Writing your personal story</span></div>
+          <div class="gen-step" id="gs4"><div class="gen-dot" id="gd4">4</div><span>Completing your reading</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT PREVIEW -->
+    <div id="reportPreview" style="display:none;margin-top:24px;">
+      <div class="report-section" id="sectionRealLike"></div>
+      <div style="position:relative;overflow:hidden;">
+        <div id="blurredContent" style="filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none;opacity:0.45;max-height:280px;overflow:hidden;">
+          <div class="report-section" id="sectionEdge"></div>
+          <div class="report-section" id="sectionTrips"></div>
+          <div class="report-section" id="sectionMoney"></div>
+          <div class="report-section" id="sectionLove"></div>
+          <div class="report-section" id="sectionBalance"></div>
+        </div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(9,13,26,0) 0%,rgba(9,13,26,0.85) 40%,rgba(9,13,26,0.98) 100%);z-index:1;"></div>
+        <div style="position:absolute;top:0;left:0;right:0;z-index:2;padding:28px 24px 32px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);margin-bottom:6px;font-weight:400;line-height:1.3;">Your full reading is ready.</div>
+          <div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6;max-width:320px;margin-left:auto;margin-right:auto;">Your chart has been mapped. What comes next takes it further — a manually decoded look at your money flow, career patterns, and the exact years your luck peaks. Nothing templated.</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold);font-weight:400;margin-bottom:3px;"><span style="font-size:20px;text-decoration:line-through;opacity:0.4;margin-right:6px;">$14.99</span>$9.99</div>
+          <div style="font-size:11px;color:var(--text-faint);margin-bottom:18px;letter-spacing:1px;">Instant access after purchase · One-time · No subscription</div>
+          <button class="cta-btn" onclick="goFullReading()" style="max-width:300px;margin:0 auto;display:block;">✦ Unlock Full Reading · $9.99</button>
+        </div>
+        <div style="height:340px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 아래 wrap은 sample/testimonial -->
+<div class="wrap">
+  <div class="sample-section">
+    <div class="sample-label">✦ Sample Readings ✦</div>
+    <div class="sample-title">Your birth date determines your archetype.</div>
+    <div class="sample-sub">Beyond your 1-in-10 type, your chart shows whether your energy fuels your life — or works against it.</div>
+    <div class="sample-archetypes" id="sampleGrid">
+      <div class="sample-chip" onclick="toggleSample(0,this)"><span class="sample-chip-emoji">🌲</span><span class="sample-chip-name">The Mighty Oak</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-0"></div>
+      <div class="sample-chip" onclick="toggleSample(1,this)"><span class="sample-chip-emoji">🌿</span><span class="sample-chip-name">The Climbing Vine</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-1"></div>
+      <div class="sample-chip" onclick="toggleSample(2,this)"><span class="sample-chip-emoji">☀️</span><span class="sample-chip-name">The Radiant Sun</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-2"></div>
+      <div class="sample-chip" onclick="toggleSample(3,this)"><span class="sample-chip-emoji">🕯️</span><span class="sample-chip-name">The Candle Flame</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-3"></div>
+      <div class="sample-chip" onclick="toggleSample(4,this)"><span class="sample-chip-emoji">⛰️</span><span class="sample-chip-name">The Unmoved Mountain</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-4"></div>
+      <div class="sample-chip" onclick="toggleSample(5,this)"><span class="sample-chip-emoji">🌱</span><span class="sample-chip-name">The Fertile Ground</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-5"></div>
+      <div class="sample-chip" onclick="toggleSample(6,this)"><span class="sample-chip-emoji">💎</span><span class="sample-chip-name">The Uncut Diamond</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-6"></div>
+      <div class="sample-chip" onclick="toggleSample(7,this)"><span class="sample-chip-emoji">⚔️</span><span class="sample-chip-name">The Polished Blade</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-7"></div>
+      <div class="sample-chip" onclick="toggleSample(8,this)"><span class="sample-chip-emoji">🌊</span><span class="sample-chip-name">The Deep Ocean</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-8"></div>
+      <div class="sample-chip" onclick="toggleSample(9,this)"><span class="sample-chip-emoji">💧</span><span class="sample-chip-name">Morning Dew</span><span class="sample-chip-arrow">▼</span></div>
+      <div class="sample-expand" id="expand-row-9"></div>
+    </div>
+  </div>
+  <div class="testimonials">
+    <div class="testimonials-label">✦ What people are saying ✦</div>
+    <div class="testimonials-title">Turns out a lot of people have been waiting for this.</div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card"><div class="testimonial-text">The "What Trips You Up" section basically described my entire last relationship. I forwarded it to my therapist.</div><div class="testimonial-meta"><div class="testimonial-avatar">🌲</div><div><div class="testimonial-name">Sarah K.</div><div class="testimonial-archetype">The Mighty Oak</div></div></div></div>
+      <div class="testimonial-card"><div class="testimonial-text">I've done Western astrology, Human Design, Myers-Briggs. This is the first one that actually explained why I handle money the way I do.</div><div class="testimonial-meta"><div class="testimonial-avatar">🌊</div><div><div class="testimonial-name">James T.</div><div class="testimonial-archetype">The River on Fire</div></div></div></div>
+      <div class="testimonial-card"><div class="testimonial-text">Sent mine to my sister and she immediately went to get her own. The love section especially — eerily accurate.</div><div class="testimonial-meta"><div class="testimonial-avatar">🕯️</div><div><div class="testimonial-name">Michelle R.</div><div class="testimonial-archetype">The Eternal Flame</div></div></div></div>
+      <div class="testimonial-card"><div class="testimonial-text">It's $14.99 for something that genuinely made me think about myself differently. One of the better things I've spent money on this year.</div><div class="testimonial-meta"><div class="testimonial-avatar">💎</div><div><div class="testimonial-name">David L.</div><div class="testimonial-archetype">The Uncut Diamond</div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WHOP MODAL -->
+<div class="whop-overlay" id="whopOverlay" onclick="handleOverlayClick(event)">
+  <div class="whop-modal">
+    <div class="whop-modal-header">
+      <span class="whop-modal-title">✦ Unlock Full Reading · $9.99</span>
+      <button class="whop-modal-close" onclick="closeWhopModal()">×</button>
+    </div>
+    <div class="whop-modal-body">
+      <div class="modal-loading" id="modalLoading">
+        <div class="modal-spinner"></div>
+        <span>Loading checkout…</span>
+      </div>
+      <div id="whopCheckoutDiv"
+        data-whop-checkout-plan-id="plan_VegawRTWadrLi"
+        data-whop-checkout-theme="dark"
+        data-whop-checkout-on-complete="onCheckoutComplete"
+        data-whop-checkout-style-container-padding-x="0"
+        style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Stars ──
+const starsEl=document.getElementById('stars');
+for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*1.5+0.5;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.1+Math.random()*0.3}`;starsEl.appendChild(s);}
+
+function toggleTime(){document.getElementById('timeInputWrap').classList.toggle('visible',document.getElementById('knowTime').checked);}
+
+// ── Saju Engine ──
+const TG_ELEM=['Wood','Wood','Fire','Fire','Earth','Earth','Metal','Metal','Water','Water'];
+const DZ_ELEM=['Water','Earth','Wood','Wood','Earth','Fire','Fire','Earth','Metal','Metal','Earth','Water'];
+const DZ_MAIN_TG=[9,5,0,1,4,2,3,5,6,7,4,8];
+const JIEQI={1940:[[1,6,19],[2,5,7],[3,6,1],[4,5,6],[5,6,0],[6,6,4],[7,7,11],[8,7,17],[9,7,20],[10,8,6],[11,7,15],[12,7,9]],1941:[[1,6,1],[2,4,13],[3,6,7],[4,5,12],[5,6,6],[6,6,10],[7,7,17],[8,8,23],[9,8,2],[10,8,12],[11,7,21],[12,7,15]],1942:[[1,6,7],[2,4,19],[3,6,13],[4,5,18],[5,6,12],[6,6,16],[7,7,23],[8,8,5],[9,8,8],[10,8,18],[11,8,3],[12,7,21]],1943:[[1,6,13],[2,5,1],[3,6,19],[4,5,23],[5,6,17],[6,6,22],[7,8,5],[8,8,11],[9,8,14],[10,8,23],[11,8,9],[12,8,3]],1944:[[1,6,18],[2,5,7],[3,6,0],[4,5,5],[5,5,22],[6,5,3],[7,7,10],[8,7,16],[9,7,19],[10,8,5],[11,7,14],[12,7,8]],1960:[[1,6,15],[2,5,5],[3,5,20],[4,5,1],[5,5,19],[6,4,23],[7,7,6],[8,7,12],[9,7,15],[10,8,1],[11,7,10],[12,7,5]],1980:[[1,6,11],[2,5,2],[3,5,18],[4,4,29],[5,5,17],[6,4,20],[7,7,3],[8,7,9],[9,7,12],[10,7,28],[11,7,7],[12,7,2]],1985:[[1,5,16],[2,4,8],[3,5,31],[4,5,4],[5,5,29],[6,6,1],[7,7,9],[8,7,14],[9,7,16],[10,8,3],[11,7,12],[12,7,6]],1990:[[1,6,22],[2,4,13],[3,6,6],[4,5,9],[5,6,3],[6,6,7],[7,7,15],[8,7,19],[9,7,22],[10,8,8],[11,7,17],[12,7,11]],1995:[[1,6,4],[2,4,18],[3,6,11],[4,5,15],[5,6,8],[6,6,12],[7,7,19],[8,8,1],[9,8,3],[10,8,13],[11,7,21],[12,7,15]],2000:[[1,6,9],[2,5,0],[3,5,15],[4,4,26],[5,5,14],[6,4,16],[7,7,0],[8,7,6],[9,7,9],[10,7,25],[11,7,4],[12,6,22]],2005:[[1,5,14],[2,4,5],[3,5,29],[4,5,2],[5,5,27],[6,5,30],[7,7,6],[8,7,11],[9,7,13],[10,7,31],[11,7,10],[12,7,3]],2010:[[1,5,20],[2,4,10],[3,6,3],[4,5,7],[5,6,1],[6,6,4],[7,7,12],[8,7,16],[9,7,19],[10,8,5],[11,7,14],[12,7,8]],2015:[[1,6,1],[2,4,16],[3,6,8],[4,5,12],[5,6,5],[6,6,9],[7,7,16],[8,7,20],[9,7,23],[10,8,9],[11,7,18],[12,7,12]],2020:[[1,6,5],[2,4,20],[3,5,12],[4,4,22],[5,5,11],[6,4,13],[7,6,20],[8,7,1],[9,7,6],[10,7,22],[11,7,1],[12,6,18]],2024:[[1,6,4],[2,4,20],[3,5,11],[4,4,21],[5,5,11],[6,4,12],[7,6,19],[8,7,1],[9,7,4],[10,7,21],[11,7,0],[12,6,18]],2025:[[1,5,10],[2,4,1],[3,5,26],[4,4,28],[5,5,24],[6,5,27],[7,7,3],[8,7,6],[9,7,10],[10,7,27],[11,7,6],[12,6,23]]};
+const JIEQI_MONTH_DZ=[1,2,3,4,5,6,7,8,9,10,11,0];
+function getMonthDZ(y,m,d,h){const data=JIEQI[y];if(!data)return[11,0,1,2,3,4,5,6,7,8,9,10][m-1];let r=11;for(let i=0;i<12;i++){const[jm,jd,jh]=data[i];if(m>jm||(m===jm&&d>jd)||(m===jm&&d===jd&&h>=jh))r=i;}return JIEQI_MONTH_DZ[r];}
+function calcSajuSimple(y,m,d,h){const lichun=JIEQI[y]?JIEQI[y][1]:[2,4,0];const[lm,ld,lh]=lichun;const before=m<lm||(m===lm&&d<ld)||(m===lm&&d===ld&&h<lh);const ay=before?y-1:y;const yrTG=((ay-4)%10+10)%10;const yrDZ=((ay-4)%12+12)%12;const mDZ=getMonthDZ(y,m,d,h);const mTGBase=[2,4,6,8,10,2,4,6,8,10][yrTG];const dzo={2:0,3:1,4:2,5:3,6:4,7:5,8:6,9:7,10:8,11:9,0:10,1:11};const mTG=(mTGBase+dzo[mDZ])%10;const delta=Math.round((new Date(y,m-1,d)-new Date(2000,0,1))/86400000);const dayTG=((4+delta)%10+10)%10;const dayDZ=((6+delta)%12+12)%12;const hDZ=Math.floor((h+1)/2)%12;const hTGBase=[0,2,4,6,8,0,2,4,6,8][dayTG];const hTG=(hTGBase+hDZ)%10;return{dayTG,pillars:[[yrTG,yrDZ],[mTG,mDZ],[dayTG,dayDZ],[hTG,hDZ]]};}
+function calcStrengthScore(pillars,dayTG){const dayElem=TG_ELEM[dayTG];const genBy={Fire:'Wood',Earth:'Fire',Metal:'Earth',Water:'Metal',Wood:'Water'};const supportElem=genBy[dayElem];const isS=e=>e===dayElem||e===supportElem;const BW={0:8,1:35,2:18,3:12},SW={0:10,1:10,3:10};let score=0;pillars.forEach(([tg,dz],i)=>{if(i!==2&&isS(TG_ELEM[tg]))score+=SW[i]||10;const bw=BW[i]||8;if(isS(DZ_ELEM[dz]))score+=bw;const mt=DZ_MAIN_TG[dz];if(mt>=0&&isS(TG_ELEM[mt]))score+=Math.round(bw*0.5);});return{total:score,isStrong:score>=50};}
+
+const DAY_MASTER_INFO={
+  0:{elem:'Yang Wood',  symbol:'🌲', name:'The Mighty Oak',      hanja:'甲'},
+  1:{elem:'Yin Wood',   symbol:'🌿', name:'The Climbing Vine',   hanja:'乙'},  // Forest Queen → Climbing Vine
+  2:{elem:'Yang Fire',  symbol:'☀️', name:'The Radiant Sun',     hanja:'丙'},  // Hidden Sun → Radiant Sun
+  3:{elem:'Yin Fire',   symbol:'🕯️', name:'The Candle Flame',   hanja:'丁'},  // Eternal Flame → Candle Flame
+  4:{elem:'Yang Earth', symbol:'⛰️', name:'The Unmoved Mountain',hanja:'戊'},
+  5:{elem:'Yin Earth',  symbol:'🌱', name:'The Fertile Ground',  hanja:'己'},
+  6:{elem:'Yang Metal', symbol:'💎', name:'The Uncut Diamond',   hanja:'庚'},
+  7:{elem:'Yin Metal',  symbol:'⚔️', name:'The Polished Blade',  hanja:'辛'},  // Buried Blade → Polished Blade
+  8:{elem:'Yang Water', symbol:'🌊', name:'The Deep Ocean',      hanja:'壬'},  // River on Fire → Deep Ocean
+  9:{elem:'Yin Water',  symbol:'💧', name:'Morning Dew',         hanja:'癸'},  // Still Volcano → Morning Dew
+};
+const READINGS={'0_strong':{s:`You don't wait for perfect timing. You tend to move first, decide quickly, and commit fully once you choose a direction. Starting is not the difficult part for you — maintaining momentum feels natural.\n\nBut once you begin, adjusting is harder than continuing. Even when something isn't working, your instinct is to push forward rather than step back.\n\nThis comes from strong Wood energy that drives forward growth. So your pattern becomes: you initiate and build momentum easily, but only reconsider after friction appears — not before.`},'0_weak':{s:`You often see the direction clearly before others do. The vision itself is not the problem — clarity comes relatively naturally to you.\n\nBut turning that clarity into consistent action depends heavily on your environment. When conditions align, you move quickly. When they don't, even simple steps feel delayed.\n\nSo your pattern becomes: you don't force movement — you wait for alignment, and then move when the timing feels right.`},'1_strong':{s:`You adjust quickly, but not passively. You read people and situations with accuracy, and reposition yourself without losing direction.\n\nBut constant adjustment has a cost. You may shift so smoothly that you don't always notice how far you've moved from your original intention.\n\nSo your pattern becomes: you don't push in a straight line — you redirect continuously, maintaining movement even when the path changes.`},'1_weak':{s:`You are highly sensitive to your surroundings. You pick up on tone, mood, and subtle changes quickly, often before others realize something has shifted.\n\nBut that sensitivity makes you dependent on external conditions. You may find yourself following the flow instead of deciding it.\n\nSo your pattern becomes: you respond well to what's around you, but rarely initiate movement independently.`},'2_strong':{s:`You generate energy outwardly without much effort. When you engage with something, it tends to accelerate quickly — people notice, conversations expand, and situations move.\n\nBut you've also felt that what you create doesn't always stay. There's a gap between how much you do and how much actually remains.\n\nSo your pattern becomes: you initiate and expand rapidly, but need structure to retain what you create.`},'2_weak':{s:`You have moments where your energy rises sharply. When conditions align, you become expressive and clear without forcing anything.\n\nBut that energy is not constant. Without the right environment, it drops quickly.\n\nSo your pattern becomes: you shine when conditions are right, but your energy depends on timing rather than consistency.`},'3_strong':{s:`You are highly aware of subtle emotional and situational shifts. This sensitivity gives you a deeper understanding of what is really happening beneath the surface.\n\nBut that awareness does not pass through quickly. What you notice tends to stay, and accumulates internally over time.\n\nSo your pattern becomes: you take in more than you express, creating internal intensity over time.`},'3_weak':{s:`You naturally bring warmth and emotional clarity into situations. Your energy supports connection.\n\nBut that outward expression is not always sustained. After interactions, you may feel unexpectedly drained.\n\nSo your pattern becomes: you give emotional energy easily, but rely on external support to maintain it.`},'4_strong':{s:`You tend to become the stable center in whatever environment you're in. Even when things shift around you, you don't react quickly — you hold your position and maintain structure.\n\nBut that same stability makes movement difficult. Even when conditions change, your instinct is to endure rather than adjust.\n\nSo your pattern becomes: you hold, maintain, and endure — often choosing stability over necessary change.`},'4_weak':{s:`You function best when your environment is stable and predictable. When there is structure around you, your ability becomes clear.\n\nBut when that structure is missing, everything becomes harder than expected.\n\nSo your pattern becomes: you operate well within structure, but struggle to maintain stability independently.`},'5_strong':{s:`You naturally accumulate and sustain over time. Responsibilities and opportunities tend to gather around you without you actively chasing them.\n\nBut you don't always choose what you take on. Over time, this creates weight that feels gradual but constant.\n\nSo your pattern becomes: you hold and grow everything — not just what you intentionally choose.`},'5_weak':{s:`You tend to observe first and adjust based on what's happening around you. This makes you responsive and capable of maintaining balance.\n\nBut constant adjustment weakens your own direction. Over time, your choices can feel shaped more by environment than intention.\n\nSo your pattern becomes: you maintain balance for others, but rely on environment to define your path.`},'6_strong':{s:`You see structure and flaws quickly and clearly. What works and what doesn't becomes obvious without much analysis.\n\nBut that same sharpness turns inward. You hold yourself to high standards and rarely relax them.\n\nSo your pattern becomes: you continuously refine and optimize, even when flexibility would serve you better.`},'6_weak':{s:`You can recognize what is right or wrong quickly. The structure of a situation makes sense to you, even if you don't act on it immediately.\n\nBut action doesn't always follow that clarity. You may hesitate, waiting for the right conditions before moving.\n\nSo your pattern becomes: you understand quickly, but act only when conditions feel secure.`},'7_strong':{s:`You notice details that most people overlook. Precision feels natural, not forced.\n\nBut that refinement takes time. You may revisit the same thought multiple times before expressing it, even when your first instinct was correct.\n\nSo your pattern becomes: you perfect internally first, then act — often later than you could have.`},'7_weak':{s:`You pick up on details quickly, often before others recognize that something is off. Your first impression is usually accurate.\n\nBut you don't always trust what you see. Even when your initial judgment is correct, you look for external validation before committing.\n\nSo your pattern becomes: you see clearly from the start, but delay action until certainty is externally confirmed.`},'8_strong':{s:`Your mind is constantly moving, even when you appear still. You connect ideas quickly and process information at a pace that often runs ahead of your environment.\n\nBut that movement doesn't stop easily. You may feel like your system is always active, making it difficult to fully rest.\n\nSo your pattern becomes: you keep processing and moving internally at all times, rarely reaching complete stillness.`},'8_weak':{s:`You adapt easily to different situations and environments. This makes you flexible and capable of navigating change smoothly.\n\nBut that adaptability can blur your own direction. Over time, your path can feel shaped by circumstances rather than intention.\n\nSo your pattern becomes: you adjust quickly, but rely on external conditions to define where you go.`},'9_strong':{s:`You process things deeply beneath the surface. You often understand situations earlier than others, but prefer to hold that understanding until it feels complete.\n\nBut expression is not immediate. There is a noticeable gap between what you know and what you say or do.\n\nSo your pattern becomes: you develop insight first, and only act once internal clarity feels complete.`},'9_weak':{s:`You are highly sensitive to subtle signals. Emotional shifts and unspoken meanings register naturally without needing to be explained.\n\nBut acting on those perceptions takes time. Without clarity, hesitation becomes your default.\n\nSo your pattern becomes: you observe and absorb first, then act only when your interpretation feels clear enough.`}};
+const ARCHETYPE_DATA=[
+{core:"You're the type who grows fast and thinks big, but you hate being controlled. Once you decide something, you don't bend easily — even when you probably should. People see you as strong and reliable, but they don't always see how stubborn you are. You don't like limits, but life keeps forcing you to deal with them."},
+{core:"You're flexible, observant, and way more strategic than people think. You don't push directly — you find another way around. You're good at reading people, but you can also overthink and hesitate too long. You adapt well, but sometimes you lose your own direction trying to adjust to everything."},
+{core:"You're expressive, confident, and naturally draw attention without trying. When you're on, people feel your energy immediately. But you can burn too fast — going all in, then losing interest just as quickly. You want to shine, but consistency isn't always your strong point."},
+{core:"You're warm, detail-focused, and emotionally aware of others. You don't need to be loud to have influence — you work quietly but effectively. You care deeply, but that also means you get affected more than you show. You give a lot, but not everyone deserves access to that side of you."},
+{core:"You're steady, grounded, and hard to shake once you make up your mind. People rely on you because you don't collapse under pressure. But you can get stuck — holding onto things long after they've stopped working. You value stability, sometimes more than growth."},
+{core:"You're supportive, practical, and good at building things over time. You notice what others miss and turn small things into real results. But you also tend to hold onto everything — emotions, people, responsibilities. You give and give, then wonder why you feel drained."},
+{core:"You're direct, sharp, and don't like wasting time or words. You see problems clearly and go straight to the point. But not everyone can handle your honesty — it can come off harsh. You respect strength, but you don't always soften for others."},
+{core:"You're precise, controlled, and very aware of how you present yourself. You don't show everything — you choose what people get to see. You notice flaws quickly, in yourself and others. You look calm, but you're constantly refining and judging beneath the surface."},
+{core:"You're adaptable, curious, and always moving toward something new. You think fast, talk fast, and connect ideas easily. But you can also drift — starting things without finishing them. Freedom matters to you, but it can make you hard to pin down."},
+{core:"You're quiet, deep, and emotionally complex under the surface. You don't reveal everything at once — people have to earn access. You feel things strongly but process them internally. You seem calm, but there's always more going on than people realize."}
+];
+
+let activeChipIdx=null;
+function toggleSample(idx,chipEl){const expandEl=document.getElementById(`expand-row-${idx}`);const allChips=document.querySelectorAll('.sample-chip');const allExpands=document.querySelectorAll('.sample-expand');if(activeChipIdx===idx){chipEl.classList.remove('active');expandEl.classList.remove('open');expandEl.innerHTML='';activeChipIdx=null;return;}allChips.forEach(c=>c.classList.remove('active'));allExpands.forEach(e=>{e.classList.remove('open');e.innerHTML='';});chipEl.classList.add('active');activeChipIdx=idx;const dm=DAY_MASTER_INFO[idx];const ad=ARCHETYPE_DATA[idx];trackEvent('sample_archetype_viewed',{archetype:dm.name,day_tg:idx});expandEl.innerHTML=`<div class="sample-expand-header"><span class="sample-expand-symbol">${dm.symbol}</span><div><div class="sample-expand-title">${dm.name}</div><div class="sample-expand-elem">${dm.elem}</div></div></div><div class="sample-expand-divider"></div><div class="sample-expand-block"><div class="sample-expand-block-text">${ad.core}</div></div>`;expandEl.classList.add('open');setTimeout(()=>expandEl.scrollIntoView({behavior:'smooth',block:'nearest'}),100);}
+
+const DAY_MASTER_ELEM_IDX={0:'Yang Wood',1:'Yin Wood',2:'Yang Fire',3:'Yin Fire',4:'Yang Earth',5:'Yin Earth',6:'Yang Metal',7:'Yin Metal',8:'Yang Water',9:'Yin Water'};
+
+function renderArchetypeHeaderPreview(dm, dayTG){
+  const elemLabel = DAY_MASTER_ELEM_IDX[dayTG] || dm.elem;
+  const birth = JSON.parse(sessionStorage.getItem('saju_birth')||'{}');
+  let dateStr = '';
+  if(birth?.date){
+    const d = new Date(birth.date + 'T12:00:00');
+    dateStr = d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  }
+  document.getElementById('archetypeHeaderPreview').innerHTML = `
+    <div class="archetype-header-preview">
+      ${dateStr ? `<div class="archetype-header-preview-date">${dateStr}</div>` : ''}
+      <div class="archetype-header-preview-content">
+        <span class="archetype-header-preview-emoji">${dm.symbol}</span>
+        <div>
+          <div class="archetype-header-preview-name">${dm.name}</div>
+          <div class="archetype-header-preview-elem">${elemLabel} · Day Master</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function getSessionId(){let sid=localStorage.getItem('saju_sid');if(!sid){sid=crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('saju_sid',sid);}return sid;}
+async function trackEvent(eventName,metadata={}){try{await fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:eventName,metadata:{...metadata,session_id:getSessionId(),page:'/'}})});}catch(e){}}
+
+let _formStarted=false;
+function trackFormStart(){if(_formStarted)return;_formStarted=true;trackEvent('form_started',{});}
+
+// ── TIME ON PAGE ──
+const _pageLoadTime=Date.now();
+window.addEventListener('beforeunload',function(){
+  const secs=Math.round((Date.now()-_pageLoadTime)/1000);
+  const payload=JSON.stringify({event:'time_on_page',metadata:{seconds:secs,had_card:document.getElementById('sajuCard')?.style.display!=='none',had_preview:document.getElementById('reportPreview')?.style.display==='block',session_id:getSessionId(),page:'/'}});
+  navigator.sendBeacon('/api/track',new Blob([payload],{type:'application/json'}));
+});
+
+// ── CTA VISIBLE ──
+(function(){
+  const btn=document.getElementById('getReadingBtn');
+  if(!btn||!window.IntersectionObserver)return;
+  let fired=false;
+  new IntersectionObserver((entries)=>{if(fired)return;if(entries[0].isIntersecting){fired=true;trackEvent('cta_visible',{});}},{threshold:0.5}).observe(btn);
+})();
+
+function genStepActive(n){for(let i=1;i<=4;i++){const s=document.getElementById('gs'+i);const d=document.getElementById('gd'+i);if(!s)continue;s.className='gen-step'+(i<n?' done':i===n?' active':'');d.textContent=i<n?'✓':String(i);}}
+function genStepAllDone(){for(let i=1;i<=4;i++){const s=document.getElementById('gs'+i);const d=document.getElementById('gd'+i);if(!s)continue;s.className='gen-step done';d.textContent='✓';}}
+
+function parseSection(md,heading){const lines=md.split('\n');let capturing=false,buf=[];for(const line of lines){if(line.startsWith('## ')){if(capturing)break;if(line.includes(heading))capturing=true;continue;}if(line.startsWith('### ')){buf.push('\n__SUB__'+line.replace(/^### /,''));continue;}if(capturing)buf.push(line);}return buf.join('\n').trim();}
+function toSectionHTML(text){if(!text)return'';return text.split(/\n\n+/).map(p=>{p=p.trim();if(!p)return'';if(p.startsWith('__SUB__'))return`<span class="subsection-label">${p.replace('__SUB__','')}</span>`;const inner=p.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');return`<p>${inner}</p>`;}).filter(Boolean).join('');}
+function buildSection(containerId,tagHTML,bodyText){const el=document.getElementById(containerId);if(!el)return;el.innerHTML=`<div class="section-tag">${tagHTML}</div><div class="section-body">${toSectionHTML(bodyText)}</div>`;}
+
+async function getReading(){
+  const m=parseInt(document.getElementById('birthMonth').value);
+  const d=parseInt(document.getElementById('birthDay').value);
+  const y=parseInt(document.getElementById('birthYear').value);
+  if(!m||!d||!y||isNaN(m)||isNaN(d)||isNaN(y)){alert('Please enter your complete birth date.');return;}
+  if(y<1900||y>2025){alert('Please enter a valid birth year (1900-2025).');return;}
+  if(m<1||m>12){alert('Please enter a valid month.');return;}
+  if(d<1||d>31){alert('Please enter a valid day.');return;}
+  const knowTime=document.getElementById('knowTime').checked;
+  const tv=knowTime?document.getElementById('birthTime').value:'12:00';
+  const[hh,mm]=tv.split(':').map(Number);
+  const hour=hh+(mm>=30?1:0);
+  const gender=document.getElementById('birthGender').value||'Female';
+  const timezone=document.getElementById('birthTimezone').value||'America/New_York';
+  const btn=document.getElementById('getReadingBtn');
+  const btnText=document.getElementById('btnText');
+  const spinner=document.getElementById('btnSpinner');
+  btnText.style.display='none';spinner.style.display='block';btn.disabled=true;
+
+  const{dayTG,pillars}=calcSajuSimple(y,m,d,hour);
+  const{total,isStrong}=calcStrengthScore(pillars,dayTG);
+  const dm=DAY_MASTER_INFO[dayTG];
+  const rd=READINGS[`${dayTG}_${isStrong?'strong':'weak'}`];
+  _currentDayTg=dayTG;_currentIsStrong=isStrong;_currentScore=total;_shareId=null;
+  const dateStr=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  sessionStorage.setItem('saju_birth',JSON.stringify({date:dateStr,time:tv,timezone,name:'',gender}));
+  trackEvent('Saju Card Generate',{day_tg:dayTG,is_strong:isStrong,archetype:dm.name,birth_date:dateStr,birth_time:tv});
+
+  btnText.style.display='inline';spinner.style.display='none';btn.disabled=false;
+
+  document.getElementById('resultSection').style.display='block';
+  document.getElementById('archetypeHeaderPreview').innerHTML='';
+  document.getElementById('generatingUI').style.display='block';
+  document.getElementById('reportPreview').style.display='none';
+  setTimeout(()=>document.getElementById('resultSection').scrollIntoView({behavior:'smooth',block:'start'}),100);
+  trackEvent('generating_started',{day_tg:dayTG,is_strong:isStrong,archetype:dm.name,birth_date:dateStr});
+  if(window._setGenStart)window._setGenStart();
+
+  genStepActive(1);
+  const t2=setTimeout(()=>genStepActive(2),8000);
+  const t3=setTimeout(()=>genStepActive(3),18000);
+  const t4=setTimeout(()=>genStepActive(4),28000);
+
+  try{
+    const res=await fetch('/api/short-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({date:dateStr,time:tv,timezone,name:'',gender})});
+    clearTimeout(t2);clearTimeout(t3);clearTimeout(t4);
+    const data=await res.json();
+    if(data.error)throw new Error(data.error);
+
+    genStepAllDone();
+    const apiDm={symbol:data.archetype.emoji,name:data.archetype.name};
+    renderArchetypeHeaderPreview(apiDm,data.dayTG);
+    trackEvent('api_report_success',{day_tg:dayTG,archetype:dm.name,birth_date:dateStr});
+    await new Promise(r=>setTimeout(r,600));
+
+    document.getElementById('generatingUI').style.display='none';
+    sessionStorage.setItem('saju_report',JSON.stringify(data));
+
+    const report=data.report||'';
+    const realLikeText=parseSection(report,"Who You Really Are");
+    const fullText=realLikeText.replace(/\n+/g,' ').trim();
+    const LIMIT=800;
+    let preview=fullText.slice(0,LIMIT);
+    if(fullText.length>LIMIT){const lastSpace=preview.lastIndexOf(' ');preview=preview.slice(0,lastSpace)+'…';}
+    buildSection('sectionRealLike',"🔥 Who You Really Are",preview);
+    buildSection('sectionEdge','❤️ Love & Relationships',parseSection(report,'Love & Relationships'));
+    buildSection('sectionTrips','💰 Career & Wealth',parseSection(report,'Career & Wealth'));
+    buildSection('sectionMoney','📅 2026–2027 Forecast',parseSection(report,'2026'));
+    buildSection('sectionLove','🌍 What Balances You',parseSection(report,'What Balances You'));
+    buildSection('sectionBalance','','');
+
+    document.getElementById('reportPreview').style.display='block';
+    trackEvent('report_preview_viewed',{day_tg:dayTG,archetype:dm.name});
+    setTimeout(()=>document.getElementById('reportPreview').scrollIntoView({behavior:'smooth',block:'start'}),100);
+
+    setTimeout(()=>{
+      const ctaEl=document.querySelector('#reportPreview .cta-btn');
+      if(ctaEl&&window.IntersectionObserver){
+        let _ctaFired=false;
+        new IntersectionObserver((entries)=>{if(_ctaFired)return;if(entries[0].isIntersecting){_ctaFired=true;trackEvent('report_scroll_depth',{reached_cta:true,day_tg:dayTG,archetype:dm.name});}},{threshold:0.3}).observe(ctaEl);
+      }
+    },800);
+  }catch(e){
+    clearTimeout(t2);clearTimeout(t3);clearTimeout(t4);
+    trackEvent('api_report_failed',{error:e.message,day_tg:dayTG,birth_date:dateStr});
+    document.getElementById('generatingUI').style.display='none';
+    const fb=document.getElementById('sectionRealLike');
+    if(fb)fb.innerHTML=`<div class="section-tag">🔥 What You're Really Like</div><div class="section-body">${rd.s.split('\n\n').map(p=>`<p>${p.trim()}</p>`).join('')}</div>`;
+    document.getElementById('reportPreview').style.display='block';
+  }
+}
+
+
+
+async function loadFromShareId(id){document.querySelector('.hero').style.opacity='0.4';document.querySelector('.form-card').style.display='none';try{const res=await fetch(`/api/get-free-reading?id=${id}`);if(!res.ok)throw new Error('Not found');const data=await res.json();const{dayTg,isStrong,score,birthDate}=data;_currentDayTg=dayTg;_currentIsStrong=isStrong;_currentScore=score;_shareId=id;const dm=DAY_MASTER_INFO[dayTg];const rd=READINGS[`${dayTg}_${isStrong?'strong':'weak'}`];const[y,m,d]=(birthDate||'').split('-').map(Number);renderCard(dm,isStrong,score,rd,{m:m||'?',d:d||'?',y:y||'?'});document.getElementById('resultSection').style.display='block';document.querySelector('.hero').style.opacity='1';}catch(e){document.querySelector('.hero').style.opacity='1';document.querySelector('.form-card').style.display='block';}}
+
+// ── WHOP MODAL ──
+function goFullReading(){
+  trackEvent('unlock_full_reading_clicked',{trigger:'blur_cta'});
+  trackEvent('whop_checkout_intent',{trigger:'blur_cta'});
+  openWhopModal();
+}
+
+async function openWhopModal(){
+  trackEvent('whop_checkout_started');
+  document.getElementById('whopOverlay').classList.add('visible');
+  document.body.style.overflow='hidden';
+  document.getElementById('modalLoading').style.display='flex';
+  document.getElementById('whopCheckoutDiv').style.display='none';
+  setTimeout(()=>{
+    document.getElementById('modalLoading').style.display='none';
+    document.getElementById('whopCheckoutDiv').style.display='block';
+    if(window.WhopSDK&&window.WhopSDK.init)window.WhopSDK.init();
+  },600);
+}
+
+function closeWhopModal(){
+  document.getElementById('whopOverlay').classList.remove('visible');
+  document.body.style.overflow='';
+}
+
+function handleOverlayClick(e){
+  if(e.target===document.getElementById('whopOverlay'))closeWhopModal();
+}
+
+// ── 결제 완료 콜백 ──
+window.onCheckoutComplete=async function(planId,receiptId){
+  closeWhopModal();
+
+  // sendBeacon으로 확실하게 로그 찍기
+  const payload=JSON.stringify({
+    event:'payment_completed',
+    metadata:{plan_id:planId,receipt_id:receiptId,session_id:getSessionId(),page:'/'}
+  });
+  navigator.sendBeacon('/api/track',new Blob([payload],{type:'application/json'}));
+
+  // GA4 전환
+  if(typeof gtag!=='undefined'){
+    gtag('event','conversion',{'send_to':'AW-18045718869','value':4.99,'currency':'USD','transaction_id':receiptId||''});
+    gtag('event','purchase',{'transaction_id':receiptId||'','value':4.99,'currency':'USD','items':[{'item_id':'saju_full_reading','item_name':'Saju Full Reading','price':4.99,'quantity':1}]});
+  }
+
+  // sessionStorage에 토큰 저장 후 shortresult로 이동
+  sessionStorage.setItem('short_report_token',receiptId||'paid');
+  window.location.href='/shortresult';
+};
+
+// ── 초기화 ──
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const id=params.get('id');
+  if(id)loadFromShareId(id);
+  trackEvent('page_viewed',{source:params.get('utm_source')||'direct',medium:params.get('utm_medium')||'none',campaign:params.get('utm_campaign')||'none',referrer:document.referrer||'none'});
+  let _genStartTime=null;
+  window._setGenStart=function(){_genStartTime=Date.now();};
+  window.addEventListener('beforeunload',function(){
+    if(_genStartTime){
+      const secs=Math.round((Date.now()-_genStartTime)/1000);
+      const payload=JSON.stringify({event:'user_exited',metadata:{seconds_after_generate:secs,had_preview:document.getElementById('reportPreview')?.style.display==='block',session_id:getSessionId(),page:'/'}});
+      navigator.sendBeacon('/api/track',new Blob([payload],{type:'application/json'}));
+    }
+  });
+})();
+
+// ── MC Chart helpers (기존 유지) ──
+const MC_TG_YY=['Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin'];
+const MC_STEM={Wood:{Yang:{icon:'🌳',name:'Yang Wood',desc:'Upward reaching, unyielding growth'},Yin:{icon:'🌿',name:'Yin Wood',desc:'Flexible, quietly resilient'}},Fire:{Yang:{icon:'🔆',name:'Yang Fire',desc:'Radiant, expansive, illuminating'},Yin:{icon:'🕯️',name:'Yin Fire',desc:'Candlelight warmth, subtle intensity'}},Earth:{Yang:{icon:'⛰️',name:'Yang Earth',desc:'Solid, enduring, vast foundation'},Yin:{icon:'🌾',name:'Yin Earth',desc:'Nourishing, fertile, receptive ground'}},Metal:{Yang:{icon:'⚔️',name:'Yang Metal',desc:'Sharp, decisive, forged under pressure'},Yin:{icon:'💎',name:'Yin Metal',desc:'Refined, precise, brilliantly polished'}},Water:{Yang:{icon:'🌊',name:'Yang Water',desc:'Vast, unstoppable, deep current'},Yin:{icon:'💧',name:'Yin Water',desc:'Still depth, intuitive, absorbing wisdom'}}};
+const MC_BRANCH=[{icon:'🐀',name:'Water · Rat',desc:'Hidden intelligence, adaptability'},{icon:'🐂',name:'Yin Earth · Ox',desc:'Patient, steadfast, deep winter reserves'},{icon:'🐯',name:'Yang Wood · Tiger',desc:'Bold initiative, commanding presence'},{icon:'🐇',name:'Yin Wood · Rabbit',desc:'Grace, sensitivity, creative instinct'},{icon:'🐉',name:'Yang Earth · Dragon',desc:'Transformative energy, spring transition'},{icon:'🐍',name:'Yin Fire · Snake',desc:'Wisdom through stillness, penetrating insight'},{icon:'🐎',name:'Yang Fire · Horse',desc:'Passionate drive, restless momentum'},{icon:'🐐',name:'Yin Earth · Goat',desc:'Artistic soul, gentle persistence'},{icon:'🐒',name:'Yang Metal · Monkey',desc:'Wit, ingenuity, swift adaptation'},{icon:'🐓',name:'Yin Metal · Rooster',desc:'Precision, detail, unwavering standards'},{icon:'🐕',name:'Yang Earth · Dog',desc:'Guarding, loyal, late-autumn harvest'},{icon:'🐗',name:'Yin Water · Pig',desc:'Generous spirit, deep reserves'}];
+const MC_EC={Wood:'mc-el-wood',Fire:'mc-el-fire',Earth:'mc-el-earth',Metal:'mc-el-metal',Water:'mc-el-water'};
+const MC_EB={Wood:'mc-bg-wood',Fire:'mc-bg-fire',Earth:'mc-bg-earth',Metal:'mc-bg-metal',Water:'mc-bg-water'};
+function mcGetTenGod(dayTG,tg){const dE=TG_ELEM[dayTG],dY=MC_TG_YY[dayTG],tE=TG_ELEM[tg],tY=MC_TG_YY[tg];const gen={Wood:'Fire',Fire:'Earth',Earth:'Metal',Metal:'Water',Water:'Wood'};const ctrl={Wood:'Earth',Fire:'Metal',Earth:'Water',Metal:'Wood',Water:'Fire'};const genBy={Fire:'Wood',Earth:'Fire',Metal:'Earth',Water:'Metal',Wood:'Water'};const ctrlBy={Earth:'Wood',Metal:'Fire',Water:'Earth',Wood:'Metal',Fire:'Water'};if(tE===dE)return tY===dY?'Soul Mirror':'Competitive Capital';if(gen[dE]===tE)return tY===dY?'Creative Voice':'Expressive Power';if(ctrl[dE]===tE)return tY!==dY?'Steady Flow':'Big Opportunities';if(ctrlBy[dE]===tE)return tY!==dY?'Pressure & Power':'Controlling Force';if(genBy[dE]===tE)return tY!==dY?'Structured Support':'Independent Mind';return'Soul Mirror';}
+const DZ_MID_TG=[-1,7,-1,-1,9,6,5,1,8,-1,3,-1];
+const DZ_FIRST=[8,9,4,0,1,4,2,3,4,6,7,4];
+function mcCalcElements(pillars){const W={Wood:0,Fire:0,Earth:0,Metal:0,Water:0};pillars.forEach(([tg,dz])=>{W[TG_ELEM[tg]]+=1.0;W[DZ_ELEM[dz]]+=0.5;if(DZ_MAIN_TG[dz]>=0)W[TG_ELEM[DZ_MAIN_TG[dz]]]+=1.0;if(DZ_MID_TG[dz]>=0)W[TG_ELEM[DZ_MID_TG[dz]]]+=0.5;if(DZ_FIRST[dz]>=0)W[TG_ELEM[DZ_FIRST[dz]]]+=0.3;});const t=Object.values(W).reduce((a,b)=>a+b,0);if(t>0)Object.keys(W).forEach(k=>{W[k]=Math.round((W[k]/t)*1000)/10;});return W;}
+</script>
+</body>
+</html>

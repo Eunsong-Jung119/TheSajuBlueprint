@@ -12,26 +12,27 @@
   --text: #e8dfc8; --text-dim: rgba(232,223,200,0.65); --text-faint: rgba(232,223,200,0.38);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
+html { overflow-x:hidden; }
 body { background:var(--navy); color:var(--text); font-family:'EB Garamond',serif;
   min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 24px; overflow-x:hidden; }
 #stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
 .star { position:absolute; background:#fff; border-radius:50%;
   animation:twinkle var(--d,4s) var(--delay,0s) infinite alternate; opacity:var(--bright,0.3); }
 @keyframes twinkle { from{opacity:var(--bright,0.3)} to{opacity:0.05} }
-.wrap { position:relative; z-index:1; text-align:center; max-width:480px; width:100%; }
-.rings { position:relative; width:240px; height:240px; margin:0 auto 48px; }
+.wrap { position:relative; z-index:1; text-align:center; max-width:480px; width:100%; overflow:hidden; }
+.rings { position:relative; width:160px; height:160px; margin:0 auto 48px; }
 .ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   border:1px solid var(--gold-dim); border-radius:50%; }
-.ring:nth-child(1){ width:220px;height:220px; animation:ring-breathe 3.6s ease-in-out infinite 0s; }
-.ring:nth-child(2){ width:160px;height:160px; animation:ring-breathe 3.6s ease-in-out infinite 0.9s; }
-.ring:nth-child(3){ width:100px;height:100px; animation:ring-breathe 3.6s ease-in-out infinite 1.8s; }
+.ring:nth-child(1){ width:150px;height:150px; animation:ring-breathe 3.6s ease-in-out infinite 0s; }
+.ring:nth-child(2){ width:108px;height:108px; animation:ring-breathe 3.6s ease-in-out infinite 0.9s; }
+.ring:nth-child(3){ width:66px;height:66px; animation:ring-breathe 3.6s ease-in-out infinite 1.8s; }
 .ring-halo { position:absolute; top:50%; left:50%;
   border-radius:50%; border:1px solid rgba(201,168,76,0); pointer-events:none; }
-.ring-halo:nth-child(4){ width:100px;height:100px; animation:halo-pulse 3.6s ease-out infinite 0s; }
-.ring-halo:nth-child(5){ width:100px;height:100px; animation:halo-pulse 3.6s ease-out infinite 1.2s; }
-.ring-halo:nth-child(6){ width:100px;height:100px; animation:halo-pulse 3.6s ease-out infinite 2.4s; }
+.ring-halo:nth-child(4){ width:66px;height:66px; animation:halo-pulse 3.6s ease-out infinite 0s; }
+.ring-halo:nth-child(5){ width:66px;height:66px; animation:halo-pulse 3.6s ease-out infinite 1.2s; }
+.ring-halo:nth-child(6){ width:66px;height:66px; animation:halo-pulse 3.6s ease-out infinite 2.4s; }
 .ring-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  font-size:40px; animation:float 3s ease-in-out infinite; }
+  font-size:28px; animation:float 3s ease-in-out infinite; }
 @keyframes ring-breathe { 0%,100%{opacity:0.25} 50%{opacity:0.7} }
 @keyframes halo-pulse {
   0%  { transform:translate(-50%,-50%) scale(1);   border-color:rgba(201,168,76,0.55); }
@@ -52,7 +53,7 @@ h1 { font-size:clamp(24px,4vw,32px); font-weight:500; margin-bottom:12px; }
   display:flex; align-items:center; justify-content:center;
   font-size:11px; flex-shrink:0; transition:all 0.4s; }
 .step.active .step-dot { border-color:var(--gold); background:var(--gold-faint);
-  animation:dot-pulse 1.2s infinite; }
+  animation:do ㄴt-pulse 1.2s infinite; }
 .step.done .step-dot { background:var(--gold); border-color:var(--gold); color:var(--navy); }
 @keyframes dot-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4)} 50%{box-shadow:0 0 0 6px rgba(201,168,76,0)} }
 .wisdom { font-size:15px; color:var(--text-faint); font-style:italic; line-height:1.7; }
@@ -80,16 +81,14 @@ h1 { font-size:clamp(24px,4vw,32px); font-weight:500; margin-bottom:12px; }
     <div class="ring-center">✦</div>
   </div>
   <h1>Generating Your Blueprint</h1>
-  <p class="subtitle">Reading the cosmic patterns of your birth moment.<br>This may take a minute or two.</p>
+  <p class="subtitle">Unlocking the energy blueprint of your birth moment.<br>This may take a minute or two.</p>
   <div class="steps">
-    <div class="step" id="step1"><div class="step-dot" id="d1">1</div><span>Calculating your Four Pillars chart</span></div>
-    <div class="step" id="step2"><div class="step-dot" id="d2">2</div><span>Interpreting your elemental blueprint</span></div>
-    <div class="step" id="step3"><div class="step-dot" id="d3">3</div><span>Writing your personal story</span></div>
-    <div class="step" id="step4"><div class="step-dot" id="d4">4</div><span>Completing your report</span></div>
+    <div class="step" id="step1"><div class="step-dot" id="d1">1</div><span>Calculating your Bazi chart</span></div>
+    <div class="step" id="step2"><div class="step-dot" id="d2">2</div><span>Interpreting your Saju blueprint</span></div>
+    <div class="step" id="step3"><div class="step-dot" id="d3">3</div><span>Writing your personalized Saju reading</span></div>
+    <div class="step" id="step4"><div class="step-dot" id="d4">4</div><span>Completing your Saju report</span></div>
   </div>
-  <p class="wisdom" id="wisdomText">
-    <strong>Ancient wisdom.</strong> The Four Pillars of Destiny has guided millions for over a thousand years...
-  </p>
+
   <div class="error-box" id="errorBox"></div>
 </div>
 
@@ -102,21 +101,7 @@ for (let i = 0; i < 80; i++) {
   starsEl.appendChild(s);
 }
 
-const wisdoms = [
-  '<strong>Ancient wisdom.</strong> The Four Pillars of Destiny has guided millions for over a thousand years — your moment of birth holds more information than you know.',
-  '<strong>The elements speak.</strong> Wood grows upward. Fire illuminates. Earth grounds. Metal refines. Water flows. Together, they compose the music of your life.',
-  '<strong>Not fate — nature.</strong> Your chart reveals your natural grain. The goal is not to predict your future, but to understand yourself so deeply that you stop working against your own design.',
-  '<strong>Every void has a purpose.</strong> The element you were born without is not a weakness. It is the hunger that drives your most meaningful growth.',
-  '<strong>Almost there.</strong> Your blueprint is taking shape — weaving your unique elemental signature into a story only you can live.',
-];
-let wIdx = 0;
-document.getElementById('wisdomText').style.transition = 'opacity 0.4s';
-setInterval(() => {
-  wIdx = (wIdx + 1) % wisdoms.length;
-  const el = document.getElementById('wisdomText');
-  el.style.opacity = 0;
-  setTimeout(() => { el.innerHTML = wisdoms[wIdx]; el.style.opacity = 1; }, 400);
-}, 5000);
+// wisdom rotation removed
 
 function stepActive(n) {
   for (let i = 1; i <= 4; i++) {
@@ -132,7 +117,6 @@ function showError(msg) {
 }
 
 async function run() {
-  // sessionStorage에서 birth 데이터 읽기
   const birthRaw = sessionStorage.getItem('saju_birth');
   if (!birthRaw) {
     window.location.href = '/order';
@@ -164,7 +148,6 @@ async function run() {
     const data = await genRes.json();
     if (!data.reportId) throw new Error('Report ID missing. Please contact thesajublueprint@gmail.com');
 
-    // 완료
     for (let i = 1; i <= 4; i++) {
       document.getElementById('step'+i).className = 'step done';
       document.getElementById('d'+i).textContent = '✓';

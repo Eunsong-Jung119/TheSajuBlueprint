@@ -48,12 +48,6 @@ body{font-family:'EB Garamond',serif;background:linear-gradient(168deg,#241640 0
 .top-bar-btn{flex-shrink:0;padding:9px 18px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-size:12px;font-weight:600;font-family:'EB Garamond',serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
 
 .page-top-offset{height:56px;}
-
-/* COUNTDOWN BANNER */
-.countdown-banner{position:fixed;top:56px;left:0;right:0;z-index:99;background:linear-gradient(90deg,#3a2660,#52346e);border-bottom:1px solid var(--gold-dim);padding:9px 16px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'EB Garamond',serif;font-size:12.5px;color:var(--gold);letter-spacing:.3px;}
-.countdown-banner .cd-icon{font-size:13px;}
-.countdown-banner .cd-time{font-family:'Cormorant Garamond',serif;font-weight:600;color:#fff;letter-spacing:1px;min-width:64px;display:inline-block;text-align:center;}
-.countdown-offset{height:36px;}
 .wrap{position:relative;z-index:1;max-width:540px;margin:0 auto;padding:0 20px 80px;}
 
 /* HERO */
@@ -255,29 +249,36 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 <div class="top-bar">
   <div class="top-bar-thumb">🔮</div>
   <div class="top-bar-info">
-    <div class="top-bar-title">Rate My Exes · Four Pillars Astrology</div>
+    <div class="top-bar-title">Rate My Exes · Four Pillars</div>
     <div class="top-bar-price">
       <span class="top-bar-original">$9.99</span>
       <span class="top-bar-sale">$4.99</span>
     </div>
   </div>
-  <button class="top-bar-btn" onclick="navigateTo('/rate-en-form','topbar')">Start</button>
-</div>
-<div class="countdown-banner">
-  <span class="cd-icon">🔥</span>
-  <span>Launch price ends in <span class="cd-time" id="cd-time">00:00:00</span></span>
+  <button class="top-bar-btn" onclick="window.location.href='/rate-en-form'">Start</button>
 </div>
 
 <div class="page-top-offset"></div>
-<div class="countdown-offset"></div>
 
 <!-- LANDING -->
 <div id="landing-view">
 <div class="wrap">
 
   <div class="hero fade-up">
+    <div class="brand">✦ The Saju Blueprint ✦</div>
     <h1>Your ex. Your situationship.<br>Your talking stage.<br><em>Who does the chart pick?</em></h1>
     <p class="hero-sub">Drop in every guy you've got. Your birth charts decide who's actually your person — and who you should've blocked months ago.</p>
+  </div>
+
+  <!-- PRICE BANNER -->
+  <div class="price-banner fade-up">
+    <div>
+      <div class="price-event-label">✦ 50% Launch Price</div>
+      <div class="price-original-big">$9.99</div>
+      <div class="price-sale-big">$4.99</div>
+      <div class="price-anchor">Cheaper than the latte you'll cry into</div>
+    </div>
+    <button class="price-cta-btn" onclick="window.location.href='/rate-en-form'">Start<br>Now</button>
   </div>
 
   <!-- REVIEWS -->
@@ -311,7 +312,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </div>
 
   <!-- INCLUDE -->
-  <div class="include-card fade-up" data-track="section_whats_in_reading">
+  <div class="include-card fade-up">
     <div class="include-title">What's in the reading</div>
     <div class="include-subtitle">5 dimensions × every guy you enter</div>
     <div class="include-item"><div class="include-emoji">❤️</div><div><div class="include-q">How deep will he actually fall for you?</div><div class="include-desc">Emotional depth · why the pull is there · how the attachment forms</div></div></div>
@@ -322,7 +323,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </div>
 
   <!-- SAMPLE -->
-  <div class="fade-up" data-track="section_real_reading">
+  <div class="fade-up">
     <div class="section-label">A real reading</div>
     <div class="sample-wrap">
       <div class="sample-header">
@@ -356,12 +357,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
             </div>
           </div>
           <div class="sample-blur-overlay">
-            <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;">
-              <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(243,236,255,0.5);letter-spacing:1px;">🔒 Worldview</span>
-              <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(243,236,255,0.5);letter-spacing:1px;">🔒 Timing</span>
-              <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(243,236,255,0.5);letter-spacing:1px;">🔒 The Verdict</span>
-            </div>
-            <button class="blur-unlock-badge" onclick="navigateTo('/rate-en-form','unlock_blur')">🔮 Unlock the full reading</button>
+            <button class="blur-unlock-badge" onclick="window.location.href='/rate-en-form'">🔮 Unlock the full reading</button>
             <div class="blur-unlock-sub">The verdict + every guy, fully decoded</div>
           </div>
         </div>
@@ -370,9 +366,8 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </div>
 
   
-  <!-- FOUR PILLARS SECTION — commented out per request (saju/Four Pillars explainer removed from landing), restore if needed
-  
-  <div class="fade-up" data-track="section_four_pillars" style="margin-bottom:32px;">
+  <!-- FOUR PILLARS PREVIEW -->
+  <div class="fade-up" style="margin-bottom:32px;">
     <div class="section-label">The System</div>
     <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.18);border-radius:16px;padding:22px 16px 26px;overflow:hidden;">
       <div style="text-align:center;margin-bottom:20px;">
@@ -384,7 +379,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
         <div style="font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:rgba(227,192,138,0.5);text-transform:uppercase;margin-bottom:4px;text-align:center;">Sample · Birth Chart</div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px;">
-        
+        <!-- Year -->
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.12);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;">
           <div style="font-size:9px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;">Year</div>
           <div style="font-size:20px;">🕯️</div>
@@ -394,7 +389,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
           <div style="font-size:18px;">🐂</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#c8a85a;text-align:center;line-height:1.3;">Earth · Ox</div>
         </div>
-        
+        <!-- Month -->
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.12);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;">
           <div style="font-size:9px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;">Month</div>
           <div style="font-size:20px;">⚔️</div>
@@ -404,7 +399,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
           <div style="font-size:18px;">🐕</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#c8a85a;text-align:center;line-height:1.3;">Earth · Dog</div>
         </div>
-        
+        <!-- Day - highlighted -->
         <div style="background:rgba(255,255,255,0.07);border:1.5px solid rgba(227,192,138,0.4);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;">
           <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:1px;background:var(--gold);color:#160e26;padding:2px 8px;border-radius:8px;white-space:nowrap;font-weight:700;text-transform:uppercase;">✦ Core Self</div>
           <div style="font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:4px;margin-top:4px;">Day</div>
@@ -415,7 +410,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
           <div style="font-size:18px;">🐉</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#c8a85a;text-align:center;line-height:1.3;">Earth · Dragon</div>
         </div>
-        
+        <!-- Hour -->
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.12);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;">
           <div style="font-size:9px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;">Hour</div>
           <div style="font-size:20px;">⚔️</div>
@@ -429,8 +424,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
       <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-faint);font-style:italic;font-family:'Cormorant Garamond',serif;">Over 500,000 possible combinations. This is what yours looks like.</div>
     </div>
   </div>
-  -->
-
   <!-- RECOMMEND -->
   <div class="recommend-card fade-up">
     <div class="recommend-title">This is for you if…</div>
@@ -442,12 +435,12 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </div>
 
   <!-- FAQ -->
-  <div class="faq-wrap fade-up" data-track="section_faq">
+  <div class="faq-wrap fade-up">
     <div class="faq-title">Questions</div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this);trackEvent('faq_click',{question:'system'})"><span class="faq-toggle-text">What system is this based on?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Four Pillars Astrology — an ancient Eastern system thousands of years old. Instead of mapping planets like Western astrology, it calculates the exact natural energies at the moment of your birth. Unlike the 12 zodiac signs, Four Pillars creates over 500,000 unique combinations.</div></div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this);trackEvent('faq_click',{question:'birth_time'})"><span class="faq-toggle-text">What if I don't know his birth time?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Totally fine — birth time is optional. The reading works without it.</div></div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this);trackEvent('faq_click',{question:'results'})"><span class="faq-toggle-text">Where do I see my results?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Instantly on the form page after checkout. We also email you the link so you can come back to it.</div></div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this);trackEvent('faq_click',{question:'how_many'})"><span class="faq-toggle-text">How many guys can I add?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Up to 5 at once — rank them all head to head.</div></div>
+    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">What system is this based on?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Four Pillars Astrology — an ancient Eastern system thousands of years old. Instead of mapping planets like Western astrology, it calculates the exact natural energies at the moment of your birth. Unlike the 12 zodiac signs, Four Pillars creates over 500,000 unique combinations.</div></div>
+    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">What if I don't know his birth time?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Totally fine — birth time is optional. The reading works without it.</div></div>
+    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">Where do I see my results?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Instantly on the form page after checkout. We also email you the link so you can come back to it.</div></div>
+    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">How many guys can I add?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Up to 5 at once — rank them all head to head.</div></div>
   </div>
 
   <!-- BOTTOM CTA -->
@@ -459,7 +452,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
       <span class="bottom-sale">$4.99</span>
       <span class="bottom-badge">50% Off</span>
     </div>
-    <button class="cta-btn" onclick="navigateTo('/rate-en-form','bottom_cta')">🔮 Start My Reading</button>
+    <button class="cta-btn" onclick="window.location.href='/rate-en-form'">🔮 Start My Reading</button>
   </div>
 
   <!-- FORM -->
@@ -477,13 +470,13 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 const starsEl=document.getElementById('stars');
 for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*1.5+0.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(3+Math.random()*5)+'s;--delay:-'+Math.random()*8+'s;--bright:'+(0.1+Math.random()*0.3);starsEl.appendChild(s);}
 function getSessionId(){let s=localStorage.getItem('ryex_en_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_en_sid',s);}return s;}
-function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign'),utm_content:p.get('utm_content'),utm_term:p.get('utm_term'),fbclid:p.get('fbclid'),gclid:p.get('gclid'),referrer:document.referrer||null};}
+function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign')};}
 function trackEvent(name,props){try{gtag('event',name,{session_id:getSessionId()});}catch(e){}fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_name:name,session_id:getSessionId(),metadata:Object.assign({lang:'en'},getUTM(),props||{})})}).catch(function(){});}
 const observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
 document.querySelectorAll('.fade-up').forEach(function(el){observer.observe(el);});
 function applySentenceBlur(){
   document.querySelectorAll('.sample-section-text').forEach(function(el){
-    el.style.maxHeight='7em';
+    el.style.maxHeight='5.4em';
     el.style.overflow='hidden';
     el.style.webkitMaskImage='linear-gradient(to bottom,black 0%,black 35%,transparent 100%)';
     el.style.maskImage='linear-gradient(to bottom,black 0%,black 35%,transparent 100%)';
@@ -506,91 +499,21 @@ function showIABAlert(){
   var overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
   overlay.innerHTML=`
-    <div style="position:relative;background:#241640;border:1px solid rgba(227,192,138,0.4);border-radius:20px;padding:38px 26px 32px;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-      <button onclick="trackEvent('iab_continue_anyway');this.closest('[style*=fixed]').remove()" aria-label="Close" style="position:absolute;top:12px;right:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);border:1px solid rgba(227,192,138,0.4);border-radius:50%;color:#e3c08a;font-size:18px;line-height:1;cursor:pointer;font-family:'EB Garamond',serif;">✕</button>
+    <div style="background:#241640;border:1px solid rgba(227,192,138,0.4);border-radius:20px;padding:32px 26px;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
       <div style="font-size:42px;margin-bottom:16px;">🔮</div>
       <div style="font-family:'EB Garamond',serif;font-size:22px;font-weight:600;color:#e3c08a;margin-bottom:14px;">Open in Safari or Chrome</div>
-      <div style="font-size:15px;color:rgba(243,236,255,0.68);line-height:1.75;">For the best experience and to make sure your reading loads correctly, open this page in Safari or Chrome.</div>
+      <div style="font-size:15px;color:rgba(243,236,255,0.68);line-height:1.75;margin-bottom:28px;">For the best experience and to make sure your reading loads correctly, open this page in Safari or Chrome.</div>
+      <button onclick="this.closest('[style*=fixed]').remove()" style="width:100%;padding:12px;background:transparent;color:rgba(243,236,255,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:13px;cursor:pointer;font-family:'EB Garamond',serif;">Continue anyway</button>
     </div>
   `;
   document.body.appendChild(overlay);
 }
-
-// ── 섹션 노출 트래킹 ──
-const sectionObserver = new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting && e.target.dataset.track){
-      trackEvent(e.target.dataset.track);
-      sectionObserver.unobserve(e.target); // 한 번만
-    }
-  });
-},{threshold:0.3});
-document.querySelectorAll('[data-track]').forEach(function(el){sectionObserver.observe(el);});
-
-// ── 스크롤 깊이 트래킹 ──
-var scrollMarks={25:false,50:false,75:false,100:false};
-window.addEventListener('scroll',function(){
-  var pct=Math.round((window.scrollY/(document.body.scrollHeight-window.innerHeight))*100);
-  [25,50,75,100].forEach(function(mark){
-    if(!scrollMarks[mark]&&pct>=mark){
-      scrollMarks[mark]=true;
-      trackEvent('scroll_depth',{depth:mark});
-    }
-  });
-},{passive:true});
-
-// ── 페이지 체류시간 ──
-var pageStart=Date.now();
-window.addEventListener('beforeunload',function(){
-  var sec=Math.round((Date.now()-pageStart)/1000);
-  var d=JSON.stringify({event_name:'time_on_page',session_id:getSessionId(),metadata:Object.assign({lang:'en',seconds:sec},getUTM())});
-  navigator.sendBeacon('/api/track',new Blob([d],{type:'application/json'}));
-});
-
-// ── 접속 브라우저 정보 (page_viewed에 포함) ──
-
-function navigateTo(url, location) {
-  var data = JSON.stringify({
-    event_name: 'cta_click',
-    session_id: getSessionId(),
-    metadata: Object.assign({lang:'en', cta_location: location}, getUTM())
-  });
-  navigator.sendBeacon('/api/track', new Blob([data], {type:'application/json'}));
-  window.location.href = url;
-}
-function getBrowserInfo(){
-  var ua=navigator.userAgent||'';
-  return {
-    is_iab:/Instagram|FBAN|FBAV|FB_IAB|TikTok|Line|KAKAOTALK/i.test(ua),
-    is_mobile:/iPhone|iPad|Android/i.test(ua),
-    browser:/CriOS/.test(ua)?'chrome_ios':/FxiOS/.test(ua)?'firefox_ios':/Safari/.test(ua)&&!/Chrome/.test(ua)?'safari':/Chrome/.test(ua)?'chrome':'other',
-  };
-}
-
 window.addEventListener('DOMContentLoaded',function(){showIABAlert();
   var params=new URLSearchParams(window.location.search);
   if(params.get('report')){window.location.href='/rate-en-form'+window.location.search;return;}
-  trackEvent('page_viewed', getBrowserInfo());
+  trackEvent('page_viewed');
   applySentenceBlur();
-  startCountdown();
 });
-
-function startCountdown(){
-  var el=document.getElementById('cd-time');
-  if(!el) return;
-  function tick(){
-    var now=new Date();
-    var midnight=new Date(now);
-    midnight.setHours(24,0,0,0); // resets daily at local midnight
-    var diff=midnight-now;
-    var h=Math.floor(diff/3600000);
-    var m=Math.floor((diff%3600000)/60000);
-    var s=Math.floor((diff%60000)/1000);
-    el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  }
-  tick();
-  setInterval(tick,1000);
-}
 
 </script>
 </body>

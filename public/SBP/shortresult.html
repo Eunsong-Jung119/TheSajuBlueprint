@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18045718869"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18045718869');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNC8VKJZWG"></script>
+<script>gtag('config', 'G-PNC8VKJZWG');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Saju Reading · The Saju Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<script async defer src="https://js.whop.com/static/checkout/loader.js"></script>
+<style>
+:root {
+  --gold:#c9a84c; --gold-dim:rgba(201,168,76,0.35); --gold-faint:rgba(201,168,76,0.08);
+  --navy:#090d1a; --navy-card:#0f1526;
+  --text:#e8dfc8; --text-dim:rgba(232,223,200,0.65); --text-faint:rgba(232,223,200,0.35);
+  --water:#4a90d9; --fire:#e05c2a; --wood:#4a9e5c; --soil:#b5813e; --metal:#8899bb;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--text);font-family:'EB Garamond',serif;min-height:100vh;overflow-x:hidden;}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:var(--gold);opacity:0;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--bright);transform:scale(1)}}
+.wrap{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:0 20px 80px;}
+
+/* ── ARCHETYPE HEADER ── */
+.archetype-header{
+  z-index:1;
+  padding:48px 32px 40px;
+  border-bottom:1px solid rgba(201,168,76,0.15);
+  margin-bottom:48px;
+  background:linear-gradient(to bottom, rgba(201,168,76,0.04) 0%, transparent 100%);
+  text-align:center;
+}
+.archetype-header-brand{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:5px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:28px;text-align:left;}
+.archetype-header-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--text-faint);margin-bottom:14px;font-family:'Cormorant Garamond',serif;}
+.archetype-header-content{display:flex;align-items:center;justify-content:center;gap:20px;}
+.archetype-header-emoji{font-size:clamp(40px,8vw,56px);line-height:1;flex-shrink:0;}
+.archetype-header-text{}
+.archetype-header-name{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,6vw,44px);font-weight:400;color:var(--gold);letter-spacing:1px;line-height:1.15;margin-bottom:6px;}
+.archetype-header-elem{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text-faint);}
+.archetype-header-date{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,4vw,26px);font-weight:400;color:var(--text);letter-spacing:1px;text-align:center;margin-bottom:24px;}
+
+.feedback-section{margin-top:16px;padding:28px 32px;background:var(--navy-card);border:1px solid rgba(255,255,255,0.05);border-radius:16px;text-align:center;}
+.feedback-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--text);margin-bottom:6px;}
+.feedback-sub{font-size:14px;color:var(--text-faint);margin-bottom:16px;line-height:1.6;}
+.feedback-textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.2);color:var(--text);font-family:'EB Garamond',serif;font-size:15px;padding:12px 16px;resize:vertical;min-height:90px;outline:none;border-radius:4px;margin-bottom:12px;}
+.feedback-textarea:focus{border-color:var(--gold-dim);}
+.feedback-submit{background:transparent;border:1px solid var(--gold-dim);color:var(--gold-dim);font-family:'EB Garamond',serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:10px 28px;cursor:pointer;transition:all 0.2s;border-radius:2px;}
+.feedback-submit:hover{border-color:var(--gold);color:var(--gold);}
+.feedback-thanks{display:none;font-size:14px;color:var(--gold-dim);margin-top:12px;letter-spacing:1px;}
+.share-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:12px;background:rgba(9,13,26,0.92);backdrop-filter:blur(12px);border:1px solid rgba(201,168,76,0.2);padding:12px 24px;z-index:100;font-family:'Cormorant Garamond',serif;font-size:12px;letter-spacing:2px;color:var(--gold-dim);text-transform:uppercase;white-space:nowrap;border-radius:2px;animation:fadeUp 0.4s ease;}
+.share-bar.visible{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.share-btn{padding:8px 20px;border:1px solid var(--gold);color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:transparent;cursor:pointer;transition:all 0.2s;border-radius:2px;}
+.share-btn:hover{background:var(--gold);color:var(--navy);}
+#loadingState{text-align:center;padding:80px 20px;}
+.loading-spinner{width:40px;height:40px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:16px;color:var(--text-faint);letter-spacing:1px;}
+#errorState{display:none;text-align:center;padding:80px 20px;}
+#reportContent{display:none;animation:fadeIn 0.6s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.manse-section{margin-bottom:48px;}
+.manse-label{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--text);letter-spacing:2px;text-align:center;margin-bottom:20px;}
+.pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:stretch;padding-top:14px;}
+.pillar-card{background:#141c28;border:0.5px solid #2a2a3a;border-radius:12px;padding:20px 12px 18px;display:flex;flex-direction:column;align-items:center;position:relative;transition:border-color 0.2s;}
+.pillar-card:hover{border-color:rgba(201,168,76,0.35);}
+.pillar-label{font-size:10px;letter-spacing:0.18em;color:#7a6e80;text-transform:uppercase;margin-bottom:16px;font-weight:500;text-align:center;}
+.pillar-label.gold{color:var(--gold);}
+.pillar-divider{width:100%;height:0.5px;background:#2a2a3a;margin:14px 0;}
+.energy-icon{font-size:22px;line-height:1;margin-bottom:8px;display:block;text-align:center;}
+.ten-god-badge{display:inline-block;font-size:8px;letter-spacing:0.1em;font-weight:500;text-transform:uppercase;padding:3px 8px;border-radius:20px;margin-bottom:8px;}
+.p-elem-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;line-height:1.1;margin-bottom:5px;text-align:center;}
+.p-elem-desc{font-size:10px;color:#5a5060;line-height:1.45;font-style:italic;font-family:'Cormorant Garamond',serif;text-align:center;}
+.branch-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;line-height:1.2;margin-bottom:5px;text-align:center;}
+.day-master-card{border-color:var(--gold)!important;background:#16202e!important;}
+.day-master-card::before{content:'✦ Your Main Character';position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:7.5px;letter-spacing:0.14em;text-transform:uppercase;background:var(--gold);color:#0d1117;padding:2px 10px;border-radius:10px;white-space:nowrap;font-family:'EB Garamond',serif;font-weight:600;}
+.el-wood{color:#5db87a;}.el-fire{color:#e07a4a;}.el-metal{color:#a0b8c8;}.el-earth{color:#c8a85a;}.el-water{color:#5888cc;}
+.bg-wood{background:rgba(93,184,122,0.12);color:#5db87a;}.bg-fire{background:rgba(224,122,74,0.12);color:#e07a4a;}.bg-metal{background:rgba(160,184,200,0.12);color:#a0b8c8;}.bg-earth{background:rgba(200,168,90,0.12);color:#c8a85a;}.bg-water{background:rgba(88,136,204,0.12);color:#5888cc;}
+.section-divider{text-align:center;padding:16px 0;color:var(--gold-dim);font-size:16px;letter-spacing:8px;}
+.section{margin-bottom:40px;padding:28px 32px;background:var(--navy-card);border:1px solid rgba(255,255,255,0.05);border-radius:16px;}
+.section-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-tag::after{content:'';flex:1;height:1px;background:var(--gold-dim);}
+.section-body{font-size:16.5px;line-height:1.85;color:var(--text);}
+.section-body p{margin-bottom:16px;}
+.section-body p:last-child{margin-bottom:0;}
+.section-emphasis{font-style:italic;color:var(--text);line-height:1.6;margin-bottom:10px!important;}
+.subsection-head{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dim);margin:20px 0 10px!important;}
+.who-you-need{margin-top:24px;padding-top:20px;border-top:1px solid rgba(201,168,76,0.15);}
+.who-you-need-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dim);margin-bottom:12px;}
+.paygate-wrapper{position:relative;margin-top:8px;}
+.paygate-blur{filter:blur(3px);pointer-events:none;user-select:none;opacity:0.4;}
+.paygate-cta{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;padding:40px 24px 32px;text-align:center;background:linear-gradient(to bottom,var(--navy) 0%,var(--navy) 60%,rgba(9,13,26,0) 100%);margin-bottom:-40px;}
+.paygate-title{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,4vw,28px);color:var(--text);margin-bottom:8px;font-weight:400;}
+.paygate-sub{font-size:15px;color:var(--text-dim);margin-bottom:24px;line-height:1.6;max-width:400px;}
+.paygate-price{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--gold);font-weight:400;margin-bottom:4px;}
+.paygate-note{font-size:13px;color:var(--text-faint);margin-bottom:24px;}
+.paygate-btn{background:var(--gold);border:none;color:var(--navy);font-family:'EB Garamond',serif;font-size:15px;letter-spacing:3px;text-transform:uppercase;padding:16px 40px;cursor:pointer;font-weight:600;transition:background 0.2s;}
+.paygate-btn:hover{background:#d4b060;}
+.paygate-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.whop-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.whop-overlay.visible{display:flex;}
+.whop-modal{position:relative;width:min(540px,96vw);max-height:90vh;background:#0f1526;border:1px solid var(--gold-dim);display:flex;flex-direction:column;overflow:hidden;border-radius:4px;}
+.whop-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;}
+.whop-modal-title{font-size:13px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+.whop-modal-close{background:none;border:none;color:var(--text-faint);font-size:22px;cursor:pointer;line-height:1;padding:0 4px;}
+.whop-modal-close:hover{color:var(--text);}
+.whop-modal-body{flex:1;overflow-y:auto;padding:16px;min-height:480px;display:flex;align-items:flex-start;justify-content:center;}
+#whopCheckoutDiv{width:100%;min-height:460px;}
+.modal-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text-faint);font-size:14px;letter-spacing:1px;}
+@media(max-width:480px){
+  .pillars-grid{grid-template-columns:repeat(2,1fr);}
+  .section{padding:20px;}
+  .paygate-cta{padding:32px 16px 24px;}
+  .archetype-header{padding:36px 20px 32px;}
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="wrap">
+  <div id="archetypeHeader"></div>
+  <div id="loadingState">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading your reading…</div>
+  </div>
+  <div id="errorState">
+    <p style="color:var(--text-dim);margin-bottom:16px">Something went wrong loading your reading.</p>
+    <a href="/" style="color:var(--gold)">Go back →</a>
+  </div>
+  <div id="reportContent"></div>
+</div>
+
+<div class="whop-overlay" id="whopOverlay" onclick="handleOverlayClick(event)">
+  <div class="whop-modal">
+    <div class="whop-modal-header">
+      <span class="whop-modal-title">✦ Unlock Full Reading · $9.99</span>
+      <button class="whop-modal-close" onclick="closeWhopModal()">×</button>
+    </div>
+    <div class="whop-modal-body">
+      <div class="modal-loading" id="modalLoading">
+        <div class="loading-spinner"></div>
+        <span>Loading checkout…</span>
+      </div>
+      <div id="whopCheckoutDiv"
+        data-whop-checkout-plan-id="plan_VegawRTWadrLi"
+        data-whop-checkout-theme="dark"
+        data-whop-checkout-on-complete="onCheckoutComplete"
+        data-whop-checkout-style-container-padding-x="0"
+        style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="share-bar" id="shareBar">
+  <span>Share your reading</span>
+  <button class="share-btn" id="shareBtn" onclick="copyShareLink()">↗ Copy Link</button>
+</div>
+
+<script>
+function getSessionId(){let sid=localStorage.getItem('saju_sid');if(!sid){sid=crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('saju_sid',sid);}return sid;}
+async function trackEvent(eventName,metadata={}){
+  const p=new URLSearchParams(window.location.search);
+  try{
+    await fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      event:eventName,
+      metadata:{...metadata,session_id:getSessionId(),source:p.get('utm_source')||'direct',medium:p.get('utm_medium')||'none',campaign:p.get('utm_campaign')||'none',referrer:document.referrer||'none'}
+    })});
+  }catch(e){}
+}
+
+const starsEl=document.getElementById('stars');
+for(let i=0;i<50;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*1.5+0.5;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*5}s;--delay:-${Math.random()*8}s;--bright:${0.1+Math.random()*0.3}`;starsEl.appendChild(s);}
+
+const TG_ELEM_SR=['Wood','Wood','Fire','Fire','Earth','Earth','Metal','Metal','Water','Water'];
+const DZ_ELEM_SR=['Water','Earth','Wood','Wood','Earth','Fire','Fire','Earth','Metal','Metal','Earth','Water'];
+const PILLAR_LABELS=['Year','Month','Day · Core Self','Hour'];
+
+const DAY_MASTER_ELEM={
+  0:'Yang Wood',1:'Yin Wood',2:'Yang Fire',3:'Yin Fire',4:'Yang Earth',
+  5:'Yin Earth',6:'Yang Metal',7:'Yin Metal',8:'Yang Water',9:'Yin Water'
+};
+
+const TG_YY=['Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin','Yang','Yin'];
+const DZ_MAIN_TG_SR=[9,5,0,1,4,2,3,5,6,7,4,8];
+
+const STEM_SR={
+  Wood:{Yang:{icon:'🌳',name:'Yang Wood',desc:'Upward reaching, unyielding growth'},Yin:{icon:'🌿',name:'Yin Wood',desc:'Flexible, quietly resilient'}},
+  Fire:{Yang:{icon:'🔆',name:'Yang Fire',desc:'Radiant, expansive, illuminating'},Yin:{icon:'🕯️',name:'Yin Fire',desc:'Candlelight warmth, subtle intensity'}},
+  Earth:{Yang:{icon:'⛰️',name:'Yang Earth',desc:'Solid, enduring, vast foundation'},Yin:{icon:'🌾',name:'Yin Earth',desc:'Nourishing, fertile, receptive ground'}},
+  Metal:{Yang:{icon:'⚔️',name:'Yang Metal',desc:'Sharp, decisive, forged under pressure'},Yin:{icon:'💎',name:'Yin Metal',desc:'Refined, precise, brilliantly polished'}},
+  Water:{Yang:{icon:'🌊',name:'Yang Water',desc:'Vast, unstoppable, deep current'},Yin:{icon:'💧',name:'Yin Water',desc:'Still depth, intuitive, absorbing wisdom'}},
+};
+
+const BRANCH_SR=[
+  {icon:'🐀',name:'Water · Rat',desc:'Quick to adapt, moves with changing currents and opportunities'},
+  {icon:'🐂',name:'Earth · Ox',desc:'Endures pressure, builds slowly through steady accumulation'},
+  {icon:'🐯',name:'Wood · Tiger',desc:'Pushes forward, initiates growth and bold new directions'},
+  {icon:'🐇',name:'Wood · Rabbit',desc:'Navigates through relationships, grows through connection and sensitivity'},
+  {icon:'🐉',name:'Earth · Dragon',desc:'Holds latent power, shifts and transforms underlying structures'},
+  {icon:'🐍',name:'Fire · Snake',desc:'Observes quietly, releases focused bursts of insight and action'},
+  {icon:'🐎',name:'Fire · Horse',desc:'Drives outward energy, expresses quickly and intensely'},
+  {icon:'🐐',name:'Earth · Goat',desc:'Absorbs emotional weight, sustains through quiet persistence'},
+  {icon:'🐒',name:'Metal · Monkey',desc:'Analyzes patterns, adapts quickly through strategy and skill'},
+  {icon:'🐓',name:'Metal · Rooster',desc:'Applies precision, enforces standards and sharp judgment'},
+  {icon:'🐕',name:'Earth · Dog',desc:'Carries responsibility, stabilizes through loyalty and structure'},
+  {icon:'🐗',name:'Water · Pig',desc:'Absorbs and restores, flows back into rest and recovery'},
+];
+
+const EC_SR={Wood:'el-wood',Fire:'el-fire',Earth:'el-earth',Metal:'el-metal',Water:'el-water'};
+const EB_SR={Wood:'bg-wood',Fire:'bg-fire',Earth:'bg-earth',Metal:'bg-metal',Water:'bg-water'};
+
+function getTenGodSR(dayTG, tg){
+  const dE=TG_ELEM_SR[dayTG],dY=TG_YY[dayTG],tE=TG_ELEM_SR[tg],tY=TG_YY[tg];
+  const gen={Wood:'Fire',Fire:'Earth',Earth:'Metal',Metal:'Water',Water:'Wood'};
+  const ctrl={Wood:'Earth',Fire:'Metal',Earth:'Water',Metal:'Wood',Water:'Fire'};
+  const genBy={Fire:'Wood',Earth:'Fire',Metal:'Earth',Water:'Metal',Wood:'Water'};
+  const ctrlBy={Earth:'Wood',Metal:'Fire',Water:'Earth',Wood:'Metal',Fire:'Water'};
+  if(tE===dE)return tY===dY?'Self':'Competitive';
+  if(gen[dE]===tE)return tY===dY?'Smooth':'Bold';
+  if(ctrl[dE]===tE)return tY!==dY?'Steady':'Opportunity';
+  if(ctrlBy[dE]===tE)return tY!==dY?'Structured':'Intense';
+  if(genBy[dE]===tE)return tY!==dY?'Safe':'Intuitive';
+  return'Self';
+}
+
+function buildPillarsHTML(pillars){
+  const dayTG = Array.isArray(pillars?.[2]) ? pillars[2][0] : 0;
+  let html='';
+  (pillars||[]).forEach((p,idx)=>{
+    const tg=Array.isArray(p)?p[0]:p.tg;
+    const dz=Array.isArray(p)?p[1]:p.dz;
+    const elem=TG_ELEM_SR[tg]||'Earth';
+    const yy=TG_YY[tg];
+    const sd=STEM_SR[elem]?.[yy]||{icon:'✦',name:elem,desc:''};
+    const bd=BRANCH_SR[dz]||{icon:'✦',name:'',desc:''};
+    const branchElem=DZ_ELEM_SR[dz]||'Earth';
+    const isDay=idx===2;
+    const tenGod=isDay?'Your Day Master':getTenGodSR(dayTG,tg);
+    const mTG=DZ_MAIN_TG_SR[dz];
+    const branchGod=(mTG>=0&&!isDay)?getTenGodSR(dayTG,mTG):'';
+    const label=PILLAR_LABELS[idx]||'';
+    html+=`<div class="pillar-card${isDay?' day-master-card':''}">
+      <div class="pillar-label${isDay?' gold':''}">${label}</div>
+      <div style="text-align:center;width:100%">
+        <span class="energy-icon">${sd.icon}</span>
+        <div class="ten-god-badge ${EB_SR[elem]}">${tenGod}</div>
+        <div class="p-elem-name ${EC_SR[elem]}">${sd.name}</div>
+        <div class="p-elem-desc">${sd.desc}</div>
+      </div>
+      <div class="pillar-divider"></div>
+      <div style="text-align:center;width:100%">
+        <span class="energy-icon">${bd.icon}</span>
+        ${branchGod?`<div class="ten-god-badge ${EB_SR[branchElem]}">${branchGod}</div>`:''}
+        <div class="branch-name ${EC_SR[branchElem]}">${bd.name}</div>
+        <div class="p-elem-desc">${bd.desc}</div>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function parseReportSections(md){
+  const MAP={"Who You Really Are":'realLike',"Love & Relationships":'love',"Career & Wealth":'career',"2026":'forecast',"What Balances You":'balance'};
+  const sections={};let cur=null,buf=[];
+  function flush(){if(cur&&buf.length)sections[cur]=buf.join('\n').trim();}
+  for(const line of md.split('\n')){
+    if(line.startsWith('# ')&&!line.startsWith('## '))continue;
+    if(line.startsWith('## ')){flush();buf=[];cur=null;const h=line.replace(/^## /,'').replace(/[🔥⚡⚠️💰❤️🌍📅]/g,'').trim();for(const[k,v]of Object.entries(MAP)){if(h.includes(k)){cur=v;break;}}continue;}
+    if(line.startsWith('### ')){buf.push('\n__SUBHEAD__'+line.replace(/^### /,''));continue;}
+    if(cur!==null)buf.push(line);
+  }
+  flush();return sections;
+}
+
+function toHTML(text){
+  if(!text)return'';
+  return text.split(/\n\n+/).map(p=>{
+    p=p.trim();if(!p)return'';
+    if(p.startsWith('__SUBHEAD__'))return`<p class="subsection-head">${p.replace('__SUBHEAD__','')}</p>`;
+    const inner=p.replace(/\n/g,'<br>');
+    return p.length<=60?`<p class="section-emphasis">${inner}</p>`:`<p>${inner}</p>`;
+  }).filter(Boolean).join('');
+}
+
+function splitLove(text){
+  const markers=['__SUBHEAD__Who You Actually Need','__SUBHEAD__👉 Who You Actually Need'];
+  for(const m of markers){const i=text.indexOf(m);if(i!==-1)return{loveBody:text.slice(0,i).trim(),whoYouNeed:text.slice(i+m.length).trim()};}
+  return{loveBody:text,whoYouNeed:''};
+}
+
+function renderArchetypeHeader(data, birth){
+  const archetypeName = data.archetype?.name || '';
+  const archetypeEmoji = data.archetype?.emoji || '✦';
+  // Day master elem: pillars[2][0] 기준
+  const dayTgIdx = Array.isArray(data.pillars?.[2]) ? data.pillars[2][0] : null;
+  const elemLabel = dayTgIdx !== null ? (DAY_MASTER_ELEM[dayTgIdx] || '') : '';
+
+  let dateStr = '';
+  if(birth?.date){
+    const d = new Date(birth.date + 'T12:00:00');
+    dateStr = d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  }
+
+  document.getElementById('archetypeHeader').innerHTML = `
+    <div class="archetype-header">
+      ${dateStr ? `<div class="archetype-header-date">${dateStr}</div>` : ''}
+      <div class="archetype-header-content">
+        <span class="archetype-header-emoji">${archetypeEmoji}</span>
+        <div class="archetype-header-text">
+          <div class="archetype-header-name">${archetypeName}</div>
+          ${elemLabel ? `<div class="archetype-header-elem">${elemLabel} · Day Master</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildReport(data, isPaid){
+  const{report,archetype,pillars,elemCount}=data;
+  const sections=parseReportSections(report||'');
+  const pillarsHTML=buildPillarsHTML(pillars);
+
+  const section1=`<div class="section"><div class="section-tag">🔥 Who You Really Are</div><div class="section-body">${toHTML(sections.realLike)}</div></div>`;
+
+  const{loveBody,whoYouNeed}=splitLove(sections.love||'');
+  const loveHTML=`<div class="section"><div class="section-tag">❤️ Love & Relationships</div><div class="section-body">${toHTML(loveBody)}${whoYouNeed?`<div class="who-you-need"><div class="who-you-need-label">👉 Who You Actually Need</div>${toHTML(whoYouNeed)}</div>`:''}</div></div>`;
+
+  const gatedHTML=`
+    <div class="section"><div class="section-tag">💰 Career & Wealth</div><div class="section-body">${toHTML(sections.career)}</div></div>
+    <div class="section"><div class="section-tag">📅 2026–2027 Forecast</div><div class="section-body">${toHTML(sections.forecast)}</div></div>
+    ${loveHTML}
+    <div class="section"><div class="section-tag">🌍 What Balances You</div><div class="section-body">${toHTML(sections.balance)}</div></div>`;
+
+  const gatedBlock=isPaid?gatedHTML:`
+    <div class="paygate-cta">
+      <div class="paygate-title">Your full reading is ready.</div>
+      <div class="paygate-sub">Unlock your career patterns, money flow, love dynamics, 2026–2027 forecast, and what actually balances you.</div>
+      <div class="paygate-price"><span style="text-decoration:line-through;font-size:24px;opacity:0.5;margin-right:8px;">$14.99</span>$9.99</div>
+      <div class="paygate-note">Limited offer · One-time · No subscription</div>
+      <button class="paygate-btn" id="unlockBtn" onclick="openWhopModal()">✦ Unlock Full Reading · $9.99</button>
+    </div>
+    <div class="paygate-wrapper"><div class="paygate-blur">${gatedHTML}</div></div>`;
+
+  const feedbackSection=isPaid?`
+    <div class="feedback-section" id="feedbackSection">
+      <div class="feedback-title">How did this feel?</div>
+      <div class="feedback-sub">Your honest reaction helps us improve. Takes 30 seconds.</div>
+      <textarea class="feedback-textarea" id="feedbackText" placeholder="What resonated? What felt off? Anything you'd add…"></textarea>
+      <button class="feedback-submit" onclick="submitFeedback()">Send Feedback</button>
+      <div class="feedback-thanks" id="feedbackThanks">✦ Thank you — your feedback means a lot.</div>
+    </div>`:'';
+
+  return`
+    <div class="manse-section">
+      <div class="manse-label">Your Four Pillars</div>
+      <div class="pillars-grid">${pillarsHTML}</div>
+    </div>
+    <div class="section-divider">· · ·</div>
+    ${section1}
+    ${gatedBlock}
+    ${feedbackSection}`;
+}
+
+window.onCheckoutComplete=async function(planId,receiptId){
+  closeWhopModal();
+  sessionStorage.setItem('short_report_token',receiptId||'paid');
+  const payload=JSON.stringify({event:'payment_completed',metadata:{plan_id:planId,receipt_id:receiptId,session_id:getSessionId()}});
+  navigator.sendBeacon('/api/track',new Blob([payload],{type:'application/json'}));
+  if(typeof gtag!=='undefined'){
+    gtag('event','conversion',{'send_to':'AW-18045718869','value':9.99,'currency':'USD','transaction_id':receiptId||''});
+    gtag('event','purchase',{'transaction_id':receiptId||'','value':9.99,'currency':'USD','items':[{'item_id':'saju_full_reading','item_name':'Saju Full Reading','price':9.99,'quantity':1}]});
+  }
+  const data=window._reportData;
+  if(data){
+    const rc=document.getElementById('reportContent');
+    rc.innerHTML=buildReport(data,true);
+    rc.scrollIntoView({behavior:'smooth',block:'start'});
+    document.getElementById('shareBar').classList.add('visible');
+    try{
+      const birth=JSON.parse(sessionStorage.getItem('saju_birth')||'{}');
+      const res=await fetch('/api/save-short-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reportData:data,birth,email:null})});
+      const d=await res.json();
+      if(d.shareId)_shareUrl=`https://sajublueprint.com/shortresult?id=${d.shareId}&ref=shared`;
+    }catch(e){console.error('save failed:',e);}
+  }
+};
+
+async function openWhopModal(){
+  trackEvent('unlock_clicked');
+  const btn=document.getElementById('unlockBtn');
+  if(btn){btn.textContent='Loading…';btn.disabled=true;}
+  document.getElementById('whopOverlay').classList.add('visible');
+  document.body.style.overflow='hidden';
+  document.getElementById('modalLoading').style.display='flex';
+  document.getElementById('whopCheckoutDiv').style.display='none';
+  setTimeout(()=>{
+    document.getElementById('modalLoading').style.display='none';
+    document.getElementById('whopCheckoutDiv').style.display='block';
+    if(window.WhopSDK&&window.WhopSDK.init)window.WhopSDK.init();
+  },600);
+  if(btn){btn.textContent='✦ Unlock Full Reading · $9.99';btn.disabled=false;}
+}
+function closeWhopModal(){document.getElementById('whopOverlay').classList.remove('visible');document.body.style.overflow='';}
+function handleOverlayClick(e){if(e.target===document.getElementById('whopOverlay'))closeWhopModal();}
+
+let _shareUrl=null;
+async function copyShareLink(){
+  const btn=document.getElementById('shareBtn');
+  trackEvent('share_clicked');
+  if(_shareUrl){_doCopy(_shareUrl,btn);return;}
+  if(btn)btn.textContent='Saving…';
+  try{
+    const birth=JSON.parse(sessionStorage.getItem('saju_birth')||'{}');
+    const res=await fetch('/api/save-short-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reportData:window._reportData,birth,email:null})});
+    const d=await res.json();
+    if(d.shareId)_shareUrl=`https://sajublueprint.com/shortresult?id=${d.shareId}&ref=shared`;
+    _doCopy(_shareUrl||location.href,btn);
+  }catch(e){_doCopy(location.href,btn);}
+  finally{if(btn)btn.disabled=false;}
+}
+function _doCopy(url,btn){
+  navigator.clipboard.writeText(url).then(()=>{
+    if(btn){const orig=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>{btn.textContent=orig;},2500);}
+  }).catch(()=>{prompt('Copy this:',url);});
+}
+
+async function submitFeedback(){
+  const text=document.getElementById('feedbackText')?.value?.trim();
+  if(!text)return;
+  const btn=document.querySelector('.feedback-submit');
+  btn.textContent='Sending…';btn.disabled=true;
+  try{await fetch('/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,page:'short_report'})});}catch(e){}
+  btn.style.display='none';
+  document.getElementById('feedbackThanks').style.display='block';
+  document.getElementById('feedbackText').style.display='none';
+}
+
+async function loadReport(){
+  const params=new URLSearchParams(window.location.search);
+  const shareId=params.get('id');
+  const isPaid=!!sessionStorage.getItem('short_report_token');
+
+  if(shareId){
+    try{
+      const res=await fetch('/api/get-short-report?id='+shareId);
+      const data=await res.json();
+      if(data.error)throw new Error(data.error);
+      window._reportData=data.reportData;
+      _shareUrl=`https://sajublueprint.com/shortresult?id=${shareId}&ref=shared`;
+      renderArchetypeHeader(data.reportData, data.birth);
+      trackEvent('short_result_viewed',{is_paid:true,source:'share'});
+      document.getElementById('loadingState').style.display='none';
+      const rc=document.getElementById('reportContent');
+      rc.innerHTML=buildReport(data.reportData,true);
+      rc.style.display='block';
+      window.scrollTo(0,0);
+      document.getElementById('shareBar').classList.add('visible');
+    }catch(e){
+      document.getElementById('loadingState').style.display='none';
+      document.getElementById('errorState').style.display='block';
+    }
+    return;
+  }
+
+  const cachedReport=sessionStorage.getItem('saju_report');
+  if(cachedReport){
+    try{
+      const data=JSON.parse(cachedReport);
+      window._reportData=data;
+      const birth=JSON.parse(sessionStorage.getItem('saju_birth')||'{}');
+      renderArchetypeHeader(data, birth);
+      trackEvent('short_result_viewed',{is_paid:isPaid,archetype:data.archetype?.name||''});
+      document.getElementById('loadingState').style.display='none';
+      const rc=document.getElementById('reportContent');
+      rc.innerHTML=buildReport(data,isPaid);
+      rc.style.display='block';
+      window.scrollTo(0,0);
+      if(isPaid){
+        document.getElementById('shareBar').classList.add('visible');
+        try{
+          const res=await fetch('/api/save-short-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reportData:data,birth,email:null})});
+          const d=await res.json();
+          if(d.shareId)_shareUrl=`https://sajublueprint.com/shortresult?id=${d.shareId}&ref=shared`;
+        }catch(e){console.error('auto save failed:',e);}
+      }
+    }catch(e){
+      document.getElementById('loadingState').style.display='none';
+      document.getElementById('errorState').style.display='block';
+    }
+    return;
+  }
+
+  document.getElementById('loadingState').style.display='none';
+  document.getElementById('errorState').style.display='block';
+}
+
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+loadReport();
+</script>
+</body>
+</html>

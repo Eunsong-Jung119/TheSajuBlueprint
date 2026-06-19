@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saju Blueprint · Analytics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--text:#e8e8f0;--muted:#6b6b80;--accent:#7c6ff7;--accent2:#a89cf7;--green:#3dd68c;--red:#f06a6a;--amber:#f0a840;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;}
+  #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  .login-box{width:320px;text-align:center;}
+  .login-box .logo{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--muted);margin-bottom:2rem;}
+  .login-box h1{font-size:20px;font-weight:300;margin-bottom:.5rem;}
+  .login-box p{font-size:13px;color:var(--muted);margin-bottom:2rem;}
+  .login-box input{width:100%;background:var(--surface);border:.5px solid var(--border2);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:var(--mono);letter-spacing:.2em;text-align:center;margin-bottom:12px;outline:none;transition:border-color .2s;}
+  .login-box input:focus{border-color:var(--accent);}
+  .login-box button{width:100%;background:var(--accent);border:none;border-radius:8px;padding:10px;color:#fff;font-size:14px;font-family:var(--sans);cursor:pointer;}
+  .login-err{font-size:12px;color:var(--red);margin-top:8px;}
+  #app{display:none;}
+  header{border-bottom:.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;background:var(--bg);z-index:100;}
+  .header-left{display:flex;align-items:center;gap:1rem;}
+  .header-logo{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--muted);}
+  .header-right{display:flex;align-items:center;gap:12px;}
+  select{background:var(--surface);border:.5px solid var(--border2);border-radius:6px;color:var(--text);font-size:12px;font-family:var(--sans);padding:5px 10px;outline:none;cursor:pointer;}
+  button.btn{background:transparent;border:.5px solid var(--border2);border-radius:6px;color:var(--muted);font-size:12px;font-family:var(--sans);padding:5px 12px;cursor:pointer;transition:all .15s;}
+  button.btn:hover{border-color:var(--accent2);color:var(--text);}
+  .country-filter-wrap{position:relative;}
+  .country-filter-btn{display:flex;align-items:center;gap:6px;background:var(--surface);border:.5px solid var(--border2);border-radius:6px;color:var(--text);font-size:12px;font-family:var(--sans);padding:5px 10px;cursor:pointer;white-space:nowrap;}
+  .country-filter-btn .badge{background:var(--accent);color:#fff;font-size:10px;padding:1px 6px;border-radius:99px;margin-left:2px;}
+  .country-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:.5px solid var(--border2);border-radius:10px;padding:8px;min-width:180px;max-height:280px;overflow-y:auto;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;}
+  .country-dropdown.open{display:block;}
+  .country-dropdown .dd-header{display:flex;justify-content:space-between;align-items:center;padding:4px 6px 8px;border-bottom:.5px solid var(--border);margin-bottom:6px;}
+  .country-dropdown .dd-header span{font-size:10px;color:var(--muted);letter-spacing:.05em;}
+  .country-dropdown .dd-header button{background:none;border:none;color:var(--accent2);font-size:11px;cursor:pointer;font-family:var(--sans);padding:0;}
+  .country-item{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:6px;cursor:pointer;transition:background .1s;}
+  .country-item:hover{background:var(--surface2);}
+  .country-item .cb-box{width:14px;height:14px;border:1px solid var(--border2);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .country-item.checked .cb-box{background:var(--accent);border-color:var(--accent);}
+  .country-item .cb-box::after{content:'✓';font-size:9px;color:#fff;opacity:0;transition:opacity .15s;}
+  .country-item.checked .cb-box::after{opacity:1;}
+  .country-item .cb-label{font-size:12px;color:var(--text);}
+  .country-item .cb-cnt{margin-left:auto;font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .gran-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:6px;padding:3px;}
+  .gran-tab{background:none;border:none;border-radius:4px;color:var(--muted);font-size:11px;font-family:var(--sans);padding:3px 10px;cursor:pointer;transition:all .15s;}
+  .gran-tab.active{background:var(--surface);color:var(--text);}
+  main{padding:1.5rem 2rem;max-width:1200px;margin:0 auto;}
+  .metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem;}
+  .metric-card{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;}
+  .metric-card .m-label{font-size:11px;color:var(--muted);letter-spacing:.05em;margin-bottom:6px;}
+  .metric-card .m-val{font-size:26px;font-weight:300;font-family:var(--mono);}
+  .metric-card .m-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  @media(max-width:700px){.grid-2{grid-template-columns:1fr;}}
+  .panel{background:var(--surface);border:.5px solid var(--border);border-radius:10px;padding:1.25rem;}
+  .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+  .panel-title{font-size:11px;letter-spacing:.08em;color:var(--muted);}
+  .funnel-row{margin-bottom:10px;}
+  .funnel-meta{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+  .funnel-meta .f-label{color:var(--text);}
+  .funnel-meta .f-right{color:var(--muted);font-family:var(--mono);}
+  .funnel-meta .f-drop{color:var(--red);margin-left:6px;}
+  .funnel-bar-bg{background:var(--surface2);border-radius:3px;height:6px;overflow:hidden;}
+  .funnel-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  th{font-size:10px;letter-spacing:.06em;color:var(--muted);text-align:left;padding:6px 10px;border-bottom:.5px solid var(--border);font-weight:400;}
+  td{padding:7px 10px;border-bottom:.5px solid var(--border);color:var(--text);font-family:var(--mono);}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:var(--surface2);}
+  td:first-child{font-family:var(--sans);}
+  .badge-green{display:inline-block;background:rgba(61,214,140,.12);color:#3dd68c;font-size:10px;padding:2px 7px;border-radius:99px;}
+  .badge-gray{display:inline-block;background:var(--surface2);color:var(--muted);font-size:10px;padding:2px 7px;border-radius:99px;}
+  .loading{text-align:center;padding:3rem;color:var(--muted);font-size:13px;}
+  .err-banner{background:rgba(240,106,106,.1);border:.5px solid rgba(240,106,106,.3);border-radius:8px;padding:10px 14px;color:var(--red);font-size:13px;margin-bottom:1rem;}
+  ::-webkit-scrollbar{width:4px;height:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">SAJU BLUEPRINT</div>
+    <h1>Analytics</h1>
+    <p>비밀번호를 입력하세요</p>
+    <input type="password" id="pw-input" placeholder="••••" onkeydown="if(event.key==='Enter')checkPw()" autofocus />
+    <button onclick="checkPw()">접속</button>
+    <div class="login-err" id="pw-err"></div>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="header-left">
+      <span class="header-logo">SAJU BLUEPRINT</span>
+      <span style="font-size:14px;font-weight:500;">Analytics</span>
+    </div>
+    <div class="header-right">
+      <select id="f-days" onchange="loadData()">
+        <option value="1">1일</option>
+        <option value="2">2일</option>
+        <option value="3">3일</option>
+        <option value="7" selected>7일</option>
+        <option value="14">14일</option>
+        <option value="30">30일</option>
+        <option value="9999">전체</option>
+      </select>
+      <div class="country-filter-wrap" id="country-wrap">
+        <button class="country-filter-btn" onclick="toggleDropdown(event)">
+          <span>국가</span>
+          <span class="badge" id="country-badge" style="display:none;"></span>
+          <span style="color:var(--muted);font-size:10px;">▾</span>
+        </button>
+        <div class="country-dropdown" id="country-dropdown">
+          <div class="dd-header">
+            <span>국가 필터</span>
+            <button onclick="selectAll()">전체 선택</button>
+          </div>
+          <div id="country-list"></div>
+        </div>
+      </div>
+      <div class="gran-tabs">
+        <button class="gran-tab active" id="tab-day" onclick="setGran('day')">일</button>
+        <button class="gran-tab" id="tab-hour" onclick="setGran('hour')">시간</button>
+      </div>
+      <button class="btn" onclick="loadData()">↻ 새로고침</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="err-banner" class="err-banner" style="display:none;"></div>
+    <div id="loading" class="loading">데이터 불러오는 중...</div>
+    <div id="content" style="display:none;">
+      <div class="metrics-grid" id="metrics"></div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-title">FUNNEL</div>
+          <div id="funnel"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title" id="chart-label">일별 유입</div>
+          </div>
+          <div style="position:relative;height:200px;">
+            <canvas id="daily-chart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-bottom:12px;">
+        <div class="panel-title">국가별 퍼널</div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>국가</th><th>유입</th><th>폼 시작</th><th>차트 생성</th><th>리포트 조회</th><th>결제 시작</th><th>전환</th><th>전환율</th></tr></thead>
+            <tbody id="country-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title" id="table-label">날짜별 이벤트</div>
+        <div style="overflow-x:auto;margin-top:1rem;">
+          <table>
+            <thead><tr id="time-table-head"></tr></thead>
+            <tbody id="daily-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const PW_HASH='286aee2ea4a5ba67539432dc5ea3865c';
+const SUPABASE_URL='https://rxntisncfnsgtjpbdmre.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4bnRpc25jZm5zZ3RqcGJkbXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MzAzMDYsImV4cCI6MjA4ODIwNjMwNn0.21UHPZZTP0IbDzXMAllitws_ezH7pXhE_S-MYXMMUzc';
+
+const FUNNEL_STEPS=[
+  {key:'page_viewed',label:'페이지 유입'},
+  {key:'form_started',label:'폼 시작'},
+  {key:'Saju Card Generate',label:'차트 생성'},
+  {key:'report_preview_viewed',label:'리포트 조회'},
+  {key:'whop_checkout_started',label:'결제 시작'},
+  {key:'payment_completed',label:'전환'},
+];
+
+let allLogs=[];
+let dailyChart=null;
+let selectedCountries=new Set();
+let granularity='day';
+
+async function md5(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,32);
+}
+async function checkPw(){
+  const val=document.getElementById('pw-input').value;
+  const hash=await md5(val);
+  if(hash===PW_HASH){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    loadData();
+  } else {
+    document.getElementById('pw-err').textContent='비밀번호가 틀렸습니다';
+  }
+}
+
+function toggleDropdown(e){
+  e.stopPropagation();
+  document.getElementById('country-dropdown').classList.toggle('open');
+}
+document.addEventListener('click',function(){
+  document.getElementById('country-dropdown').classList.remove('open');
+});
+
+function buildCountryList(){
+  const countryCounts={};
+  allLogs.forEach(function(r){
+    const c=r.metadata?.country||'unknown';
+    countryCounts[c]=(countryCounts[c]||0)+1;
+  });
+  const sorted=Object.entries(countryCounts).sort(function(a,b){return b[1]-a[1];});
+  const list=document.getElementById('country-list');
+  list.innerHTML=sorted.map(function([c,cnt]){
+    const checked=selectedCountries.size===0||selectedCountries.has(c);
+    return '<div class="country-item'+(checked?' checked':'')+'" onclick="toggleCountry(\''+c+'\',this)">'+
+      '<div class="cb-box"></div>'+
+      '<span class="cb-label">'+c+'</span>'+
+      '<span class="cb-cnt">'+cnt+'</span>'+
+    '</div>';
+  }).join('');
+  updateBadge();
+}
+
+// ✅ 버그 수정된 toggleCountry
+function toggleCountry(code, el){
+  if(selectedCountries.size===0){
+    // 전체 선택 상태 → 이 하나만 선택
+    selectedCountries.add(code);
+    document.querySelectorAll('.country-item').forEach(function(item){
+      item.classList.remove('checked');
+    });
+    el.classList.add('checked');
+  } else {
+    if(selectedCountries.has(code)){
+      selectedCountries.delete(code);
+      el.classList.remove('checked');
+      // 아무것도 선택 안 된 상태 → 전체로 리셋
+      if(selectedCountries.size===0){
+        document.querySelectorAll('.country-item').forEach(function(item){
+          item.classList.add('checked');
+        });
+      }
+    } else {
+      selectedCountries.add(code);
+      el.classList.add('checked');
+    }
+    // 전부 선택됐으면 → 전체(empty)로 리셋
+    const total=document.querySelectorAll('.country-item').length;
+    if(selectedCountries.size===total){
+      selectedCountries.clear();
+      document.querySelectorAll('.country-item').forEach(function(item){
+        item.classList.add('checked');
+      });
+    }
+  }
+  updateBadge();
+  renderAll();
+}
+
+function selectAll(){
+  selectedCountries.clear();
+  document.querySelectorAll('.country-item').forEach(function(el){el.classList.add('checked');});
+  updateBadge();
+  renderAll();
+}
+
+function updateBadge(){
+  const badge=document.getElementById('country-badge');
+  if(selectedCountries.size===0){badge.style.display='none';}
+  else{badge.style.display='inline';badge.textContent=selectedCountries.size;}
+}
+
+function setGran(g){
+  granularity=g;
+  document.getElementById('tab-day').classList.toggle('active',g==='day');
+  document.getElementById('tab-hour').classList.toggle('active',g==='hour');
+  renderAll();
+}
+
+async function loadData(){
+  document.getElementById('loading').style.display='block';
+  document.getElementById('content').style.display='none';
+  document.getElementById('err-banner').style.display='none';
+
+  const days=parseInt(document.getElementById('f-days').value);
+  const isAll=days>=9999;
+  const since=isAll?null:new Date(Date.now()-days*86400000).toISOString();
+
+  try{
+    let from=0,pageSize=1000,batch;
+    allLogs=[];
+    do{
+      const dateFilter=since?'&created_at=gte.'+since:'';
+      const res=await fetch(
+        SUPABASE_URL+'/rest/v1/user_logs?select=event_name,metadata,created_at'+dateFilter+'&order=created_at.desc&limit='+pageSize+'&offset='+from,
+        {headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}}
+      );
+      if(!res.ok) throw new Error(res.status+' '+res.statusText);
+      batch=await res.json();
+      allLogs=allLogs.concat(batch);
+      from+=pageSize;
+    } while(batch.length===pageSize);
+
+    buildCountryList();
+    document.getElementById('loading').style.display='none';
+    document.getElementById('content').style.display='block';
+    renderAll();
+  } catch(e){
+    document.getElementById('loading').style.display='none';
+    const banner=document.getElementById('err-banner');
+    banner.textContent='데이터 로드 실패: '+e.message;
+    banner.style.display='block';
+  }
+}
+
+function getFiltered(){
+  const days=parseInt(document.getElementById('f-days').value);
+  const isAll=days>=9999;
+  const since=isAll?0:Date.now()-days*86400000;
+  return allLogs.filter(function(r){
+    const t=new Date(r.created_at).getTime();
+    const c=r.metadata?.country||'unknown';
+    const countryOk=selectedCountries.size===0||selectedCountries.has(c);
+    return t>=since&&countryOk;
+  });
+}
+
+function cnt(logs,key){return logs.filter(function(r){return r.event_name===key;}).length;}
+
+function renderAll(){
+  const logs=getFiltered();
+  renderMetrics(logs);
+  renderFunnel(logs);
+  renderTimeChart(logs);
+  renderCountryTable(logs);
+  renderTimeTable(logs);
+}
+
+function renderMetrics(logs){
+  const top=cnt(logs,'page_viewed');
+  const conv=cnt(logs,'payment_completed');
+  const chk=cnt(logs,'whop_checkout_started');
+  const gen=cnt(logs,'Saju Card Generate');
+  const cvr=top>0?((conv/top)*100).toFixed(1):'0.0';
+  const chkCvr=chk>0?((conv/chk)*100).toFixed(0):'0';
+  document.getElementById('metrics').innerHTML=[
+    {label:'총 유입',val:top,sub:'page_viewed'},
+    {label:'차트 생성',val:gen,sub:top>0?Math.round(gen/top*100)+'% of 유입':'-'},
+    {label:'결제 시작',val:chk,sub:top>0?Math.round(chk/top*100)+'% of 유입':'-'},
+    {label:'전환',val:conv,sub:chkCvr+'% of 결제시작'},
+    {label:'전환율',val:cvr+'%',sub:'유입 대비'},
+  ].map(function(m){
+    return '<div class="metric-card"><div class="m-label">'+m.label+'</div><div class="m-val">'+m.val+'</div><div class="m-sub">'+m.sub+'</div></div>';
+  }).join('');
+}
+
+function renderFunnel(logs){
+  const top=cnt(logs,FUNNEL_STEPS[0].key)||1;
+  document.getElementById('funnel').innerHTML=FUNNEL_STEPS.map(function(step,i){
+    const c=cnt(logs,step.key);
+    const pct=Math.round(c/top*100);
+    const prev=i>0?cnt(logs,FUNNEL_STEPS[i-1].key):c;
+    const drop=prev>0&&i>0?Math.round((prev-c)/prev*100):0;
+    const color=i===FUNNEL_STEPS.length-1?'#3dd68c':'#7c6ff7';
+    return '<div class="funnel-row">'+
+      '<div class="funnel-meta"><span class="f-label">'+step.label+'</span>'+
+      '<span class="f-right">'+c.toLocaleString()+' · '+pct+'%'+(drop>0?'<span class="f-drop">▼'+drop+'%</span>':'')+'</span></div>'+
+      '<div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:'+Math.max(pct,2)+'%;background:'+color+';"></div></div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderTimeChart(logs){
+  const days=parseInt(document.getElementById('f-days').value);
+  let labels=[],data=[];
+
+  if(granularity==='hour'){
+    const hrs=days===1?24:Math.min(days*24,72);
+    const buckets={};
+    for(let i=hrs-1;i>=0;i--){
+      const t=new Date(Date.now()-i*3600000);
+      const key=t.toISOString().slice(0,13);
+      const label=days===1?t.getHours()+'시':(t.getMonth()+1)+'/'+t.getDate()+' '+t.getHours()+'시';
+      buckets[key]={label,cnt:0};
+    }
+    logs.filter(function(r){return r.event_name==='page_viewed';}).forEach(function(r){
+      const key=r.created_at.slice(0,13);
+      if(buckets[key]) buckets[key].cnt++;
+    });
+    labels=Object.values(buckets).map(function(b){return b.label;});
+    data=Object.values(buckets).map(function(b){return b.cnt;});
+    document.getElementById('chart-label').textContent='시간별 유입';
+    document.getElementById('table-label').textContent='시간별 이벤트';
+  } else {
+    const buckets={};
+    for(let i=days-1;i>=0;i--){
+      const d=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+      buckets[d]=0;
+    }
+    logs.filter(function(r){return r.event_name==='page_viewed';}).forEach(function(r){
+      const d=r.created_at.slice(0,10);
+      if(d in buckets) buckets[d]++;
+    });
+    labels=Object.keys(buckets).map(function(d){return d.slice(5);});
+    data=Object.values(buckets);
+    document.getElementById('chart-label').textContent='일별 유입';
+    document.getElementById('table-label').textContent='날짜별 이벤트';
+  }
+
+  if(dailyChart) dailyChart.destroy();
+  dailyChart=new Chart(document.getElementById('daily-chart'),{
+    type:'bar',
+    data:{labels,datasets:[{data,backgroundColor:'rgba(124,111,247,0.5)',borderColor:'#7c6ff7',borderWidth:1,borderRadius:3}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#6b6b80',font:{size:9},autoSkip:true,maxRotation:45,maxTicksLimit:granularity==='hour'?12:14},grid:{display:false},border:{color:'rgba(255,255,255,0.07)'}},
+        y:{ticks:{color:'#6b6b80',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}}
+      }
+    }
+  });
+}
+
+function renderCountryTable(logs){
+  const countries=[...new Set(logs.map(function(r){return r.metadata?.country||'unknown';}))];
+  const rows=countries.map(function(c){
+    const cl=logs.filter(function(r){return(r.metadata?.country||'unknown')===c;});
+    const top=cnt(cl,'page_viewed');
+    const conv=cnt(cl,'payment_completed');
+    const cvr=top>0?((conv/top)*100).toFixed(1):'0.0';
+    return {c,top,form:cnt(cl,'form_started'),gen:cnt(cl,'Saju Card Generate'),rep:cnt(cl,'report_preview_viewed'),chk:cnt(cl,'whop_checkout_started'),conv,cvr};
+  }).sort(function(a,b){return b.top-a.top;});
+
+  document.getElementById('country-body').innerHTML=rows.map(function(r){
+    return '<tr><td style="font-weight:500;">'+r.c+'</td>'+
+      '<td>'+r.top+'</td><td>'+r.form+'</td><td>'+r.gen+'</td><td>'+r.rep+'</td><td>'+r.chk+'</td><td>'+r.conv+'</td>'+
+      '<td>'+(parseFloat(r.cvr)>0?'<span class="badge-green">'+r.cvr+'%</span>':'<span class="badge-gray">'+r.cvr+'%</span>')+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+function renderTimeTable(logs){
+  const days=parseInt(document.getElementById('f-days').value);
+  const head=document.getElementById('time-table-head');
+
+  if(granularity==='hour'){
+    const hrs=days===1?24:Math.min(days*24,72);
+    head.innerHTML='<th>시간</th><th>유입</th><th>폼 시작</th><th>차트 생성</th><th>리포트 조회</th><th>결제 시작</th><th>전환</th>';
+    const buckets={};
+    for(let i=hrs-1;i>=0;i--){
+      const t=new Date(Date.now()-i*3600000);
+      const key=t.toISOString().slice(0,13);
+      buckets[key]={label:t.toISOString().slice(0,13).replace('T',' ')+':00',...FUNNEL_STEPS.reduce(function(a,f){return{...a,[f.key]:0};},{})};
+    }
+    logs.forEach(function(r){
+      const key=r.created_at.slice(0,13);
+      if(buckets[key]&&r.event_name in buckets[key]) buckets[key][r.event_name]++;
+    });
+    document.getElementById('daily-body').innerHTML=Object.entries(buckets)
+      .sort(function(a,b){return b[0].localeCompare(a[0]);})
+      .map(function([,ev]){
+        return '<tr><td style="font-family:var(--sans);">'+ev.label+'</td>'+FUNNEL_STEPS.map(function(f){return'<td>'+ev[f.key]+'</td>';}).join('')+'</tr>';
+      }).join('');
+  } else {
+    head.innerHTML='<th>날짜</th><th>유입</th><th>폼 시작</th><th>차트 생성</th><th>리포트 조회</th><th>결제 시작</th><th>전환</th>';
+    const dates={};
+    for(let i=0;i<days;i++){
+      const d=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+      dates[d]=FUNNEL_STEPS.reduce(function(a,f){return{...a,[f.key]:0};},{});
+    }
+    logs.forEach(function(r){
+      const d=r.created_at.slice(0,10);
+      if(d in dates&&r.event_name in dates[d]) dates[d][r.event_name]++;
+    });
+    document.getElementById('daily-body').innerHTML=Object.entries(dates)
+      .sort(function(a,b){return b[0].localeCompare(a[0]);})
+      .map(function([d,ev]){
+        return '<tr><td style="font-family:var(--sans);">'+d+'</td>'+FUNNEL_STEPS.map(function(f){return'<td>'+ev[f.key]+'</td>';}).join('')+'</tr>';
+      }).join('');
+  }
+}
+</script>
+</body>
+</html>

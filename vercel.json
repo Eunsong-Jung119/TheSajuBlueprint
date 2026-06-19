@@ -7,16 +7,24 @@
     }
   ],
   "rewrites": [
-    { "source": "/",             "destination": "/index2.html" },
-    { "source": "/order",        "destination": "/order.html" },
-    { "source": "/checkout",     "destination": "/checkout.html" },
-    { "source": "/generating",   "destination": "/generating.html" },
-    { "source": "/result",       "destination": "/result.html" },
-    { "source": "/success",      "destination": "/success.html" },
-    { "source": "/terms",        "destination": "/terms.html" },
-    { "source": "/privacy",      "destination": "/privacy.html" },
-    { "source": "/refund",       "destination": "/refund.html" },
-    { "source": "/compatibility","destination": "/compatibility.html" },
-    { "source": "/shortresult",  "destination": "/shortresult.html" }
+    { "source": "/",              "destination": "/index.html" },
+    { "source": "/order",         "destination": "/order.html" },
+    { "source": "/checkout",      "destination": "/checkout.html" },
+    { "source": "/generating",    "destination": "/generating.html" },
+    { "source": "/result",        "destination": "/result.html" },
+    { "source": "/success",       "destination": "/success.html" },
+    { "source": "/terms",         "destination": "/terms.html" },
+    { "source": "/privacy",       "destination": "/privacy.html" },
+    { "source": "/refund",        "destination": "/refund.html" },
+    { "source": "/compatibility", "destination": "/compatibility.html" },
+    { "source": "/shortresult",   "destination": "/shortresult.html" },
+    { "source": "/bazi-chart",    "destination": "/bazi-chart.html" },
+    { "source": "/rate",          "destination": "/rate/index.html" },
+    { "source": "/rate/terms",    "destination": "/rate/terms.html" },
+    { "source": "/rate/privacy",  "destination": "/rate/privacy.html" },
+    { "source": "/rate/dashboard","destination": "/rate/rate-dashboard.html" },
+    { "source": "/dashboard",     "destination": "/dashboard.html" },
+    { "source": "/rate-en-form",  "destination": "/rate-en-form.html" },
+    { "source": "/demo",          "destination": "/demo.html" }
   ]
 }

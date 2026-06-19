@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your Details — The Saju Blueprint</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<script async defer src="https://js.whop.com/static/checkout/loader.js"></script>
 <style>
 :root {
   --gold:#c9a84c; --gold-dim:rgba(201,168,76,0.45); --gold-faint:rgba(201,168,76,0.12);
@@ -32,23 +31,18 @@ h1{font-size:clamp(22px,5vw,26px);font-weight:500;margin-bottom:8px;text-align:c
 .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;}
 .field select option{background:var(--navy-card);}
 input[type="date"],input[type="time"]{color-scheme:dark;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:480px){.row{grid-template-columns:1fr;}}
 .note{font-size:13px;color:var(--text-faint);margin-top:6px;line-height:1.4;}
-.btn{
-  width:100%;background:var(--gold);border:1px solid var(--gold);color:var(--navy);
-  font-family:'EB Garamond',serif;font-size:15px;letter-spacing:3px;padding:18px;
-  cursor:pointer;text-transform:uppercase;transition:all 0.3s;margin-top:8px;font-weight:600;
-  box-shadow:0 0 18px rgba(201,168,76,0.35),0 0 40px rgba(201,168,76,0.15);
-  animation:ctaGlow 2.5s ease-in-out infinite;
-}
-@keyframes ctaGlow{
-  0%,100%{box-shadow:0 0 18px rgba(201,168,76,0.35),0 0 40px rgba(201,168,76,0.15);}
-  50%{box-shadow:0 0 28px rgba(201,168,76,0.55),0 0 60px rgba(201,168,76,0.25);}
-}
-.btn:hover:not(:disabled){background:#d4b060;animation:none;}
-.btn:disabled{opacity:0.6;cursor:not-allowed;animation:none;}
+/* email field hidden */
+.field-email{display:none;}
+.btn{width:100%;background:var(--gold);border:1px solid var(--gold);color:var(--navy);font-family:'EB Garamond',serif;font-size:15px;letter-spacing:3px;padding:18px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;margin-top:8px;font-weight:600;}
+.btn:hover:not(:disabled){background:#d4b060;}
+.btn:disabled{opacity:0.6;cursor:not-allowed;}
 .step-hint{text-align:center;font-size:13px;color:var(--text-faint);margin-top:20px;}
 .back{display:block;text-align:center;margin-bottom:24px;color:var(--text-faint);font-size:14px;text-decoration:none;letter-spacing:1px;}
 .back:hover{color:var(--text-dim);}
+/* birth time toggle */
 .time-section{margin-bottom:24px;}
 .time-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:0;}
 .time-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;}
@@ -60,24 +54,7 @@ input[type="date"],input[type="time"]{color-scheme:dark;}
 .time-input-wrap{display:none;margin-top:12px;}
 .time-input-wrap.visible{display:block;}
 .time-input-wrap input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.3);color:var(--text);font-family:'EB Garamond',serif;font-size:17px;padding:12px 16px;outline:none;}
-.whop-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;padding:20px;}
-.whop-overlay.open{display:flex;}
-.whop-modal{background:var(--navy-card);border:1px solid var(--gold-dim);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;}
-.whop-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(201,168,76,0.15);}
-.whop-modal-title{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
-.whop-close{background:none;border:none;color:var(--text-faint);font-size:20px;cursor:pointer;padding:4px 8px;transition:color 0.2s;}
-.whop-close:hover{color:var(--text);}
-.whop-checkout-wrap{padding:0;}
 </style>
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18045718869"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18045718869');
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNC8VKJZWG"></script>
-<script>gtag('config', 'G-PNC8VKJZWG');</script>
 </head>
 <body>
 <div id="stars"></div>
@@ -87,11 +64,15 @@ input[type="date"],input[type="time"]{color-scheme:dark;}
   <div class="card">
     <h1>Confirm Your Birth Details</h1>
     <p class="subtitle">Review and confirm your birth information before unlocking your full reading.</p>
-    <div class="price-badge">✦ <span style="text-decoration:line-through;opacity:0.6;">$9.99</span> $4.99 · Limited offer ✦</div>
+    <div class="price-badge">✦ $9.99 · Instant delivery ✦</div>
+
+    <!-- Birth Date -->
     <div class="field">
       <label>Birth Date</label>
       <input type="date" id="date">
     </div>
+
+    <!-- Birth Time (optional toggle) -->
     <div class="time-section">
       <div class="time-toggle-row">
         <label class="time-toggle">
@@ -105,6 +86,8 @@ input[type="date"],input[type="time"]{color-scheme:dark;}
         <div class="note">Use 12:00 if unknown</div>
       </div>
     </div>
+
+    <!-- Timezone -->
     <div class="field">
       <label>Birth Timezone</label>
       <select id="timezone">
@@ -131,6 +114,8 @@ input[type="date"],input[type="time"]{color-scheme:dark;}
         </optgroup>
       </select>
     </div>
+
+    <!-- Gender -->
     <div class="field">
       <label>Gender</label>
       <select id="gender">
@@ -138,31 +123,17 @@ input[type="date"],input[type="time"]{color-scheme:dark;}
         <option value="Male">Male</option>
       </select>
     </div>
-    <button class="btn" id="submitBtn" onclick="proceed()">✦ See My Reading · $4.99 →</button>
+
+    <!-- hidden email field (kept for API compatibility) -->
+    <input type="hidden" id="email" value="">
+    <input type="hidden" id="name" value="">
+
+    <button class="btn" id="submitBtn" onclick="proceed()">✦ See My Reading · $9.99 →</button>
     <div class="step-hint">One-time payment · No subscription · Instant access</div>
   </div>
 </div>
-
-<div class="whop-overlay" id="whopOverlay">
-  <div class="whop-modal">
-    <div class="whop-modal-header">
-      <span class="whop-modal-title">✦ Complete Your Purchase</span>
-      <button class="whop-close" onclick="closeWhop()">✕</button>
-    </div>
-    <div class="whop-checkout-wrap">
-      <div
-        id="whopCheckoutDiv"
-        data-whop-checkout-plan-id="plan_VegawRTWadrLi"
-        data-whop-checkout-theme="dark"
-        data-whop-checkout-on-complete="onWhopComplete"
-        data-whop-checkout-skip-redirect="true"
-        style="width:100%;min-height:500px;"
-      ></div>
-    </div>
-  </div>
-</div>
-
 <script>
+// ── Stars ──────────────────────────────────────────────────
 const starsEl=document.getElementById('stars');
 for(let i=0;i<80;i++){
   const s=document.createElement('div');s.className='star';
@@ -171,115 +142,93 @@ for(let i=0;i<80;i++){
   starsEl.appendChild(s);
 }
 
-window.onWhopComplete = function(planId, receiptId) {
-  closeWhop();
-  trackEvent('payment_completed', { plan_id: planId, receipt_id: receiptId });
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'conversion', {'send_to': 'AW-18045718869/purchase','value': 4.99,'currency': 'USD','transaction_id': receiptId || ''});
-    gtag('event', 'purchase', {'transaction_id': receiptId || '','value': 4.99,'currency': 'USD','items': [{'item_id': 'saju_full_reading','item_name': 'Saju Full Reading','price': 4.99,'quantity': 1}]});
-  }
-  sessionStorage.setItem('short_report_token', receiptId || 'paid');
-  window.location.href = '/shortresult';
-};
-
-function closeWhop() {
-  document.getElementById('whopOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
+// ── Pre-fill from sessionStorage ───────────────────────────
 function toggleTime(){
-  document.getElementById('timeInputWrap').classList.toggle('visible', document.getElementById('knowTime').checked);
+  const wrap=document.getElementById('timeInputWrap');
+  wrap.classList.toggle('visible',document.getElementById('knowTime').checked);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded',()=>{
   try {
-    const raw = sessionStorage.getItem('saju_birth');
-    if (!raw) return;
-    const birth = JSON.parse(raw);
-    if (birth.date) document.getElementById('date').value = birth.date;
-    if (birth.time && birth.time !== '12:00') {
-      document.getElementById('knowTime').checked = true;
+    const raw=sessionStorage.getItem('saju_birth');
+    if(!raw) return;
+    const birth=JSON.parse(raw);
+
+    // date
+    if(birth.date) document.getElementById('date').value=birth.date;
+
+    // time — if not default 12:00, show toggle and fill
+    if(birth.time && birth.time !== '12:00'){
+      document.getElementById('knowTime').checked=true;
       document.getElementById('timeInputWrap').classList.add('visible');
-      document.getElementById('time').value = birth.time;
+      document.getElementById('time').value=birth.time;
     }
-    if (birth.timezone) {
-      const sel = document.getElementById('timezone');
-      for (const opt of sel.options) { if (opt.value === birth.timezone) { opt.selected = true; break; } }
+
+    // timezone
+    if(birth.timezone){
+      const sel=document.getElementById('timezone');
+      for(const opt of sel.options){
+        if(opt.value===birth.timezone){opt.selected=true;break;}
+      }
     }
-    if (birth.gender) {
-      const sel = document.getElementById('gender');
-      for (const opt of sel.options) { if (opt.value === birth.gender) { opt.selected = true; break; } }
+
+    // gender
+    if(birth.gender){
+      const sel=document.getElementById('gender');
+      for(const opt of sel.options){
+        if(opt.value===birth.gender){opt.selected=true;break;}
+      }
     }
-  } catch(e) {}
+  } catch(e){}
 });
 
+// ── Event tracking ─────────────────────────────────────────
 function getSessionId(){
   let sid=localStorage.getItem('saju_sid');
   if(!sid){sid=crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('saju_sid',sid);}
   return sid;
 }
-async function trackEvent(eventName, metadata={}) {
-  const p = new URLSearchParams(window.location.search);
-  try {
-    await fetch('/api/track', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        event: eventName,
-        metadata: {
+async function trackEvent(eventName,metadata={}){
+  const p=new URLSearchParams(window.location.search);
+  try{
+    await fetch('/api/track',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        event:eventName,
+        metadata:{
           ...metadata,
-          session_id: getSessionId(),
-          source: p.get('utm_source') || 'direct',
-          medium: p.get('utm_medium') || 'none',
-          campaign: p.get('utm_campaign') || 'none',
-          referrer: document.referrer || 'none',
+          session_id:getSessionId(),
+          source:p.get('utm_source')||'direct',
+          medium:p.get('utm_medium')||'none',
+          campaign:p.get('utm_campaign')||'none',
+          referrer:document.referrer||'none',
         }
       })
     });
-  } catch(e) {}
+  }catch(e){}
 }
 
-// ── 페이지 로드 시 이벤트 ──
 trackEvent('order_page_viewed');
 
-// ── 전체 체류시간 — sendBeacon으로 변경 ──
-const _orderLoadTime = Date.now();
-window.addEventListener('beforeunload', function() {
-  const secs = Math.round((Date.now() - _orderLoadTime) / 1000);
-  const payload = JSON.stringify({
-    event: 'time_on_page',
-    metadata: { seconds: secs, page: '/order', session_id: getSessionId() }
-  });
-  navigator.sendBeacon('/api/track', new Blob([payload], {type: 'application/json'}));
-});
+// ── Proceed ────────────────────────────────────────────────
+async function proceed(){
+  const date    = document.getElementById('date').value;
+  const timezone= document.getElementById('timezone').value;
+  const gender  = document.getElementById('gender').value;
+  const knowTime= document.getElementById('knowTime').checked;
+  const time    = knowTime ? document.getElementById('time').value : '12:00';
 
-async function proceed() {
-  const date     = document.getElementById('date').value;
-  const timezone = document.getElementById('timezone').value;
-  const gender   = document.getElementById('gender').value;
-  const knowTime = document.getElementById('knowTime').checked;
-  const time     = knowTime ? document.getElementById('time').value : '12:00';
+  if(!date){alert('Please enter your birth date.');return;}
 
-  if (!date) { alert('Please enter your birth date.'); return; }
+  const btn=document.getElementById('submitBtn');
+  btn.textContent='Preparing…';btn.disabled=true;
 
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = 'Opening checkout…';
-  btn.disabled = true;
+  await trackEvent('see_reading_clicked',{gender});
 
-  await trackEvent('see_reading_clicked', { gender });
-
-  sessionStorage.setItem('saju_birth', JSON.stringify({
-    name: '', email: '', date, time, timezone, gender
+  sessionStorage.setItem('saju_birth',JSON.stringify({
+    name:'', email:'', date, time, timezone, gender
   }));
-
-  // ★ Whop 결제창 열기
-  document.getElementById('whopOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  // ★ whop_checkout_started 로깅
-  await trackEvent('whop_checkout_started', { gender });
-
-  btn.textContent = '✦ See My Reading · $4.99 →';
-  btn.disabled = false;
+  window.location.href='/shortresult';
 }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
