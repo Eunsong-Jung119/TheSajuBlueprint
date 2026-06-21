@@ -436,6 +436,10 @@ select{cursor:pointer;}
   <div class="wrap" id="result-wrap" style="padding-top:100px;"></div>
 </div>
 
+<div id="upsell-view" style="display:none;background:#0d0d11;min-height:100vh;">
+  <div id="upsell-wrap"></div>
+</div>
+
 <script>
 (function(){const ua=navigator.userAgent||'';if(/Instagram|FBAN|FBAV/.test(ua))document.getElementById('iab-modal').style.display='flex';})();
 function openInBrowser(){const url=window.location.href,isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);if(isIOS){window.location.href='x-safari-'+url;setTimeout(()=>{window.location.href=url;},500);}else{window.location.href='intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';}}
@@ -456,12 +460,15 @@ function openInBrowser(){const url=window.location.href,isIOS=/iPhone|iPad|iPod/
 
 let guyCount=0,guyIds=[],formData=null,analysisRunning=false,_userEmail=null;
 
-// 결제 채널 자동 분기: 운영 도메인=실결제 / 그 외 또는 ?test=1=테스트(INIpayTest)
-const IS_TEST_PAY = location.search.includes('test=1') || location.hostname !== 'sajublueprint.com';
+// ⚠️ 결제 안전장치: 런칭 전까지 LIVE_MODE=false 유지 → 무조건 테스트 결제(실결제 절대 발생 X).
+//    런칭 준비 끝나면 LIVE_MODE=true 로 바꿔. 그때부터 운영 도메인=실결제 / ?test=1=테스트.
+const LIVE_MODE = false;
+const IS_TEST_PAY = !LIVE_MODE || location.search.includes('test=1') || location.hostname !== 'sajublueprint.com';
 const PAY_CHANNEL_KEY = IS_TEST_PAY
-  ? 'channel-key-b3463847-1da5-4158-b849-86a485196401'   // 테스트 (INIpayTest)
+  ? 'channel-key-42310ca7-0d20-42d1-90d7-4abaed5778ba'   // 테스트 (INIpayTest, V2)
   : 'channel-key-633ce4cf-a5a7-4b28-94f9-2f5d5c49dbfc';  // 실결제 (MOI1435306)
 
+function _chrome(show){const t=document.querySelector('.top-bar'),b=document.querySelector('.timer-bar');if(t)t.style.display=show?'':'none';if(b)b.style.display=show?'':'none';}
 function getSessionId(){let s=localStorage.getItem('ryex_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_sid',s);}return s;}
 function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign'),utm_content:p.get('utm_content'),utm_term:p.get('utm_term'),fbclid:p.get('fbclid'),gclid:p.get('gclid')};}
 function trackEvent(name,props={}){gtag('event',name,{session_id:getSessionId(),...getUTM(),...props});fetch('/api/track-rate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_name:name,session_id:getSessionId(),metadata:{...getUTM(),...props}})}).catch(()=>{});}
@@ -592,6 +599,7 @@ const loadingSteps=[['만세력 추출하는 중...','사주팔자 분석하는 
 
 async function runAnalysis(data){
   if(analysisRunning)return;analysisRunning=true;
+  _chrome(false);
   document.getElementById('landing-view').style.display='none';
   document.getElementById('loading-view').classList.add('show');
   let step=0;const iv=setInterval(()=>{if(step<loadingSteps.length){document.getElementById('loading-text').textContent=loadingSteps[step][0];document.getElementById('loading-sub').textContent=loadingSteps[step][1];step++;}},3000);
@@ -617,13 +625,14 @@ async function runAnalysis(data){
       }
     }catch(e){console.error('[save]',e);}
     showResult(result,shareUrl);trackEvent('result_shown',{guy_count:partners.length});
-  }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';console.error(e);alert('분석 중 오류가 발생했어요. 다시 시도해주세요!');}
+  }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);console.error(e);alert('분석 중 오류가 발생했어요. 다시 시도해주세요!');}
 }
 
 const rankClass=['r1','r2','r3','r4','r5'],rankEmoji=['🥇','🥈','🥉','4위','5위'],barColors=['#E8547A','#6B9EE8','#27AE8A','#E8A054','#9B78E8'];
 const SECTION_LABELS={heart:{emoji:'❤️',label:'감정의 깊이'},growth:{emoji:'🚀',label:'성장의 힘'},stability:{emoji:'🏠',label:'관계 안정성'},perspective:{emoji:'🪞',label:'세상을 보는 방식'},timing:{emoji:'⏳',label:'삶의 속도'}};
 
 function showResult(data,shareUrl){
+  _chrome(false);
   window._shareUrl=shareUrl||null;
   document.getElementById('loading-view').classList.remove('show');
   const rv=document.getElementById('result-view'),wrap=document.getElementById('result-wrap');
@@ -638,18 +647,13 @@ function showResult(data,shareUrl){
     const did=`detail-${i}`;
     html+=`<div class="rank-card"><div class="rank-header"><div class="rank-badge ${rankClass[i]}">${rankEmoji[i]}</div><div><div class="rank-name">${r.name}</div><div class="rank-label">${r.archetype}</div></div><div class="rank-score">${total}<span>/100</span></div></div><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" data-width="${total}" style="background:${barColors[i]};"></div></div></div><div style="margin:12px 0 4px;">${miniScores}</div><div class="verdict-section"><button onclick="toggleDetail('${did}')" style="width:100%;background:none;border:1px solid var(--border-strong);border-radius:8px;padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'Pretendard',sans-serif;margin-bottom:2px;" id="btn-${did}">상세 분석 보기 ▾</button><div id="${did}" style="display:none;padding-top:14px;">${sectionDetails}<div style="font-size:13px;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">${r.overall}</div></div></div></div>`;
   });
-  // ── 업셀 picker (후기 박스 자리) ──
-  const _myGuys=(typeof formData!=='undefined'&&formData&&formData.guys)?formData.guys:(((JSON.parse(localStorage.getItem('ryex_form')||'{}'))||{}).guys||[]);
-  function _birthOf(name){const g=_myGuys.find(x=>x.name===name)||_myGuys[0];return g?{name:g.name,year:g.year,month:g.month,day:g.day,hour:g.hour||''}:null;}
-  const _pick=sorted.map(r=>{
-    const b=_birthOf(r.name); if(!b) return '';
-    const e=encodeURIComponent(JSON.stringify(b));
-    return `<div style="display:flex;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--border);"><div style="flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</div><button onclick="startUpsell('conquest','${e}')" style="padding:8px 11px;font-size:12px;font-weight:700;border:none;border-radius:8px;background:var(--pink);color:#fff;cursor:pointer;font-family:'Pretendard',sans-serif;white-space:nowrap;">🎯 공략집</button><button onclick="startUpsell('reunion','${e}')" style="padding:8px 11px;font-size:12px;font-weight:700;border:1px solid var(--border-strong);border-radius:8px;background:#fff;color:var(--pink-dark);cursor:pointer;font-family:'Pretendard',sans-serif;white-space:nowrap;">💔 재회운</button></div>`;
-  }).join('');
+  // ── 업셀 CTA (박스 2개, 가격 X / 남자선택은 다음 스텝) ──
   html+=`<div class="action-row"><button class="action-btn btn-outline" onclick="shareResult()">📤 공유하기</button><button class="action-btn btn-filled" onclick="resetAll()">🔄 다시 하기</button></div>`;
-  if(_pick.trim()) html+=`<div style="background:var(--surface);border:1.5px solid var(--border-strong);border-radius:var(--radius);padding:20px;margin-top:12px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:var(--deep);margin-bottom:2px;">더 깊게 파볼까? 🔍</div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">마음에 걸리는 그 남자, <b>공략집</b>(어떻게 다가갈지)이나 <b>재회운</b>(다시 연락해도 될지)으로 끝까지 파봐 · 각 4,900원</div>${_pick}</div>`;
+  const _ub='background:var(--surface);border:1.5px solid var(--border-strong);border-radius:var(--radius);padding:20px;margin-top:12px;';
+  const _ut="font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:var(--deep);margin-bottom:9px;";
+  const _ud='font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-bottom:3px;';
+  const _ubtn="width:100%;margin-top:14px;padding:15px;border:none;border-radius:12px;color:#fff;cursor:pointer;font-family:'Pretendard',sans-serif;font-size:14.5px;font-weight:700;";
+  html+=`<div style="${_ub}"><div style="${_ut}word-break:keep-all;text-wrap:pretty;">🔍 더 깊이 파헤쳐보고 싶은 남자가 있나요?</div><div style="${_ud}word-break:keep-all;text-wrap:pretty;margin-bottom:18px;">그가 절대 인정하지 않을 숨은 취향, 본능적으로 끌리는 이상형, 그리고 남들에겐 절대 들키고 싶지 않은 가장 약한 모습까지.</div><button onclick="upsellStart('conquest')" style="${_ubtn}background:var(--pink);box-shadow:0 5px 18px rgba(232,84,122,0.32);">명리 기반 심층 분석 리포트 ➔</button></div>`;
   html+=`<div class="disclaimer">재미로 보는 사주 분석이에요. 참고만 하세요 🙏<br><a href="/rate/terms" style="color:var(--text-hint);text-decoration:underline;">이용약관</a> · <a href="/rate/privacy" style="color:var(--text-hint);text-decoration:underline;">개인정보처리방침</a><br>상호: 에벌리(Everly) · 대표자: 정은송 · 406-02-67708</div>`;
   wrap.innerHTML=html;rv.classList.add('show');
   setTimeout(()=>{document.querySelectorAll('.score-fill').forEach(el=>{el.style.width=el.dataset.width+'%';});},100);
@@ -661,77 +665,284 @@ async function submitFeedback(){const text=document.getElementById('feedback-tex
 function resetAll(){
   document.getElementById('result-view').classList.remove('show');
   document.getElementById('result-wrap').innerHTML='';
+  document.getElementById('upsell-view').style.display='none';
+  document.getElementById('upsell-wrap').innerHTML='';
+  _ups=null;
   document.getElementById('landing-view').style.display='block';
+  _chrome(true);
   localStorage.removeItem('ryex_form');
   localStorage.removeItem('ryex_email');
+  localStorage.removeItem('ryex_upsell');
   _userEmail=null;
   analysisRunning=false;
   window.scrollTo(0,0);
 }
 
-// ══ 업셀 (공략집 / 재회운) ══════════════════════════════════
-const UPSELL_LABEL={conquest:'이 남자 공략집',reunion:'재회운 분석'};
-async function startUpsell(type,target){
-  if(typeof target==='string'){try{target=JSON.parse(decodeURIComponent(target));}catch(e){target=null;}}
-  if(!target){alert('남자 정보를 찾을 수 없어요.');return;}
+// ══ 심층분석 업셀 (CTA → 여자티저 → 남자선택 → 남자티저 → 결제 → 전체) ══
+const UPSELL_LABEL={conquest:'남자 심층 분석'};
+const UPSELL_ORDER={conquest:'남자 심층 분석'};
+const HOUR_OPTS='<option value="">태어난 시간 모름</option><option value="23">자시 23-01시</option><option value="1">축시 01-03시</option><option value="3">인시 03-05시</option><option value="5">묘시 05-07시</option><option value="7">진시 07-09시</option><option value="9">사시 09-11시</option><option value="11">오시 11-13시</option><option value="13">미시 13-15시</option><option value="15">신시 15-17시</option><option value="17">유시 17-19시</option><option value="19">술시 19-21시</option><option value="21">해시 21-23시</option>';
+let _ups=null;
+const DK='#0d0d11', DK_TXT='#f2f2f4', DK_SUB='#6b6b78', DK_ACCENT='#c9b6f0', DK_DOT='#3a3a44', DK_BORDER='#26262e';
+const DK_BTN='width:100%;padding:16px;border:none;border-radius:12px;background:#f2f2f4;color:#0d0d11;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;';
+const DK_BACK='display:block;text-align:center;margin-top:14px;font-size:12px;color:#6b6b78;text-decoration:underline;cursor:pointer;';
+
+function _upsView(){_chrome(false);document.getElementById('result-view').classList.remove('show');document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='none';document.getElementById('upsell-view').style.display='block';window.scrollTo(0,0);}
+function _upsBack(){_chrome(false);document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.remove('show');document.getElementById('result-view').classList.add('show');window.scrollTo(0,0);}
+function _upsLoad(txt,sub){_chrome(false);document.getElementById('landing-view').style.display='none';document.getElementById('result-view').classList.remove('show');document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.add('show');document.getElementById('loading-text').textContent=txt;document.getElementById('loading-sub').textContent=sub||'';window.scrollTo(0,0);}
+
+function _upsShell(inner){document.getElementById('loading-view').classList.remove('show');document.getElementById('upsell-wrap').innerHTML=`<style>#ups-track::-webkit-scrollbar{display:none}@keyframes upsSwipeHint{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}</style><div style="min-height:100vh;background:${DK};display:flex;flex-direction:column;">${inner}</div>`;_upsView();}
+
+// 다크 풀스크린 스와이프 + 화살표 (cards: [{lines[],basis}])
+function _renderSwipe(cards,eyebrows,accentLast,footerHTML){
+  const n=cards.length;
+  const slides=cards.map((c,idx)=>{
+    const ls=(c.lines&&c.lines.length?c.lines:[c.body||'']);
+    const lines=ls.map((ln,li)=>{
+      const isAccent=accentLast&&idx===n-1&&li===ls.length-1;
+      return `<p style="font-size:17px;line-height:1.75;color:${isAccent?DK_ACCENT:DK_TXT};font-weight:400;margin:0 0 16px;word-break:keep-all;text-wrap:pretty;">${ln}</p>`;
+    }).join('');
+    return `<section style="flex:0 0 100%;scroll-snap-align:center;box-sizing:border-box;padding:0 30px;display:flex;flex-direction:column;justify-content:center;">`+
+      `<div style="font-size:11px;letter-spacing:2px;color:${DK_SUB};margin-bottom:26px;">${eyebrows[idx]||''}</div>`+
+      `<div>${lines}</div>`+
+      `<div style="margin-top:26px;font-size:11px;font-family:monospace;color:${DK_SUB};letter-spacing:.3px;">${c.basis||''}</div></section>`;
+  }).join('');
+  const dots=cards.map((_,i)=>`<span class="ups-dot" style="width:7px;height:7px;border-radius:50%;background:${i===0?DK_TXT:DK_DOT};transition:all .2s;"></span>`).join('');
+  const arr='position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid #2a2a32;background:rgba(255,255,255,0.05);color:#f2f2f4;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;';
+  const arrows=n>1?`<button id="ups-prev" aria-label="이전" style="${arr}left:6px;">‹</button><button id="ups-next" aria-label="다음" style="${arr}right:6px;">›</button>`:'';
+  return `<div style="flex:1;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
+    `<div style="height:44px;flex:0 0 auto;"></div>`+
+    arrows+
+    `<div id="ups-track" style="flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;">${slides}</div>`+
+    `<div style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:18px 0 14px;">${dots}</div>`+
+    `<div style="flex:0 0 auto;padding:0 30px 34px;">${footerHTML}</div></div>`;
+}
+function _bindSwipe(){
+  const t=document.getElementById('ups-track');if(!t)return;
+  const d=document.querySelectorAll('.ups-dot');
+  const f=document.getElementById('ups-footer');
+  const coach=document.getElementById('ups-coach');
+  let coachGone=false;
+  const onScroll=()=>{const i=Math.round(t.scrollLeft/t.clientWidth);d.forEach((x,idx)=>x.style.background=idx===i?DK_TXT:DK_DOT);if(f){const last=i>=d.length-1;f.style.opacity=last?'1':'0';f.style.pointerEvents=last?'auto':'none';}if(coach&&!coachGone&&t.scrollLeft>10){coachGone=true;coach.style.opacity='0';setTimeout(()=>coach.remove(),400);}};
+  t.addEventListener('scroll',onScroll,{passive:true});
+  const p=document.getElementById('ups-prev'),nx=document.getElementById('ups-next');
+  if(p)p.onclick=()=>t.scrollBy({left:-t.clientWidth,behavior:'smooth'});
+  if(nx)nx.onclick=()=>t.scrollBy({left:t.clientWidth,behavior:'smooth'});
+  // 코치마크 자동 페이드 (5초 후)
+  if(coach)setTimeout(()=>{if(!coachGone){coachGone=true;coach.style.opacity='0';setTimeout(()=>coach.remove(),400);}},5000);
+}
+
+// STEP 1: CTA → 바로 남자 선택
+function upsellStart(type){
   const me=(typeof formData!=='undefined'&&formData&&formData.me)?formData.me:(((JSON.parse(localStorage.getItem('ryex_form')||'{}'))||{}).me);
   if(!me){alert('내 정보를 찾을 수 없어요. 다시 분석해주세요.');return;}
-  localStorage.setItem('ryex_upsell',JSON.stringify({type,target,me,ts:Date.now()}));
-  trackEvent('upsell_paywall_shown',{upsell_type:type});
+  _ups={type:type||'conquest',me,target:null,manCards:null};
+  trackEvent('upsell_cta_click',{upsell_type:_ups.type});
+  upsellManSelect();
+}
+
+// STEP 3: 남자 선택 (+추가)
+function upsellManSelect(){
+  const guys=(typeof formData!=='undefined'&&formData&&formData.guys)?formData.guys:(((JSON.parse(localStorage.getItem('ryex_form')||'{}'))||{}).guys||[]);
+  _ups._guys=guys;
+  const IN='width:100%;padding:13px;font-size:15px;background:transparent;border:1px solid #3a3a44;border-radius:10px;color:#f2f2f4;font-family:inherit;box-sizing:border-box;';
+  const fmtBirth=g=>{const y=g.year||'',m=g.month?String(g.month).padStart(2,'0'):'',d=g.day?String(g.day).padStart(2,'0'):'';return (y&&m&&d)?`${y}.${m}.${d}`:'생년월일 정보';};
+  const cards=guys.map((g,i)=>`<button onclick="_upsPick(${i})" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px;border:1px solid #3a3a44;border-radius:12px;background:transparent;color:#f2f2f4;cursor:pointer;font-family:inherit;text-align:left;margin-bottom:10px;">`+
+    `<span><span style="font-size:15px;font-weight:600;display:block;">${g.name||'이름없음'}</span><span style="font-size:12px;color:#6b6b78;font-family:monospace;">${fmtBirth(g)}</span></span>`+
+    `<span style="font-size:16px;color:#6b6b78;">›</span></button>`).join('');
+  const emptyHint=guys.length?'':`<div style="padding:18px;border:1px dashed #3a3a44;border-radius:12px;color:#6b6b78;font-size:14px;text-align:center;margin-bottom:10px;">아직 분석할 사람이 없어. 아래에서 추가해줘.</div>`;
+  const inner=`<div style="width:100%;max-width:480px;margin:0 auto;padding:48px 18px 40px;box-sizing:border-box;">`+
+    `<div style="font-size:11px;letter-spacing:2px;color:${DK_SUB};margin-bottom:24px;padding:0 4px;">먼저, 그 사람은 누구</div>`+
+    `<p style="font-size:18px;line-height:1.6;color:${DK_TXT};margin:0 0 28px;padding:0 4px;word-break:keep-all;">누구를 깊게 들여다볼까?<br><span style="font-size:13px;color:${DK_SUB};">분석할 사람을 고르거나 새로 추가해줘.</span></p>`+
+    `${emptyHint}${cards}`+
+    `<div id="ups-addform" style="display:none;border-top:1px solid ${DK_BORDER};margin-top:8px;padding-top:18px;">`+
+      `<input type="text" id="ups-name" placeholder="이름/별명 (선택)" style="${IN}margin-bottom:10px;">`+
+      `<div style="display:flex;gap:8px;margin-bottom:10px;"><input type="text" id="ups-year" placeholder="1995" maxlength="4" inputmode="numeric" style="${IN}flex:1.2;"><select id="ups-month" style="${IN}flex:1;"><option value="">월</option>${[1,2,3,4,5,6,7,8,9,10,11,12].map(m=>`<option value="${m}">${m}월</option>`).join('')}</select><input type="text" id="ups-day" placeholder="20" maxlength="2" inputmode="numeric" style="${IN}flex:.8;"></div>`+
+      `<select id="ups-hour" style="${IN}margin-bottom:14px;">${HOUR_OPTS}</select>`+
+      `<button onclick="_upsAddMan()" style="${DK_BTN}">이 사람으로 분석 →</button>`+
+    `</div>`+
+    `<button id="ups-addbtn" onclick="document.getElementById('ups-addform').style.display='block';this.style.display='none';document.getElementById('ups-name').focus();" style="width:100%;padding:15px;background:transparent;border:1px dashed #3a3a44;border-radius:12px;color:#9a9aa6;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;">+ 새로운 사람</button>`+
+    `<a onclick="_upsBack()" style="${DK_BACK}">← 결과로 돌아가기</a></div>`;
+  _upsShell(inner);
+}
+function _upsPick(i){const g=_ups._guys[i];_ups.target={name:g.name,year:g.year,month:g.month,day:g.day,hour:g.hour||''};upsellManTeaser();}
+function _upsAddMan(){
+  const name=(document.getElementById('ups-name').value.trim())||'그 사람';
+  const year=document.getElementById('ups-year').value.trim(),month=document.getElementById('ups-month').value,day=document.getElementById('ups-day').value.trim(),hour=document.getElementById('ups-hour').value;
+  if(!year||!month||!day){alert('생년월일을 입력해줘!');return;}
+  _ups.target={name,year,month,day,hour};
+  upsellManTeaser();
+}
+
+// STEP 4: 남자 티저 + 결제 CTA
+async function upsellManTeaser(){
+  trackEvent('upsell_man_selected',{upsell_type:_ups.type});
+  _upsLoad('그 사람 사주 읽는 중...','잠깐만 🔍');
+  try{
+    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:_ups.type,phase:'manTeaser',me:_ups.me,target:_ups.target,session_id:getSessionId()})});
+    if(!res.ok)throw new Error('man '+res.status);
+    const data=await res.json();
+    _ups.manCards=data.cards||[];
+    renderManTeaser();
+  }catch(e){console.error('[manTeaser]',e);alert('분석 중 오류가 났어요. 다시!');upsellManSelect();}
+}
+// 리포트 예시 (모든 유저 공통 static, 가짜 수치 없음)
+const REPORT_SAMPLE=[
+  {n:'01',lead:'사주명리 심층 분석으로',title:'그가 본능적으로<br>끌리는 여자를 알게 돼요',sub:'그 남자 스스로도 모르는 숨은 취향을 사주로 풀어줄게.',heading:'그가 끌리는 여자',
+   visual:{type:'tags',label:'그가 약한 타입',items:['밝고 생기 있는','표현 솔직한','리액션 큰']},
+   body:'그는 임수(壬水) 일간이라 재성이 화(火)에 해당해. 쉽게 말하면 자기한테 없는 밝고 따뜻한 에너지를 가진 사람한테 본능적으로 끌린다는 뜻이야. 특히 배우자궁이 자수(子水)라 겉으론 차분한 사람을 만날 것 같지만, 실제론 정반대로 자기 분위기를 환기시켜 주는 사람한테 무장 해제돼...'},
+  {n:'02',lead:'사주명리 심층 분석으로',title:'그가 숨기고 있는<br>진짜 연애 본성을 알게 돼요',sub:'지금 네가 보는 모습은 그의 전부가 아니야.',heading:'겉모습 vs 진짜 속',
+   visual:{type:'contrast',outer:['무심','쿨함'],inner:['확인욕구','집착']},
+   body:"겉으론 무심하고 쿨해 보이지만, 그의 일지 12운성이 '제왕(帝旺)'이라 사실 속으로는 누구보다 확인받고 싶은 욕구가 강한 사람이야. 연락 텀이 길어지는 건 너한테 관심이 없어서가 아니라, 오히려 마음을 들키는 게 두려워서 일부러 거리를 두는 거에 가까워. 그래서 네가 한 발 물러서면 그가 더 불안해하는 패턴이 반복됐을 가능성이 높아..."},
+  {n:'03',lead:'사주명리 심층 분석으로',title:'지금 그가 진짜로<br>원하는 게 뭔지 알게 돼요',sub:'이 남자 머릿속 1순위가 연애가 맞는지부터.',heading:'그의 진짜 우선순위',
+   visual:{type:'ranking',items:[['새로운 재미·경험','1순위'],['커리어·성공','2순위'],['연애·안정','3순위']]},
+   body:'그의 월지는 편재(偏財) 기운이 강해. 이런 남자는 머릿속 1순위가 연애가 아니라 새로운 재미와 경험인 경우가 많아. 그래서 지금 그가 너한테 미지근해 보인다면, 마음이 식은 게 아니라 애초에 연애가 그의 우선순위 맨 위가 아닐 수 있다는 뜻이야...'},
+];
+// 크림 리포트 색
+const RP={bg:'#faf6ef',head:'#1a1410',gold:'#c9a96a',txt:'#3a322a',label:'#b09a78',pillBg:'#f6ebdb',pillTx:'#8a5a2b',line:'#ece3d3'};
+
+function _rpVisual(v){
+  if(v.type==='tags'){
+    return `<div style="font-size:10px;color:${RP.label};margin-bottom:8px;letter-spacing:.5px;">${v.label}</div>`+
+      `<div style="display:flex;flex-wrap:wrap;gap:5px;">`+v.items.map(t=>`<span style="font-size:11px;font-weight:600;color:${RP.pillTx};background:${RP.pillBg};padding:4px 9px;border-radius:20px;">${t}</span>`).join('')+`</div>`;
+  }
+  if(v.type==='contrast'){
+    const pills=arr=>arr.map(t=>`<span style="font-size:11px;font-weight:600;color:${RP.pillTx};background:${RP.pillBg};padding:4px 9px;border-radius:20px;">${t}</span>`).join(' ');
+    return `<div style="font-size:10px;color:${RP.label};margin-bottom:5px;">네가 보는 겉모습</div>`+
+      `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px;">${pills(v.outer)}</div>`+
+      `<div style="text-align:center;color:${RP.gold};font-size:13px;margin:2px 0 9px;">↓ 사실은</div>`+
+      `<div style="font-size:10px;color:${RP.label};margin-bottom:5px;">진짜 속마음</div>`+
+      `<div style="display:flex;flex-wrap:wrap;gap:5px;">${pills(v.inner)}</div>`;
+  }
+  if(v.type==='ranking'){
+    return v.items.map(([nm,rk],i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i<v.items.length-1?'border-bottom:1px solid '+RP.line+';':''}">`+
+      `<span style="flex:0 0 22px;height:22px;border-radius:50%;background:${i===0?RP.pillTx:RP.line};color:${i===0?'#fff':RP.label};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">${i+1}</span>`+
+      `<span style="flex:1;font-size:13px;font-weight:${i===0?'700':'400'};color:${i===0?RP.head:RP.txt};">${nm}</span>`+
+      `<span style="font-size:11px;color:${i===0?RP.pillTx:RP.label};">${rk}</span></div>`).join('');
+  }
+  return '';
+}
+
+// 다크 텍스트 슬라이드 (카드1·2)
+function _darkSlide(lines,eyebrow,accentLast){
+  const ls=lines.map((ln,i)=>`<p style="font-size:17px;line-height:1.75;color:${accentLast&&i===lines.length-1?DK_ACCENT:DK_TXT};margin:0 0 16px;word-break:keep-all;text-wrap:pretty;">${ln}</p>`).join('');
+  return `<section style="flex:0 0 100%;scroll-snap-align:center;box-sizing:border-box;padding:0 30px;display:flex;flex-direction:column;justify-content:center;">`+
+    `<div style="font-size:11px;letter-spacing:2px;color:${DK_SUB};margin-bottom:26px;">${eyebrow}</div><div>${ls}</div></section>`;
+}
+
+// 크림 리포트 목업 슬라이드 (상단만 보이는 아이폰 프레임, 하단 페이드 절단)
+function _reportSlide(rc,payHTML,big){
+  const scrH=big?470:430;
+  const phoneW=big?244:210;
+  const screen=`<div style="background:${RP.bg};border-radius:30px 30px 0 0;overflow:hidden;height:${scrH}px;position:relative;">`+
+    `<div style="position:absolute;top:9px;left:50%;transform:translateX(-50%);width:68px;height:21px;background:#000;border-radius:13px;z-index:10;"></div>`+
+    `<div style="position:absolute;top:0;left:0;right:0;height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:9;font-size:10px;color:#1a1410;font-weight:600;"><span>9:41</span><span style="font-size:9px;">●●● 5G ▮</span></div>`+
+    `<div style="position:absolute;top:38px;left:0;right:0;">`+
+      `<div style="background:${RP.head};padding:12px 16px;"><div style="font-size:8px;letter-spacing:2px;color:${RP.gold};margin-bottom:4px;">DEEP ANALYSIS · ${rc.n}</div><div style="font-size:15px;font-weight:700;color:#f7f1e6;word-break:keep-all;">${rc.heading}</div></div>`+
+      `<div style="padding:13px 16px;"><div style="margin-bottom:11px;">${_rpVisual(rc.visual)}</div><div style="font-size:12px;line-height:1.85;color:${RP.txt};word-break:keep-all;">${rc.body}</div></div>`+
+    `</div>`+
+    `<div style="position:absolute;left:0;right:0;bottom:0;height:38px;background:linear-gradient(to bottom,rgba(13,13,17,0),${DK});"></div></div>`;
+  const phone=`<div style="position:absolute;left:50%;top:0;transform:translateX(-50%);width:${phoneW}px;">`+
+    `<div style="position:relative;background:#1c1c1e;border-radius:36px 36px 0 0;padding:7px 7px 0;box-shadow:0 -2px 0 #3a3a3c inset,2px 0 0 #3a3a3c inset,-2px 0 0 #3a3a3c inset,0 12px 36px rgba(0,0,0,0.42);">`+
+    `<div style="position:absolute;left:-2px;top:78px;width:3px;height:36px;background:#2a2a2c;border-radius:2px;"></div>`+
+    `<div style="position:absolute;left:-2px;top:124px;width:3px;height:36px;background:#2a2a2c;border-radius:2px;"></div>`+
+    `<div style="position:absolute;right:-2px;top:96px;width:3px;height:52px;background:#2a2a2c;border-radius:2px;"></div>`+
+    screen+`</div></div>`;
+  const mockArea=`<div style="flex:1;position:relative;min-height:300px;overflow:hidden;">${phone}</div>`;
+  const topGap=big?'24px':'16px';
+  return `<section style="flex:0 0 100%;scroll-snap-align:center;box-sizing:border-box;padding:0 24px;display:flex;flex-direction:column;${payHTML?'overflow-y:auto;':''}">`+
+    `<div style="flex:0 0 auto;padding-top:${big?'14px':'8px'};"><div style="font-size:11px;letter-spacing:1.5px;color:#857a5e;margin-bottom:6px;">${rc.lead}</div>`+
+    `<div style="font-size:20px;line-height:1.4;color:${DK_TXT};font-weight:500;margin-bottom:8px;word-break:keep-all;">${rc.title}</div>`+
+    `<div style="font-size:12.5px;line-height:1.6;color:#8a8a94;margin-bottom:${topGap};word-break:keep-all;">${rc.sub}</div></div>`+
+    mockArea+(payHTML?`<div style="flex:0 0 auto;padding-top:14px;">${payHTML}</div>`:'')+`</section>`;
+}
+
+function renderManTeaser(){
+  const tName=(_ups.target&&_ups.target.name)||'그';
+  const mc=_ups.manCards||[];
+  const pay=`<div style="border:1px solid #3a3340;border-radius:16px;padding:18px 16px;text-align:center;background:#13111a;">`+
+    `<div style="font-size:15px;font-weight:700;color:${DK_TXT};margin-bottom:4px;">${tName}의 전체 분석 받기</div>`+
+    `<div style="font-size:11px;color:${DK_SUB};line-height:1.5;margin-bottom:12px;">끌리는 여자 · 숨은 본성 · 진짜 욕망 전부 공개</div>`+
+    `<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;"><span style="font-size:12px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:21px;font-weight:800;color:#FFD580;">4,900원</span></div>`+
+    `<button onclick="upsellPay()" style="${DK_BTN}background:#FFD580;padding:13px;">🔓 전체 분석 받기</button></div>`+
+    `<a onclick="upsellManSelect()" style="${DK_BACK}">← 다른 사람 고르기</a>`;
+
+  const eyebrows=['그는 어떤 사람','보이는 게 다가 아니야'];
+  let slides='';
+  if(mc[0])slides+=_darkSlide(mc[0].lines||[mc[0].body],eyebrows[0],false);
+  if(mc[1])slides+=_darkSlide(mc[1].lines||[mc[1].body],eyebrows[1],true);
+  REPORT_SAMPLE.forEach((rc,i)=>{const isLast=i===REPORT_SAMPLE.length-1;slides+=_reportSlide(rc, isLast?pay:null, !isLast);});
+
+  const total=(mc[0]?1:0)+(mc[1]?1:0)+REPORT_SAMPLE.length;
+  const dots=Array.from({length:total},(_,i)=>`<span class="ups-dot" style="width:7px;height:7px;border-radius:50%;background:${i===0?DK_TXT:DK_DOT};transition:all .2s;"></span>`).join('');
+  const arr='position:absolute;top:46%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid #2a2a32;background:rgba(255,255,255,0.05);color:#f2f2f4;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;';
+  // 코치마크 (처음 1회, 스와이프하면 사라짐)
+  const coach=`<div id="ups-coach" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;background:rgba(13,13,17,0.82);border:1px solid #2a2a32;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:8px;pointer-events:none;transition:opacity .4s;backdrop-filter:blur(2px);">`+
+    `<span style="font-size:18px;animation:upsSwipeHint 1.2s ease-in-out infinite;">👈</span>`+
+    `<span style="font-size:13px;color:#f2f2f4;white-space:nowrap;">옆으로 넘겨보세요</span></div>`;
+  const inner=`<div style="flex:1;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
+    `<div style="flex:0 0 auto;height:44px;display:flex;align-items:center;padding:0 8px;"><a onclick="_upsBack()" style="font-size:13px;color:#8a8a94;text-decoration:none;cursor:pointer;padding:8px;">← 결과로</a></div>`+
+    `<button id="ups-prev" aria-label="이전" style="${arr}left:6px;">‹</button><button id="ups-next" aria-label="다음" style="${arr}right:6px;">›</button>`+
+    coach+
+    `<div id="ups-track" style="flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;min-height:0;">${slides}</div>`+
+    `<div style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0 18px;">${dots}</div></div>`;
+  _upsShell(inner);
+  _bindSwipe();
+}
+
+// STEP 5: 결제
+async function upsellPay(){
+  if(!_ups||!_ups.target){alert('남자를 먼저 선택해줘!');return;}
+  localStorage.setItem('ryex_upsell',JSON.stringify({type:_ups.type,me:_ups.me,target:_ups.target,ts:Date.now()}));
+  trackEvent('upsell_paywall_shown',{upsell_type:_ups.type});
   try{
     const response=await PortOne.requestPayment({
       storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
       channelKey:PAY_CHANNEL_KEY,
       paymentId:'upsell_'+Date.now(),
-      orderName:UPSELL_LABEL[type]||'심화 분석',
+      orderName:UPSELL_ORDER[_ups.type]||'심층 분석',
       totalAmount:4900,currency:'KRW',payMethod:'CARD',
       customer:{email:_userEmail||localStorage.getItem('ryex_email')||'guest@sajublueprint.com',phoneNumber:'01000000000',fullName:'구매자'},
       redirectUrl:'https://sajublueprint.com/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
-    trackEvent('upsell_payment_confirmed',{upsell_type:type,payment_id:response.paymentId});
-    fbq('track','Purchase',{value:4900,currency:'KRW',content_name:UPSELL_LABEL[type],content_type:'product'});
-    runUpsell();
-  }catch(e){console.error('[upsell]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
+    trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId});
+    fbq('track','Purchase',{value:4900,currency:'KRW',content_name:UPSELL_ORDER[_ups.type],content_type:'product'});
+    upsellFull();
+  }catch(e){console.error('[upsellPay]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
-async function runUpsell(){
-  const intent=JSON.parse(localStorage.getItem('ryex_upsell')||'null');
-  if(!intent)return;
-  document.getElementById('result-view').classList.remove('show');
-  document.getElementById('landing-view').style.display='none';
-  document.getElementById('loading-view').classList.add('show');
-  document.getElementById('loading-text').textContent=(UPSELL_LABEL[intent.type]||'분석')+' 작성 중...';
-  document.getElementById('loading-sub').textContent='30초 정도 걸려요';
-  try{
-    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,me:intent.me,target:intent.target,session_id:getSessionId()})});
-    if(!res.ok)throw new Error('gen '+res.status);
-    const data=await res.json();
-    showUpsellResult(intent,data);
-    trackEvent('upsell_result_shown',{upsell_type:intent.type});
-  }catch(e){
-    console.error('[runUpsell]',e);
-    document.getElementById('loading-view').classList.remove('show');
-    document.getElementById('result-view').classList.add('show');
-    alert('분석 중 오류가 발생했어요. 다시 시도해주세요!');
-  }
-}
-function _upsellCard(c,side){
-  const bg=side==='woman'?'var(--pink-light)':'#EAF1FB',col=side==='woman'?'var(--pink-dark)':'#3D6FB5';
-  return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:10px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:20px;">${c.icon||'🔮'}</span><span style="font-size:14px;font-weight:700;color:var(--deep);">${c.title||''}</span></div><p style="font-size:13px;color:var(--text-muted);line-height:1.75;margin-bottom:${c.hook?'8px':'0'};">${c.body||''}</p>${c.hook?`<div style="font-size:12px;font-weight:600;color:${col};padding:7px 11px;background:${bg};border-radius:8px;">💡 ${c.hook}</div>`:''}</div>`;
-}
-function showUpsellResult(intent,data){
-  document.getElementById('loading-view').classList.remove('show');
-  document.getElementById('landing-view').style.display='none';
-  const rv=document.getElementById('result-view'),wrap=document.getElementById('result-wrap');
-  window._shareUrl=data.shareUrl||window._shareUrl||null;
-  const tName=(intent.target&&intent.target.name)||'그';
-  const title=UPSELL_LABEL[intent.type]||'심화 분석';
-  const woman=data.womanCards||[],man=data.manCards||[];
-  wrap.innerHTML=`<div class="result-hero"><div style="display:inline-flex;align-items:center;gap:6px;background:var(--pink-light);color:var(--pink-dark);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:14px;">🔓 ${title}</div><h1 style="font-family:'Nanum Myeongjo',serif;font-size:24px;font-weight:700;color:var(--deep);">${tName} 분석 완료</h1></div><div class="section-label">먼저, 너에 대해</div>${woman.map(c=>_upsellCard(c,'woman')).join('')}<div class="section-label" style="margin-top:18px;">그리고, ${tName}에 대해</div>${man.map(c=>_upsellCard(c,'man')).join('')}<div class="action-row"><button class="action-btn btn-outline" onclick="shareResult()">📤 공유하기</button><button class="action-btn btn-filled" onclick="resetUpsell()">🔄 처음으로</button></div><div class="disclaimer">재미로 보는 사주 분석이에요. 참고만 하세요 🙏</div>`;
-  rv.classList.add('show');window.scrollTo(0,0);
-}
-function resetUpsell(){localStorage.removeItem('ryex_upsell');resetAll();}
 
+// STEP 6: 전체 리포트 (결제 후, GPT)
+async function upsellFull(){
+  const intent=(_ups&&_ups.target)?_ups:JSON.parse(localStorage.getItem('ryex_upsell')||'null');
+  if(!intent||!intent.target){alert('결제 정보를 찾을 수 없어요.');return;}
+  _ups=intent;
+  _upsLoad((UPSELL_ORDER[intent.type]||'리포트')+' 작성 중...','30초 정도 걸려요');
+  try{
+    const email=_userEmail||localStorage.getItem('ryex_email')||null;
+    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,phase:'full',me:intent.me,target:intent.target,session_id:getSessionId(),email})});
+    if(!res.ok)throw new Error('full '+res.status);
+    const data=await res.json();
+    renderFull(intent,data);
+    localStorage.removeItem('ryex_upsell');
+    trackEvent('upsell_result_shown',{upsell_type:intent.type});
+  }catch(e){console.error('[upsellFull]',e);document.getElementById('loading-view').classList.remove('show');_upsView();alert('리포트 생성 중 오류가 났어요. 새로고침해서 다시 시도해줘!');}
+}
+function _upsCardDark(c){return `<div style="border:1px solid ${DK_BORDER};border-radius:14px;padding:18px;margin-bottom:12px;"><div style="font-size:14px;font-weight:700;color:${DK_TXT};margin-bottom:8px;">${c.icon||'🔮'} ${c.title||''}</div><p style="font-size:14px;color:#c4c4cc;line-height:1.75;margin:0 0 ${c.hook?'8px':'0'};">${c.body||''}</p>${c.hook?`<div style="font-size:13px;font-weight:600;color:${DK_ACCENT};">💡 ${c.hook}</div>`:''}</div>`;}
+function renderFull(intent,data){
+  const tName=(intent.target&&intent.target.name)||'그';
+  const woman=(data.womanCards||[]).map(_upsCardDark).join('');
+  const man=(data.manCards||[]).map(_upsCardDark).join('');
+  const inner=`<div style="max-width:440px;margin:0 auto;padding:48px 26px 40px;">`+
+    `<div style="font-size:11px;letter-spacing:2px;color:#FFD580;margin-bottom:16px;">🔓 ${UPSELL_LABEL[intent.type]}</div>`+
+    `<h1 style="font-family:'Nanum Myeongjo',serif;font-size:24px;font-weight:700;color:${DK_TXT};margin:0 0 24px;">${tName} 전체 분석</h1>`+
+    `<div style="font-size:12px;color:${DK_SUB};margin-bottom:12px;">먼저, 너에 대해</div>${woman}`+
+    `<div style="font-size:12px;color:${DK_SUB};margin:22px 0 12px;">그리고, ${tName}에 대해</div>${man}`+
+    `<button onclick="resetAll()" style="${DK_BTN}margin-top:18px;">🔄 처음으로</button>`+
+    `<a onclick="_upsBack()" style="${DK_BACK}">← 랭킹 결과로</a>`+
+    `<div style="text-align:center;font-size:11px;color:${DK_SUB};margin-top:20px;line-height:1.6;">재미로 보는 사주 분석이에요. 참고만 하세요 🙏</div></div>`;
+  _upsShell(inner);
+}
 const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
@@ -751,6 +962,18 @@ window.addEventListener('DOMContentLoaded',async()=>{
       const res=await fetch(`/api/get-rating-report?id=${reportId}`);
       if(!res.ok)throw new Error('not found');
       const json=await res.json();
+      // 입력값(내 사주+남자들)도 복원 → 재접속/타기기에서도 심층분석 구매 가능
+      try{
+        if(json.my_year){
+          let partners=json.partners;
+          if(typeof partners==='string'){try{partners=JSON.parse(partners);}catch(_){partners=[];}}
+          partners=Array.isArray(partners)?partners:[];
+          const guys=partners.map(p=>({name:p.nickname||p.name||'',year:p.year,month:p.month,day:p.day,hour:(p.hour===null||p.hour===undefined)?'':p.hour}));
+          const restored={me:{year:json.my_year,month:json.my_month,day:json.my_day,gender:json.my_gender||'female',hour:(json.my_hour===null||json.my_hour===undefined)?'':json.my_hour},guys};
+          formData=restored;
+          localStorage.setItem('ryex_form',JSON.stringify(restored));
+        }
+      }catch(e){console.error('[restore form]',e);}
       showResult(json.result,`https://sajublueprint.com/rate?report=${reportId}`);
     }catch(e){
       document.getElementById('loading-view').classList.remove('show');
@@ -772,13 +995,14 @@ window.addEventListener('DOMContentLoaded',async()=>{
     }
   }
 
-  // ⬇ 업셀 결제 복귀 처리
+  // ⬇ 업셀 결제 복귀 처리 → 전체 리포트 생성
   if(paymentId&&paymentId.indexOf('upsell_')===0&&params.get('transactionType')==='PAYMENT'&&!pgCode){
     const intent=JSON.parse(localStorage.getItem('ryex_upsell')||'null');
     if(intent){
+      _userEmail=localStorage.getItem('ryex_email')||null;
       trackEvent('upsell_payment_confirmed',{upsell_type:intent.type,payment_id:paymentId});
-      fbq('track','Purchase',{value:4900,currency:'KRW',content_name:(intent.type==='reunion'?'재회운 분석':'이 남자 공략집'),content_type:'product'});
-      runUpsell();
+      fbq('track','Purchase',{value:4900,currency:'KRW',content_name:'남자 심층 분석',content_type:'product'});
+      upsellFull();
     }
   }
 });
