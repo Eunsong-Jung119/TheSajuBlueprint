@@ -1098,46 +1098,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   }
 });
 </script>
-<!-- ══════════════════════════════════════════════════════════════
-     업셀(심층분석 리포트) 결제 임시 차단 패치
-     - 심층 리포트 생성 이슈 동안, 업셀 CTA를 누르면 "준비중" 팝업만 뜨고
-       결제/티저로 절대 안 넘어감. (랭킹 5,900원 결제는 그대로 정상 작동)
-     - 사용법: 기존 메인 <script>...</script> 가 끝난 "다음", </body> "앞"에
-       이 블록을 통째로 붙여넣기. (뒤에 와서 함수를 덮어씀)
-     - 원복: 리포트 고치면 이 블록만 삭제하면 됨.
-     ══════════════════════════════════════════════════════════════ -->
-<script>
-(function(){
-  // ── 준비중 팝업 ──
-  function _upsSoonPopup(){
-    try{ if(typeof trackEvent==='function') trackEvent('upsell_disabled_popup'); }catch(e){}
-    if(document.getElementById('ups-soon-modal')) return;
-    var wrap=document.createElement('div');
-    wrap.id='ups-soon-modal';
-    wrap.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(26,10,18,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;';
-    wrap.innerHTML=
-      '<div style="position:relative;background:#fff;border-radius:20px;padding:32px 24px 26px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);font-family:\'Pretendard\',-apple-system,sans-serif;">'
-      +  '<div style="font-size:38px;margin-bottom:12px;">🔮</div>'
-      +  '<div style="font-family:\'Nanum Myeongjo\',serif;font-size:19px;font-weight:800;color:#1A0A12;margin-bottom:10px;">준비 중이에요</div>'
-      +  '<p style="font-size:14px;color:#7A5060;line-height:1.75;margin:0 0 22px;">심층 분석 리포트는 지금 더 좋게 다듬고 있어요.<br>조금만 기다려 주세요 🙏</p>'
-      +  '<button id="ups-soon-close" style="width:100%;padding:14px;background:#E8547A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:\'Pretendard\',sans-serif;cursor:pointer;">확인</button>'
-      +'</div>';
-    document.body.appendChild(wrap);
-    function close(){ var m=document.getElementById('ups-soon-modal'); if(m) m.remove(); }
-    document.getElementById('ups-soon-close').addEventListener('click',close);
-    wrap.addEventListener('click',function(e){ if(e.target===wrap) close(); });
-  }
-  // 전역으로도 노출 (혹시 다른 곳에서 재사용)
-  window._upsSoonPopup = _upsSoonPopup;
-
-  // ── 업셀 진입점 3개 전부 차단 (팝업만 띄우고 결제/티저로 안 넘어감) ──
-  // 1) 결과 하단 큰 CTA
-  window.upsellStart = function(){ _upsSoonPopup(); };
-  // 2) 랭킹 카드별 "숨은 속마음 분석 →"
-  window.upsellStartWith = function(){ _upsSoonPopup(); };
-  // 3) 안전망: 어떤 경로로든 결제 함수까지 오면 여기서도 차단
-  window.upsellPay = function(){ _upsSoonPopup(); };
-})();
+<script>;
 </script>
 </body>
 </html>
