@@ -16,6 +16,7 @@ import deepEngine from '../lib/deep-report-engine.js';
 import sajuEngine from '../lib/saju-engine.js';
 import templates from '../lib/upsell-templates.js';
 import paymentLib from '../lib/payment.js';
+export const config = { maxDuration: 60 };
 
 const { buildDeepPromptMessages } = deepEngine;
 const { calcSaju } = sajuEngine;
@@ -86,7 +87,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-4o',
         temperature: 0.7,
-        max_tokens: 4000, // 5섹션 + 6개월 타임라인이라 넉넉히
+        max_tokens: 16000, // 5섹션 + 6개월 타임라인이라 넉넉히
         response_format: { type: 'json_object' },
         messages,
       }),
