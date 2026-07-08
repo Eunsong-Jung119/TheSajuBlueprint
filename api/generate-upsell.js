@@ -85,9 +85,9 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         temperature: 0.7,
-        max_tokens: 16000, // 5섹션 + 6개월 타임라인이라 넉넉히
+        max_tokens: 10000, // 5섹션 + 6개월 타임라인이라 넉넉히
         response_format: { type: 'json_object' },
         messages,
       }),
