@@ -113,8 +113,8 @@ export default async function handler(req, res) {
     catch (e) { console.error('[generate-upsell] parse fail', raw.slice(0, 400)); return res.status(502).json({ error: 'Malformed GPT output' }); }
 
     const sections = Array.isArray(parsed.sections) ? parsed.sections : [];
-    if (sections.length < 5) {
-      console.error('[generate-upsell] expected 5 sections, got', sections.length, raw.slice(0, 400));
+    if (sections.length < 4) {
+      console.error('[generate-upsell] expected 4 sections, got', sections.length, raw.slice(0, 400));
       return res.status(502).json({ error: 'Incomplete report' });
     }
 
