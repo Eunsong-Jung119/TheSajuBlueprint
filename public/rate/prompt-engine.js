@@ -282,6 +282,64 @@ function getBranchRelation(dz1, dz2) {
   return '무관계';
 }
 
+// ── 신살(神煞) 계산 ──────────────────────────────
+// 삼합국별 도화/역마/화개 지지
+const SAMHAP_GROUP = {
+  2:'화국',6:'화국',10:'화국', 8:'수국',0:'수국',4:'수국',
+  5:'금국',9:'금국',1:'금국', 11:'목국',3:'목국',7:'목국',
+};
+const DOHWA_BY_GROUP  = { 화국:3, 수국:9, 금국:6, 목국:0 };
+const YEOKMA_BY_GROUP = { 화국:8, 수국:2, 금국:11, 목국:5 };
+const HWAGAE_BY_GROUP = { 화국:10, 수국:4, 금국:1, 목국:7 };
+const POS_NAME = ['년지','월지','일지','시지'];
+
+// 백호살 일주 7개
+const BAEKHO  = new Set(['0-4','1-7','2-10','3-1','4-4','8-10','9-1']);
+// 괴강살 일주
+const GOEGANG = new Set(['6-4','6-10','8-4','8-10','4-10']);
+// 양인살 (양간 기준 지지)
+const YANGIN_BY_STEM = { 0:3, 2:6, 4:6, 6:9, 8:0 };
+// 원진살 쌍
+const WONJIN = [[0,7],[1,6],[2,9],[3,8],[4,11],[5,10]];
+
+function getSinsalSummary(r, hasHour) {
+  const branches = hasHour
+    ? [r.yrDZ, r.monthDZ, r.dayDZ, r.hourDZ]
+    : [r.yrDZ, r.monthDZ, r.dayDZ];
+  const bases = [branches[0], branches[2]]; // 년지·일지 기준
+  const hit = { 도화:new Set(), 역마:new Set(), 화개:new Set() };
+
+  for (const base of bases) {
+    const g = SAMHAP_GROUP[base];
+    if (!g) continue;
+    branches.forEach((dz, i) => {
+      if (dz === DOHWA_BY_GROUP[g])  hit.도화.add(POS_NAME[i]);
+      if (dz === YEOKMA_BY_GROUP[g]) hit.역마.add(POS_NAME[i]);
+      if (dz === HWAGAE_BY_GROUP[g]) hit.화개.add(POS_NAME[i]);
+    });
+  }
+
+  const dayKey = `${r.dayTG}-${r.dayDZ}`;
+  const list = [];
+  if (BAEKHO.has(dayKey))  list.push('백호살');
+  if (GOEGANG.has(dayKey)) list.push('괴강살');
+  if (hit.도화.size) list.push(`도화살(${[...hit.도화].join(',')})`);
+  if (hit.역마.size) list.push(`역마살(${[...hit.역마].join(',')})`);
+  if (hit.화개.size) list.push(`화개살(${[...hit.화개].join(',')})`);
+  const yangin = YANGIN_BY_STEM[r.dayTG];
+  if (yangin !== undefined) {
+    const y = branches.map((dz,i)=>dz===yangin?POS_NAME[i]:null).filter(Boolean);
+    if (y.length) list.push(`양인살(${y.join(',')})`);
+  }
+  return list.length ? list.join(' · ') : '주요 신살 없음';
+}
+
+function getWonjin(dz1, dz2) {
+  for (const [a,b] of WONJIN)
+    if ((a===dz1&&b===dz2)||(a===dz2&&b===dz1)) return true;
+  return false;
+}
+
 // 내 일간 기준 상대 사주 각 간지의 십성 분포
 function getPartnerTenGodDist(myDayTG, pR, hasHour) {
   const pillars = hasHour
@@ -335,6 +393,9 @@ function buildPersonText(label, year, month, day, hour, isMe) {
   // 일지 12운성
   const twelveStar = getTwelveStar(r.dayTG, r.dayDZ);
 
+  // 신살
+  const sinsal = getSinsalSummary(r, hasHour);
+
   // 오행 분포
   const elemDist = calcElemDist(r, hasHour);
   const hourNote = hasHour ? '' : ' (시주 미상, 3기둥 기준)';
@@ -344,6 +405,7 @@ function buildPersonText(label, year, month, day, hour, isMe) {
 일간: ${dayMasterHanja}${ELEM_KR[dayElem]} (${YY_KR[dayYY]}${ELEM_NAME_KR[dayElem]})
 월지: ${monthBranchHanja}(${monthBranchElem}) → 성장 환경·사고방식 형성 배경
 배우자궁(일지): ${spouseHanja} → ${spouseDesc}
+주요 신살: ${sinsal}
 일지 12운성: ${twelveStar}
 오행 분포: ${elemDist}${hourNote}`;
 
@@ -393,9 +455,140 @@ const SYSTEM_PROMPT = `
     · 갑목(甲木) - 경금(庚金)
     · 정화(丁火) - 계수(癸水)
 
-4. (중요) 명리 데이터 필수 포함 규칙:
-각 섹션의 텍스트 서술 시, 심리학적 해석만 나열하는 것은 절대 금지한다. 반드시 입력값으로 주어진 [일간, 월지, 배우자궁, 12운성, 오행분포, 십성분포]를 명확한 근거로 텍스트 안에 자연스럽게 녹여내야 해.
-예) "그는 회피형이야" (X) -> "그의 일지 12운성이 '절(絶)'이라 갈등이 생기면 단칼에 회피하려는 성향이 튀어나와" (O)
+4. 명리근거 활용 규칙 
+각 섹션은 심리 묘사만 작성하는 것을 금지한다. 각 문단마다 최소 4개의 명리 근거를 자연스럽게 녹여라.
+
+추천 우선순위
+
+① 일간
+② 배우자궁
+③ 월지
+④ 12운성
+⑤ 십성
+⑥ 오행 분포
+⑦ 신살(있는 경우)
+
+명리 용어를 마지막에
+"근거:"
+처럼 나열하지 말고
+
+문장 안에 자연스럽게 섞어라.
+
+예시 (O)
+
+"신금이라 쉽게 마음을 열지 않고,
+배우자궁 축토 영향으로 관계에서도
+안정을 먼저 확인하는 편이야.
+편인이 강해서 좋아하는 사람의 말도
+혼자 오래 곱씹고,
+화개 기운까지 있어 감정을 정리하는 시간이 길어."
+
+예시 (X)
+
+신금
+배우자궁 축토
+편인
+화개살
+
+4-1. 신살(神煞) 활용 규칙 (매우 중요)
+
+신살은 점수 계산의 기준이 아니다.
+
+신살은 이미
+일간,
+배우자궁,
+월지,
+12운성,
+십성,
+오행
+
+으로 도출한 결론을
+현실적인 행동,
+연애 심리,
+관계 패턴
+으로 풍부하게 설명하는 보조 근거로만 사용한다.
+
+신살 하나만으로 성격이나 연애를 단정하지 마라.
+
+한 문단에서 신살은 최대 1~2개만 사용한다.
+
+신살을 여러 개 나열하지 마라.
+
+신살은 반드시 문단 후반부에서 자연스럽게 녹여 사용한다.
+
+예시 (O)
+
+"신금이라 쉽게 마음을 열지 않고,
+편인이 강해서 오래 곱씹는 편인데,
+여기에 화개 기운까지 있어서
+혼자 생각을 정리하는 시간이 길다."
+
+예시 (X)
+
+"화개살이라 혼자 있는 걸 좋아한다."
+
+신살은 반드시 아래 우선순위 이후에 사용한다.
+
+일간
+→ 배우자궁
+→ 월지
+→ 12운성
+→ 십성
+→ 오행
+→ 신살
+
+신살은 없는 경우 절대 억지로 언급하지 않는다.
+
+있는 경우만 자연스럽게 녹인다.
+
+각 신살의 활용 방향
+
+도화
+- 첫인상
+- 이성에게 보이는 매력
+- 인기
+- 끌림
+
+역마
+- 이동
+- 장거리
+- 여행
+- 환경 변화
+- 연락 패턴 변화
+
+화개
+- 혼자 생각
+- 감정 정리
+- 속마음
+- 예술성
+- 혼자 있는 시간
+
+백호
+- 욱하는 모습
+- 직설적인 표현
+- 감정 폭발
+- 승부욕
+
+괴강
+- 강한 자존심
+- 리더십
+- 고집
+- 기싸움
+
+양인
+- 추진력
+- 직진
+- 경쟁심
+- 밀어붙이는 스타일
+
+원진
+- 이유 없이 서운함
+- 애증
+- 반복되는 오해
+- 묘한 거리감
+
+신살은 연애 행동을 묘사하는 용도로만 활용하고,
+결론 자체를 뒤집는 근거로 사용하지 마라.
 
 5. Archetype (아키타입) 규칙:
 총점 결과를 요약하는 도파민 카피. 단, 아키타입 문장만 읽어도 '안정성이 높은 관계인지', '감정 점수만 높고 불안정한 관계인지' 점수의 구조가 직관적으로 보여야 해.
@@ -508,6 +701,50 @@ const SYSTEM_PROMPT = `
 로 시작하는 것을 금지한다.
 
 반드시 해당 섹션의 1순위 요소부터 설명해야 한다.
+
+15. 연애 리포트 작성 규칙 
+
+연애 리포트 작성 규칙
+
+모든 카드의 문단은
+
+① 명리 근거
+
+↓
+
+② 실제 심리
+
+↓
+
+③ 현실 연애 행동
+
+↓
+
+④ 확인 포인트
+
+순으로 자연스럽게 이어진다.
+
+반드시
+
+"왜 이런 사람이 되는지"
+
+를 명리적으로 설명한 뒤
+
+실제 행동을 설명한다.
+
+절대
+
+"회피형이다"
+
+처럼 심리만 단정하지 마라.
+
+반드시
+
+"신금이라...",
+"배우자궁이...",
+"12운성이..."
+
+처럼 명리 근거가 먼저 등장해야 한다.
 
 `.trim();
 
@@ -896,7 +1133,9 @@ function buildPromptMessages(myInfo, partners) {
     const pData = buildPersonText(label, p.year, p.month, p.day, p.hour, false);
     const tenGodDist = getPartnerTenGodDist(myData.r.dayTG, pData.r, hasHour);
     const branchRel = getBranchRelation(myData.dayDZ, pData.dayDZ);
-    return `${pData.text}\n내 일간 기준 상대 십성 분포:\n${tenGodDist}\n배우자궁 관계 (내 일지↔상대 일지): ${branchRel}`;
+    const wonjin = getWonjin(myData.dayDZ, pData.dayDZ);
+    const wonjinNote = wonjin ? ' / 배우자궁 원진(怨嗔): 있음 (애증·미묘한 불편함)' : '';
+    return `${pData.text}\n내 일간 기준 상대 십성 분포:\n${tenGodDist}\n배우자궁 관계 (내 일지↔상대 일지): ${branchRel}${wonjinNote}`;
   });
 
   const userMessage = `
@@ -925,6 +1164,22 @@ ${partnerTexts.join('\n\n')}
 // ─────────────────────────────────────────────
 // API 호출 (analyze.js serverless function 경유)
 // ─────────────────────────────────────────────
+// 총점이 촘촘하게 뭉칠 때 순위는 유지하면서 최소 간격(gap)만큼 벌려줌.
+// GPT가 75/73/72처럼 뱉어도 → 75/71/67 식으로 신빙성 있게 펼침.
+function spreadTotals(results, gap = 4) {
+  // 원래 순위 기억 (total 내림차순)
+  const order = [...results].sort((a, b) => b.scores.total - a.scores.total);
+  for (let i = 1; i < order.length; i++) {
+    const prev = order[i - 1].scores.total;
+    const cur = order[i].scores.total;
+    // 앞 등수보다 gap 미만으로 붙어있으면 끌어내림
+    if (prev - cur < gap) {
+      order[i].scores.total = Math.max(0, prev - gap);
+    }
+  }
+  return results; // 원본 배열 객체를 직접 수정했으므로 그대로 반환
+}
+
 async function analyzeCompatibility(myInfo, partners) {
   const messages = buildPromptMessages(myInfo, partners);
 
@@ -976,12 +1231,19 @@ async function analyzeCompatibility(myInfo, partners) {
   }
 
   // 4) 최종 JSON 파싱
+  let parsed;
   try {
-    return JSON.parse(raw);
+    parsed = JSON.parse(raw);
   } catch (e) {
     console.error('[analyze] 모델 JSON 파싱 실패. raw:', raw.slice(0, 800));
     throw new Error('분석 결과를 읽는 데 실패했어요. 다시 시도해줘.');
   }
+
+  // 5) 점수 간격 보정: 총점이 촘촘하면 순위 유지하며 최소 4점씩 벌림
+  if (parsed && Array.isArray(parsed.results) && parsed.results.length > 1) {
+    parsed.results = spreadTotals(parsed.results, 4);
+  }
+  return parsed;
 }
 
 // export (브라우저 환경에선 window에 붙이기)

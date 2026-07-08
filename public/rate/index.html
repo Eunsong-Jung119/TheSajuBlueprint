@@ -7,13 +7,14 @@
 <meta name="description" content="썸남이든 전 남친이든 다 넣어봐. 누가 진짜 네 인연인지 사주로 분석해줄게.">
 <meta property="og:title" content="사주로 분석하는 썸남 랭킹🔮">
 <meta property="og:description" content="썸남? 전남친? 다 넣어봐. 누가 진짜 네 인연인지 사주로 분석해줄게.">
-<meta property="og:image" content="https://sajublueprint.com/og-image.png">
+<meta property="og:image" content="https://sajublueprint.com/rate/og-image.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 <script src="/rate/prompt-engine.js"></script>
+<script src="/rate/render-deep-report.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNC8VKJZWG"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-PNC8VKJZWG');</script>
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1513677227103970');fbq('track','PageView');</script>
@@ -185,23 +186,22 @@ select{cursor:pointer;}
 <body>
 
 <div id="iab-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(26,10,18,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#fff;border-radius:20px;padding:28px 24px;max-width:320px;width:100%;text-align:center;">
+  <div style="position:relative;background:#fff;border-radius:20px;padding:32px 24px 28px;max-width:320px;width:100%;text-align:center;">
+    <button onclick="document.getElementById('iab-modal').style.display='none'" aria-label="닫기" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:#E8547A;color:#fff;border:none;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Pretendard',sans-serif;">✕</button>
     <div style="font-size:36px;margin-bottom:12px;">📱</div>
     <div style="font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:800;color:#1A0A12;margin-bottom:8px;">잠시만요!</div>
-    <p style="font-size:13px;color:#7A5060;line-height:1.7;margin-bottom:20px;">인앱 브라우저에서는<br>결제 중 튕길 수 있어요.<br><strong style="color:#E8547A;">크롬/사파리로 열어주세요.</strong></p>
-    <button onclick="openInBrowser()" style="width:100%;padding:14px;background:#E8547A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Pretendard',sans-serif;margin-bottom:10px;">🌐 브라우저로 열기</button>
-    <button onclick="document.getElementById('iab-modal').style.display='none'" style="width:100%;padding:12px;background:transparent;color:#B08090;border:1px solid #F4C0D1;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Pretendard',sans-serif;">괜찮아요, 그냥 할게요</button>
+    <p style="font-size:13px;color:#7A5060;line-height:1.7;">인앱 브라우저에서는<br>분석 중 튕길 수 있어요.<br><strong style="color:#E8547A;">크롬/사파리로 열어주세요.</strong></p>
   </div>
 </div>
 
 <div class="top-bar">
   <div class="top-bar-thumb">🔮</div>
   <div class="top-bar-info">
-    <div class="top-bar-title">[50% 특가] 사주기반 썸남 랭킹 분석 리포트</div>
+    <div class="top-bar-title">[40% 특가] 사주기반 썸남 랭킹 분석 리포트</div>
     <div class="top-bar-price">
       <span class="top-bar-original">9,900원</span>
-      <span class="top-bar-sale">4,900원</span>
-      <span class="top-bar-badge">50%↓</span>
+      <span class="top-bar-sale">5,900원</span>
+      <span class="top-bar-badge">40%↓</span>
     </div>
   </div>
   <button class="top-bar-btn" onclick="scrollToForm()">구매하기</button>
@@ -230,9 +230,9 @@ select{cursor:pointer;}
 
   <div class="price-banner fade-up">
     <div>
-      <div class="price-event-label">🎉 50% 이벤트 특가 진행중</div>
+      <div class="price-event-label">🎉 40% 이벤트 특가 진행중</div>
       <div class="price-original-big">정가 9,900원</div>
-      <div class="price-sale-big">4,900원</div>
+      <div class="price-sale-big">5,900원</div>
       <div class="price-anchor">☕ 커피 한 잔 값으로 내 연애 패턴 파악</div>
     </div>
     <button class="price-cta-btn" onclick="scrollToForm()">지금<br>시작하기</button>
@@ -284,47 +284,48 @@ select{cursor:pointer;}
 
   <div class="fade-up">
     <div class="section-label">실제 리포트 예시</div>
+    <div style="font-size:12px;color:var(--pink-dark);font-weight:600;margin-bottom:10px;text-align:center;">💀 이 분석, 좋은 말만 하지 않아요</div>
     <div class="sample-wrap">
       <div class="sample-header">
-        <div><div class="sample-label-small">🥇 1위 · 궁합 분석</div><div class="sample-name">썸남</div><div class="sample-archetype">🔥 강하게 끌리지만 조율이 필요한 관계</div></div>
-        <div style="text-align:right;"><div class="sample-score">77<span>/100</span></div><div class="sample-score-label">총점</div></div>
+        <div><div class="sample-label-small">🚨 4위 </div><div class="sample-name">전남친</div><div class="sample-archetype">🔥 격렬하게 타올랐지만, 결국 나를 자르던 관계</div></div>
+        <div style="text-align:right;"><div class="sample-score">66<span>/100</span></div><div class="sample-score-label">총점</div></div>
       </div>
       <div class="sample-body">
         <div class="sample-section">
-          <div class="sample-section-title"><span>❤️</span> 감정의 깊이<span class="sample-section-score">88점</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:88%"></div></div>
-          <div class="sample-section-text">"영혼의 단짝인 줄 알았는데, 왜 묘하게 내 속이 타들어갈까?" 너와 그 사람, 둘 다 물(水)의 기운을 강하게 쥐고 있어서 처음 만났을 때는 "나랑 진짜 결이 비슷하다"는 엄청난 동질감을 느꼈을 거야. 말하지 않아도 통하는 그 짜릿함 때문에 스펀지처럼 서로에게 확 빠져들었겠지. 하지만 주의해. 이 남자의 사주에는 '겁재(주도권과 경쟁심)' 에너지가 강하게 도사리고 있어. 초반의 달콤함이 지나가면, 그는 무의식적으로 너와 감정의 우위를 점하려는 '은근한 밀당과 기싸움'을 시작할 가능성이 커.</div>
-          <div class="sample-section-summary" style="margin-top:10px;">💡 블랙홀처럼 빠져드는 미친 끌림. 하지만 그가 던지는 감정의 롤러코스터에 휘둘리지 않을 너만의 중심이 필요해.</div>
+          <div class="sample-section-title"><span>❤️</span> 감정의 깊이<span class="sample-section-score">85점</span></div>
+          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:85%"></div></div>
+          <div class="sample-section-text">갑목인 너와 경금인 그는 천간 갑경충(甲庚冲)에 금극목까지 겹쳐서, 처음부터 강렬한 자극이 있었어. 끌림이 셀수록 긴장감도 그만큼 셌을 거야.<span class="sentence-blurred"> 특히 배우자궁이 충(沖)이라, 감정이 뜨겁게 붙었다가도 한순간에 차갑게 식는 패턴이 반복됐을 가능성이 높아. 도파민은 넘쳤지만, 그게 진짜 사랑인지 자극 중독인지 헷갈리게 만드는 관계였어.</span></div>
+          <div class="sample-section-summary" style="margin-top:10px;">💡 강하게 끌리지만, 그만큼 서로를 베는 관계.</div>
         </div>
         <div class="sample-section">
-          <div class="sample-section-title"><span>🚀</span> 성장의 힘<span class="sample-section-score">76점</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:76%;background:#6B9EE8"></div></div>
-          <div class="sample-section-text">"나를 성장시키는 걸까, 아니면 나를 숨 막히게 하는 걸까?" 그는 기본적으로 앞만 보고 달리는 불도저 같은 추진력을 가졌어. 처음엔 그 열정적인 모습이 "멋있다, 배울 점이 많다"며 너에게 엄청난 자극과 동기부여로 다가왔을 거야. 하지만 시간이 지날수록 그의 '앞서나가는 에너지'가 너에게는 은근한 압박으로 다가올 수 있어.</div>
-          <div class="sample-section-summary" style="margin-top:10px;">💡 강렬한 자극제이자 훌륭한 러닝메이트. 단, 그의 속도에 억지로 널 맞추려다간 네가 먼저 지쳐 떨어질 수 있음.</div>
+          <div class="sample-section-title"><span>🚀</span> 성장의 힘<span class="sample-section-score">68점</span></div>
+          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:68%;background:#6B9EE8"></div></div>
+          <div class="sample-section-text">경금은 편관(칠살) 기운이라 기준과 압박이 강한 편이라, 너를 자극하긴 확실히 했어. 근데 그 자극이 성장보다 위축으로 이어졌을 가능성이 커.<span class="sentence-blurred"> 자꾸 너를 자기 기준에 맞춰 깎고 다듬으려 해서, 너 스스로 '내가 원래 이런 사람이었나' 싶을 만큼 작아졌을 수도 있어. 자극제는 맞는데, 너를 키우는 자극이 아니라 깎는 자극이었다는 게 핵심이야.</span></div>
+          <div class="sample-section-summary" style="margin-top:10px;">💡 자극은 줬지만, 나를 키우기보단 깎던 관계.</div>
         </div>
         <div class="sample-section">
-          <div class="sample-section-title"><span>🏠</span> 관계 안정성<span class="sample-section-score">62점</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:62%;background:#27AE8A"></div></div>
-          <div class="sample-section-text">"나는 주말에 넷플릭스 보며 쉬고 싶은데, 그는 또 밖으로 나가려 해." 네가 연애에서 궁극적으로 바라는 건 '흔들리지 않는 내적 평화와 안식처'야. 반면 그의 내면에는 항상 어딘가로 튀어 나가고 싶어 하는 호랑이(寅) 같은 역마의 기운이 꿈틀대고 있어.</div>
-          <div class="sample-section-summary" style="margin-top:10px;">💡 고요한 호수를 원하는 너와, 파도치는 바다를 항해하고 싶은 그의 아슬아슬한 동거.</div>
+          <div class="sample-section-title"><span>🏠</span> 관계 안정성<span class="sample-section-score">52점</span></div>
+          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:52%;background:#27AE8A"></div></div>
+          <div class="sample-section-text">네 명 중 가장 낮은 항목이야. 배우자궁 충(沖)에 금극목 구조까지 겹쳐서 안정감을 기대하기가 어려워. 갈등이 생기면 서로 방어기제가 강하게 작동해서 쉽게 풀리지 않고, 불같이 타오르다 갑자기 꺼지는 일이 계속 반복돼.<span class="sentence-blurred"> 감정의 온도는 높은데 기반은 늘 흔들리니까, 같이 있어도 마음 한구석이 불안한 관계였을 거야.</span></div>
+          <div class="sample-section-summary" style="margin-top:10px;">💡 감정은 뜨거운데, 기반은 늘 흔들리는 관계.</div>
         </div>
         <div class="sample-section">
-          <div class="sample-section-title"><span>🪞</span> 세상을 보는 방식<span class="sample-section-score">71점</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:71%;background:#E8A054"></div></div>
-          <div class="sample-section-text">"목표는 같은데, 거기까지 가는 길이 너무 달라 답답해." 큰 틀에서 보면 너희 둘은 제법 대화가 잘 통하는 커플이야. 하지만 현실적인 문제(돈 관리, 데이트 방식, 미래 계획 등)에 부딪히면 관점의 차이가 적나라하게 드러나.</div>
-          <div class="sample-section-summary" style="margin-top:10px;">💡 브레이크(너)와 엑셀(그)의 만남. 서로 다름을 인정하지 못하면 팩트 폭행을 빙자한 상처를 주고받기 쉬움.</div>
+          <div class="sample-section-title"><span>🪞</span> 세상을 보는 방식<span class="sample-section-score">60점</span></div>
+          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:60%;background:#E8A054"></div></div>
+          <div class="sample-section-text">너는 가능성과 확장을 보고, 그는 완성도와 통제를 봐. 처음엔 그 단호하고 깔끔한 태도가 멋있게 느껴졌을 수도 있어. 근데 시간이 지날수록 그 기준이 너를 옥죄는 벽처럼 다가왔을 거야. <span class="sentence-blurred"> 매력적이라 끌렸던 그 차이가, 결국 너를 베는 칼날이 되던 관계였어.</span></div>
+          <div class="sample-section-summary" style="margin-top:10px;">💡 매력적인 차이가, 결국 갈등의 칼날이 되던 관계.</div>
         </div>
         <div class="sample-section" style="margin-bottom:0;">
-          <div class="sample-section-title"><span>⏳</span> 삶의 속도<span class="sample-section-score">79점</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:79%;background:#9B78E8"></div></div>
-          <div class="sample-section-text">"우리 관계의 진짜 시험대는 언제 찾아올까?" 너희 관계는 특히 다가오는 2030년(금 기운)과 2034년(목 기운)에 큰 변곡점을 맞이하게 돼. 이 시기들을 무사히 넘기려면, 각자의 삶의 바운더리를 존중하면서도 서로를 잃지 않는 조율 기술이 필요해.</div>
-          <div class="sample-section-summary" style="margin-top:10px;">💡 2030년의 안정 욕구와 2034년의 변화 욕구 사이에서 타협점을 찾아야 함.</div>
+          <div class="sample-section-title"><span>⏳</span> 삶의 속도<span class="sample-section-score">64점</span></div>
+          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:64%;background:#9B78E8"></div></div>
+          <div class="sample-section-text">2026 병오년과 2027 정미년 화(火) 구간엔 감정이 극단으로 치닫기 쉬워 — 자존심 싸움이나 감정 기복이 가장 커지는 시기야.<span class="sentence-blurred"> 2028 무신년부터 2030 경술년 금(金) 구간은 그의 경금 기운이 한층 더 세지는 때라, 너의 목 기운이 또 한 번 눌릴 위험이 있어. 솔직히 이 관계는 뜨거운 시기일수록 더 조심해야 하는 구조야.</span></div>
+          <div class="sample-section-summary" style="margin-top:10px;">💡 뜨거운 시기일수록, 오히려 더 위험한 관계.</div>
         </div>
         <div class="sample-blur-wrap" style="margin-top:16px;">
           <div class="sample-blur-content">
             <div style="padding:16px;background:linear-gradient(135deg,#1A0A12,#2D1420);border-radius:10px;">
               <div style="font-size:12px;font-weight:700;color:#FFD580;margin-bottom:8px;">🔥 총평 (치트키)</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.75;">"강렬하게 끌리지만, 나를 잃지 않아야만 지킬 수 있는 관계" 서로에게 자석처럼 끌리는 마력이 있는 건 분명해. 하지만 그는 너를 끊임없이 흔들고 자극할 사람이야. 그와 길고 안정적인 만남을 원한다면, 절대 그에게 네 삶의 주도권을 전부 넘겨주지 마.</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.75;">전남친은 경금(庚金)이고, 너한테는 편관(偏官) — 그중에서도 제일 센 칠살(七殺)이야. 금극목(金克木), 쇠가 나무를 자르는 구조에 천간 갑경충(甲庚冲)까지 겹쳐서, 처음엔 미친 듯이 끌렸지만 그만큼 너를 깎아내리는 관계였을 가능성이 커. 4위인 데는 이유가 있어 — 굳이 그리워할 필요 없는 관계야.</div>
             </div>
           </div>
           <div class="sample-blur-overlay">
@@ -350,7 +351,7 @@ select{cursor:pointer;}
     <div class="faq-item"><div class="faq-q">시간을 모르면 어떻게 해요?</div><div class="faq-a">태어난 시간은 선택사항이에요. 몰라도 분석에 큰 영향은 없어요.</div></div>
     <div class="faq-item"><div class="faq-q">결과는 어디서 확인해요?</div><div class="faq-a">결제 완료 즉시 이 페이지에서 바로 확인할 수 있어요. 입력한 이메일로도 결과 링크가 발송돼요.</div></div>
     <div class="faq-item"><div class="faq-q">몇 명까지 넣을 수 있어요?</div><div class="faq-a">최대 5명까지 한 번에 비교 분석할 수 있어요.</div></div>
-    <div class="faq-item"><div class="faq-q">50% 특가는 언제까지예요?</div><div class="faq-a">이벤트 기간 한정으로 진행중이에요. 타이머가 끝나면 정가로 돌아가요.</div></div>
+    <div class="faq-item"><div class="faq-q">40% 특가는 언제까지예요?</div><div class="faq-a">이벤트 기간 한정으로 진행중이에요. 타이머가 끝나면 정가로 돌아가요.</div></div>
   </div>
 
   <div class="bottom-cta fade-up">
@@ -358,8 +359,8 @@ select{cursor:pointer;}
     <div class="bottom-cta-sub">생년월일만 입력하면 즉시 결과 확인</div>
     <div class="bottom-price-row">
       <span class="bottom-original">9,900원</span>
-      <span class="bottom-sale">4,900원</span>
-      <span class="bottom-badge">50% 특가</span>
+      <span class="bottom-sale">5,900원</span>
+      <span class="bottom-badge">40% 특가</span>
     </div>
     <button class="bottom-btn" onclick="scrollToForm()">🔮 지금 시작하기</button>
     <div class="bottom-hint">카드 결제 · 결제 즉시 결과 확인 · 이메일 발송</div>
@@ -411,11 +412,12 @@ select{cursor:pointer;}
   <button class="add-btn" onclick="addGuy()" id="add-guy-btn">+ 남자 추가하기 <span style="font-size:12px;opacity:.6;">(최대 5명)</span></button>
 
   <div class="fade-up">
-    <button class="cta-btn" onclick="onSubmit()">🔮 사주기반 랭킹분석 <span class="price-tag">4,900원</span></button>
-    <p class="cta-hint">결제 후 즉시 결과 확인 · 이메일 발송 · <s style="opacity:.6">9,900원</s> → 4,900원</p>
+    <button class="cta-btn" onclick="onSubmit()">🔮 사주기반 랭킹분석 <span class="price-tag">5,900원</span></button>
+    <p class="cta-hint">결제 후 즉시 결과 확인 · 이메일 발송 · <s style="opacity:.6">9,900원</s> → 5,900원</p>
   </div>
 
   <div class="disclaimer" style="margin-top:24px;">
+    문의: <a href="mailto:thesajublueprint@gmail.com" style="color:var(--text-hint);text-decoration:underline;">thesajublueprint@gmail.com</a><br>
     <a href="/rate/terms" style="color:var(--text-hint);text-decoration:underline;">이용약관</a> ·
     <a href="/rate/privacy" style="color:var(--text-hint);text-decoration:underline;">개인정보처리방침</a><br>
     상호: 에벌리(Everly) · 대표자: 정은송 · 사업자번호: 406-02-67708<br>
@@ -441,7 +443,9 @@ select{cursor:pointer;}
 </div>
 
 <script>
-(function(){const ua=navigator.userAgent||'';if(/Instagram|FBAN|FBAV/.test(ua))document.getElementById('iab-modal').style.display='flex';})();
+
+window._isIAB = /Instagram|FBAN|FBAV|KAKAOTALK|NAVER|Line\//i.test(navigator.userAgent||'');
+(function(){if(window._isIAB){var m=document.getElementById('iab-modal');if(m)m.style.display='flex';}})();
 function openInBrowser(){const url=window.location.href,isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);if(isIOS){window.location.href='x-safari-'+url;setTimeout(()=>{window.location.href=url;},500);}else{window.location.href='intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';}}
 
 (function(){
@@ -462,7 +466,7 @@ let guyCount=0,guyIds=[],formData=null,analysisRunning=false,_userEmail=null;
 
 // ⚠️ 결제 안전장치: 런칭 전까지 LIVE_MODE=false 유지 → 무조건 테스트 결제(실결제 절대 발생 X).
 //    런칭 준비 끝나면 LIVE_MODE=true 로 바꿔. 그때부터 운영 도메인=실결제 / ?test=1=테스트.
-const LIVE_MODE = false;
+const LIVE_MODE = true;
 const IS_TEST_PAY = !LIVE_MODE || location.search.includes('test=1') || location.hostname !== 'sajublueprint.com';
 const PAY_CHANNEL_KEY = IS_TEST_PAY
   ? 'channel-key-42310ca7-0d20-42d1-90d7-4abaed5778ba'   // 테스트 (INIpayTest, V2)
@@ -470,8 +474,21 @@ const PAY_CHANNEL_KEY = IS_TEST_PAY
 
 function _chrome(show){const t=document.querySelector('.top-bar'),b=document.querySelector('.timer-bar');if(t)t.style.display=show?'':'none';if(b)b.style.display=show?'':'none';}
 function getSessionId(){let s=localStorage.getItem('ryex_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_sid',s);}return s;}
-function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign'),utm_content:p.get('utm_content'),utm_term:p.get('utm_term'),fbclid:p.get('fbclid'),gclid:p.get('gclid')};}
-function trackEvent(name,props={}){gtag('event',name,{session_id:getSessionId(),...getUTM(),...props});fetch('/api/track-rate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_name:name,session_id:getSessionId(),metadata:{...getUTM(),...props}})}).catch(()=>{});}
+function _detectBrowser(){const u=navigator.userAgent||'';if(/KAKAOTALK/i.test(u))return'kakao';if(/Instagram/i.test(u))return'instagram';if(/FBAN|FBAV/i.test(u))return'facebook';if(/NAVER/i.test(u))return'naver';if(/Edg\//i.test(u))return'edge';if(/SamsungBrowser/i.test(u))return'samsung';if(/CriOS|Chrome/i.test(u))return'chrome';if(/FxiOS|Firefox/i.test(u))return'firefox';if(/Safari/i.test(u))return'safari';return'other';}
+function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign'),utm_content:p.get('utm_content'),utm_term:p.get('utm_term'),fbclid:p.get('fbclid'),gclid:p.get('gclid'),report:p.get('report'),upsell:p.get('upsell'),referrer:document.referrer||null,browser:_detectBrowser(),is_mobile:/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||''),is_iab:!!window._isIAB};}
+function trackEvent(eventName, extra){
+  try{
+    fetch('/api/track-rate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        event_name:eventName,
+        session_id:getSessionId(),
+        metadata:{...getUTM(), ...(extra||{})}
+      })
+    }).catch(()=>{});
+  }catch(e){}
+}
 
 // 이메일 도메인 직접입력 토글
 function onDomainChange(){
@@ -578,7 +595,7 @@ async function openPaywall(){
       channelKey:PAY_CHANNEL_KEY,
       paymentId:'rate_'+Date.now(),
       orderName:'사주 기반 랭킹 분석',
-      totalAmount:4900,
+      totalAmount:5900,
       currency:'KRW',
       payMethod:'CARD',
       customer:{
@@ -590,7 +607,7 @@ async function openPaywall(){
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
     trackEvent('payment_confirmed',{payment_id:response.paymentId});
-    fbq('track','Purchase',{value:4900,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
+    fbq('track','Purchase',{value:5900,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
     if(formData)runAnalysis(formData);
   }catch(e){console.error('[PortOne]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
@@ -624,6 +641,7 @@ async function runAnalysis(data){
         fetch('/api/send-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailToSend,shareUrl,result})}).catch(e=>console.error('[send-rating-report]',e));
       }
     }catch(e){console.error('[save]',e);}
+    if(shareUrl)localStorage.setItem('ryex_last_share',shareUrl);
     showResult(result,shareUrl);trackEvent('result_shown',{guy_count:partners.length});
   }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);console.error(e);alert('분석 중 오류가 발생했어요. 다시 시도해주세요!');}
 }
@@ -637,6 +655,7 @@ function showResult(data,shareUrl){
   document.getElementById('loading-view').classList.remove('show');
   const rv=document.getElementById('result-view'),wrap=document.getElementById('result-wrap');
   const sorted=[...data.results].sort((a,b)=>b.scores.total-a.scores.total),winner=sorted[0];
+  window._sortedResults=sorted;
   let html=`<div class="result-hero"><div style="display:inline-flex;align-items:center;gap:6px;background:var(--pink-light);color:var(--pink-dark);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:16px;">✨ 분석 완료</div><h1>결과 나왔어요 👀</h1><p style="font-size:14px;color:var(--text-muted);">사주가 말해주는 진짜 궁합</p></div>
   <div class="winner-card"><div class="winner-crown">👑</div><div class="winner-name">${winner.name}</div><div style="font-size:13px;color:var(--pink);font-weight:600;margin-bottom:10px;">${winner.archetype}</div><p class="winner-comment">${winner.overall}</p></div>`;
   if(data.ranking_comment)html+=`<div style="background:var(--pink-light);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;font-size:13px;color:var(--pink-dark);line-height:1.7;">📊 ${data.ranking_comment}</div>`;
@@ -645,7 +664,7 @@ function showResult(data,shareUrl){
     const miniScores=Object.entries(SECTION_LABELS).map(([key,meta])=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:13px;width:20px;text-align:center;">${meta.emoji}</span><span style="font-size:11px;color:var(--text-muted);width:80px;flex-shrink:0;">${meta.label}</span><div style="flex:1;height:4px;background:var(--pink-light);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${s[key]}%;background:${barColors[i]};border-radius:2px;transition:width 1.2s ease;"></div></div><span style="font-size:11px;color:var(--text-muted);width:24px;text-align:right;">${Math.round(s[key])}</span></div>`).join('');
     const sectionDetails=Object.entries(SECTION_LABELS).map(([key,meta])=>{const sec=r.sections?.[key];if(!sec)return'';return`<div style="margin-bottom:14px;"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">${meta.emoji} ${meta.label}</div><p style="font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:6px;">${sec.text}</p><div style="font-size:12px;color:var(--pink-dark);font-weight:500;padding:8px 12px;background:var(--pink-light);border-radius:8px;">→ ${sec.summary}</div></div>`;}).join('');
     const did=`detail-${i}`;
-    html+=`<div class="rank-card"><div class="rank-header"><div class="rank-badge ${rankClass[i]}">${rankEmoji[i]}</div><div><div class="rank-name">${r.name}</div><div class="rank-label">${r.archetype}</div></div><div class="rank-score">${total}<span>/100</span></div></div><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" data-width="${total}" style="background:${barColors[i]};"></div></div></div><div style="margin:12px 0 4px;">${miniScores}</div><div class="verdict-section"><button onclick="toggleDetail('${did}')" style="width:100%;background:none;border:1px solid var(--border-strong);border-radius:8px;padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'Pretendard',sans-serif;margin-bottom:2px;" id="btn-${did}">상세 분석 보기 ▾</button><div id="${did}" style="display:none;padding-top:14px;">${sectionDetails}<div style="font-size:13px;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">${r.overall}</div></div></div></div>`;
+    html+=`<div class="rank-card"><div class="rank-header"><div class="rank-badge ${rankClass[i]}">${rankEmoji[i]}</div><div><div class="rank-name">${r.name}</div><div class="rank-label">${r.archetype}</div></div><div class="rank-score">${total}<span>/100</span></div></div><div class="score-bar-wrap"><div class="score-bar"><div class="score-fill" data-width="${total}" style="background:${barColors[i]};"></div></div></div><div style="margin:12px 0 4px;">${miniScores}</div><div class="verdict-section"><button onclick="toggleDetail('${did}')" style="width:100%;background:none;border:1px solid var(--border-strong);border-radius:8px;padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'Pretendard',sans-serif;margin-bottom:2px;" id="btn-${did}">상세 분석 보기 ▾</button><div id="${did}" style="display:none;padding-top:14px;">${sectionDetails}<div style="font-size:13px;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">${r.overall}</div><button onclick="upsellStartWith(${i})" style="width:100%;margin-top:14px;background:var(--pink-light);border:none;border-radius:10px;padding:13px;font-size:13.5px;color:var(--pink-dark);font-weight:700;text-decoration:underline;cursor:pointer;font-family:'Pretendard',sans-serif;">🔍 ${r.name}의 숨은 속마음 분석 리포트 보기 →</button></div></div></div>`;
   });
   // ── 업셀 CTA (박스 2개, 가격 X / 남자선택은 다음 스텝) ──
   html+=`<div class="action-row"><button class="action-btn btn-outline" onclick="shareResult()">📤 공유하기</button><button class="action-btn btn-filled" onclick="resetAll()">🔄 다시 하기</button></div>`;
@@ -654,7 +673,7 @@ function showResult(data,shareUrl){
   const _ud='font-size:12.5px;color:var(--text-muted);line-height:1.6;margin-bottom:3px;';
   const _ubtn="width:100%;margin-top:14px;padding:15px;border:none;border-radius:12px;color:#fff;cursor:pointer;font-family:'Pretendard',sans-serif;font-size:14.5px;font-weight:700;";
   html+=`<div style="${_ub}"><div style="${_ut}word-break:keep-all;text-wrap:pretty;">🔍 더 깊이 파헤쳐보고 싶은 남자가 있나요?</div><div style="${_ud}word-break:keep-all;text-wrap:pretty;margin-bottom:18px;">그가 절대 인정하지 않을 숨은 취향, 본능적으로 끌리는 이상형, 그리고 남들에겐 절대 들키고 싶지 않은 가장 약한 모습까지.</div><button onclick="upsellStart('conquest')" style="${_ubtn}background:var(--pink);box-shadow:0 5px 18px rgba(232,84,122,0.32);">명리 기반 심층 분석 리포트 ➔</button></div>`;
-  html+=`<div class="disclaimer">재미로 보는 사주 분석이에요. 참고만 하세요 🙏<br><a href="/rate/terms" style="color:var(--text-hint);text-decoration:underline;">이용약관</a> · <a href="/rate/privacy" style="color:var(--text-hint);text-decoration:underline;">개인정보처리방침</a><br>상호: 에벌리(Everly) · 대표자: 정은송 · 406-02-67708</div>`;
+  html+=`<div class="disclaimer">재미로 보는 사주 분석이에요. 참고만 하세요 🙏<br>문의: <a href="mailto:thesajublueprint@gmail.com" style="color:var(--text-hint);text-decoration:underline;">thesajublueprint@gmail.com</a><br><a href="/rate/terms" style="color:var(--text-hint);text-decoration:underline;">이용약관</a> · <a href="/rate/privacy" style="color:var(--text-hint);text-decoration:underline;">개인정보처리방침</a><br>상호: 에벌리(Everly) · 대표자: 정은송 · 406-02-67708</div>`;
   wrap.innerHTML=html;rv.classList.add('show');
   setTimeout(()=>{document.querySelectorAll('.score-fill').forEach(el=>{el.style.width=el.dataset.width+'%';});},100);
 }
@@ -691,8 +710,7 @@ function _upsView(){_chrome(false);document.getElementById('result-view').classL
 function _upsBack(){_chrome(false);document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.remove('show');document.getElementById('result-view').classList.add('show');window.scrollTo(0,0);}
 function _upsLoad(txt,sub){_chrome(false);document.getElementById('landing-view').style.display='none';document.getElementById('result-view').classList.remove('show');document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.add('show');document.getElementById('loading-text').textContent=txt;document.getElementById('loading-sub').textContent=sub||'';window.scrollTo(0,0);}
 
-function _upsShell(inner){document.getElementById('loading-view').classList.remove('show');document.getElementById('upsell-wrap').innerHTML=`<style>#ups-track::-webkit-scrollbar{display:none}@keyframes upsSwipeHint{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}</style><div style="min-height:100vh;background:${DK};display:flex;flex-direction:column;">${inner}</div>`;_upsView();}
-
+function _upsShell(inner, fixedHeight){document.getElementById('loading-view').classList.remove('show');const hgt=fixedHeight?'min-height:100vh;min-height:100dvh;height:100dvh;':'min-height:100vh;min-height:100dvh;';document.getElementById('upsell-wrap').innerHTML=`<style>#ups-track::-webkit-scrollbar{display:none}@keyframes upsSwipeHint{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}</style><div style="${hgt}background:${DK};display:flex;flex-direction:column;">${inner}</div>`;_upsView();}
 // 다크 풀스크린 스와이프 + 화살표 (cards: [{lines[],basis}])
 function _renderSwipe(cards,eyebrows,accentLast,footerHTML){
   const n=cards.length;
@@ -702,7 +720,7 @@ function _renderSwipe(cards,eyebrows,accentLast,footerHTML){
       const isAccent=accentLast&&idx===n-1&&li===ls.length-1;
       return `<p style="font-size:17px;line-height:1.75;color:${isAccent?DK_ACCENT:DK_TXT};font-weight:400;margin:0 0 16px;word-break:keep-all;text-wrap:pretty;">${ln}</p>`;
     }).join('');
-    return `<section style="flex:0 0 100%;scroll-snap-align:center;box-sizing:border-box;padding:0 30px;display:flex;flex-direction:column;justify-content:center;">`+
+    return `<section style="flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-sizing:border-box;padding:0 30px;display:flex;flex-direction:column;justify-content:center;">`+
       `<div style="font-size:11px;letter-spacing:2px;color:${DK_SUB};margin-bottom:26px;">${eyebrows[idx]||''}</div>`+
       `<div>${lines}</div>`+
       `<div style="margin-top:26px;font-size:11px;font-family:monospace;color:${DK_SUB};letter-spacing:.3px;">${c.basis||''}</div></section>`;
@@ -723,8 +741,8 @@ function _bindSwipe(){
   const f=document.getElementById('ups-footer');
   const coach=document.getElementById('ups-coach');
   let coachGone=false;
-  const onScroll=()=>{const i=Math.round(t.scrollLeft/t.clientWidth);d.forEach((x,idx)=>x.style.background=idx===i?DK_TXT:DK_DOT);if(f){const last=i>=d.length-1;f.style.opacity=last?'1':'0';f.style.pointerEvents=last?'auto':'none';}if(coach&&!coachGone&&t.scrollLeft>10){coachGone=true;coach.style.opacity='0';setTimeout(()=>coach.remove(),400);}};
-  t.addEventListener('scroll',onScroll,{passive:true});
+  let _maxCard=0;
+  const onScroll=()=>{const i=Math.round(t.scrollLeft/t.clientWidth);const cnt=document.getElementById('ups-counter');if(cnt)cnt.textContent=(i+1)+' / '+d.length;if(i>_maxCard){_maxCard=i;trackEvent('upsell_teaser_swipe',{card_index:i,upsell_type:(_ups&&_ups.type)||'conquest'});}d.forEach((x,idx)=>x.style.background=idx===i?DK_TXT:DK_DOT);if(f){const last=i>=d.length-1;f.style.opacity=last?'1':'0';f.style.pointerEvents=last?'auto':'none';}if(coach&&!coachGone&&t.scrollLeft>10){coachGone=true;coach.style.opacity='0';setTimeout(()=>coach.remove(),400);}};  t.addEventListener('scroll',onScroll,{passive:true});
   const p=document.getElementById('ups-prev'),nx=document.getElementById('ups-next');
   if(p)p.onclick=()=>t.scrollBy({left:-t.clientWidth,behavior:'smooth'});
   if(nx)nx.onclick=()=>t.scrollBy({left:t.clientWidth,behavior:'smooth'});
@@ -739,6 +757,21 @@ function upsellStart(type){
   _ups={type:type||'conquest',me,target:null,manCards:null};
   trackEvent('upsell_cta_click',{upsell_type:_ups.type});
   upsellManSelect();
+}
+
+// 랭킹 카드에서 특정 남자 바로 지목 → select 스킵하고 티저 직행
+function upsellStartWith(sortedIdx){
+  const me=(typeof formData!=='undefined'&&formData&&formData.me)?formData.me:(((JSON.parse(localStorage.getItem('ryex_form')||'{}'))||{}).me);
+  const guys=(typeof formData!=='undefined'&&formData&&formData.guys)?formData.guys:(((JSON.parse(localStorage.getItem('ryex_form')||'{}'))||{}).guys||[]);
+  if(!me){alert('내 정보를 찾을 수 없어요. 다시 분석해주세요.');return;}
+  const sortedName=(window._sortedResults&&window._sortedResults[sortedIdx])?window._sortedResults[sortedIdx].name:null;
+  let g=guys.find(x=>(x.name||'')===sortedName);
+  if(!g)g=guys[sortedIdx]||guys[0];
+  if(!g){alert('남자 정보를 찾을 수 없어요.');return;}
+  _ups={type:'conquest',me,target:{name:g.name,year:g.year,month:g.month,day:g.day,hour:g.hour||''},manCards:null};
+  _ups._guys=guys;
+  trackEvent('upsell_cta_click',{upsell_type:'conquest',from:'rank_card'});
+  upsellManTeaser();
 }
 
 // STEP 3: 남자 선택 (+추가)
@@ -826,7 +859,7 @@ function _rpVisual(v){
 // 다크 텍스트 슬라이드 (카드1·2)
 function _darkSlide(lines,eyebrow,accentLast){
   const ls=lines.map((ln,i)=>`<p style="font-size:17px;line-height:1.75;color:${accentLast&&i===lines.length-1?DK_ACCENT:DK_TXT};margin:0 0 16px;word-break:keep-all;text-wrap:pretty;">${ln}</p>`).join('');
-  return `<section style="flex:0 0 100%;scroll-snap-align:center;box-sizing:border-box;padding:0 30px;display:flex;flex-direction:column;justify-content:center;">`+
+  return `<section style="flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-sizing:border-box;padding:0 30px;display:flex;flex-direction:column;justify-content:center;">`+
     `<div style="font-size:11px;letter-spacing:2px;color:${DK_SUB};margin-bottom:26px;">${eyebrow}</div><div>${ls}</div></section>`;
 }
 
@@ -850,7 +883,7 @@ function _reportSlide(rc,payHTML,big){
     screen+`</div></div>`;
   const mockArea=`<div style="flex:1;position:relative;min-height:300px;overflow:hidden;">${phone}</div>`;
   const topGap=big?'24px':'16px';
-  return `<section style="flex:0 0 100%;scroll-snap-align:center;box-sizing:border-box;padding:0 24px;display:flex;flex-direction:column;${payHTML?'overflow-y:auto;':''}">`+
+  return `<section style="flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-sizing:border-box;padding:0 24px;display:flex;flex-direction:column;${payHTML?'overflow-y:auto;':''}">`+
     `<div style="flex:0 0 auto;padding-top:${big?'14px':'8px'};"><div style="font-size:11px;letter-spacing:1.5px;color:#857a5e;margin-bottom:6px;">${rc.lead}</div>`+
     `<div style="font-size:20px;line-height:1.4;color:${DK_TXT};font-weight:500;margin-bottom:8px;word-break:keep-all;">${rc.title}</div>`+
     `<div style="font-size:12.5px;line-height:1.6;color:#8a8a94;margin-bottom:${topGap};word-break:keep-all;">${rc.sub}</div></div>`+
@@ -863,7 +896,7 @@ function renderManTeaser(){
   const pay=`<div style="border:1px solid #3a3340;border-radius:16px;padding:18px 16px;text-align:center;background:#13111a;">`+
     `<div style="font-size:15px;font-weight:700;color:${DK_TXT};margin-bottom:4px;">${tName}의 전체 분석 받기</div>`+
     `<div style="font-size:11px;color:${DK_SUB};line-height:1.5;margin-bottom:12px;">끌리는 여자 · 숨은 본성 · 진짜 욕망 전부 공개</div>`+
-    `<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;"><span style="font-size:12px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:21px;font-weight:800;color:#FFD580;">4,900원</span></div>`+
+    `<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;"><span style="font-size:12px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:21px;font-weight:800;color:#FFD580;">5,900원</span></div>`+
     `<button onclick="upsellPay()" style="${DK_BTN}background:#FFD580;padding:13px;">🔓 전체 분석 받기</button></div>`+
     `<a onclick="upsellManSelect()" style="${DK_BACK}">← 다른 사람 고르기</a>`;
 
@@ -881,12 +914,12 @@ function renderManTeaser(){
     `<span style="font-size:18px;animation:upsSwipeHint 1.2s ease-in-out infinite;">👈</span>`+
     `<span style="font-size:13px;color:#f2f2f4;white-space:nowrap;">옆으로 넘겨보세요</span></div>`;
   const inner=`<div style="flex:1;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
-    `<div style="flex:0 0 auto;height:44px;display:flex;align-items:center;padding:0 8px;"><a onclick="_upsBack()" style="font-size:13px;color:#8a8a94;text-decoration:none;cursor:pointer;padding:8px;">← 결과로</a></div>`+
+    `<div style="flex:0 0 auto;min-height:44px;padding-top:calc(env(safe-area-inset-top) + 8px);display:flex;align-items:center;justify-content:space-between;padding-left:8px;padding-right:16px;"><a onclick="_upsBack()" style="font-size:13px;color:#8a8a94;text-decoration:none;cursor:pointer;padding:8px;">← 결과로</a><span id="ups-counter" style="font-size:13px;color:#8a8a94;font-family:monospace;">1 / ${total}</span></div>`+
     `<button id="ups-prev" aria-label="이전" style="${arr}left:6px;">‹</button><button id="ups-next" aria-label="다음" style="${arr}right:6px;">›</button>`+
     coach+
     `<div id="ups-track" style="flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;min-height:0;">${slides}</div>`+
     `<div style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0 18px;">${dots}</div></div>`;
-  _upsShell(inner);
+    _upsShell(inner, true);   
   _bindSwipe();
 }
 
@@ -901,13 +934,13 @@ async function upsellPay(){
       channelKey:PAY_CHANNEL_KEY,
       paymentId:'upsell_'+Date.now(),
       orderName:UPSELL_ORDER[_ups.type]||'심층 분석',
-      totalAmount:4900,currency:'KRW',payMethod:'CARD',
+      totalAmount:5900,currency:'KRW',payMethod:'CARD',
       customer:{email:_userEmail||localStorage.getItem('ryex_email')||'guest@sajublueprint.com',phoneNumber:'01000000000',fullName:'구매자'},
       redirectUrl:'https://sajublueprint.com/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
     trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId});
-    fbq('track','Purchase',{value:4900,currency:'KRW',content_name:UPSELL_ORDER[_ups.type],content_type:'product'});
+    fbq('track','Purchase',{value:5900,currency:'KRW',content_name:UPSELL_ORDER[_ups.type],content_type:'product'});
     upsellFull();
   }catch(e){console.error('[upsellPay]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
@@ -930,26 +963,50 @@ async function upsellFull(){
 }
 function _upsCardDark(c){return `<div style="border:1px solid ${DK_BORDER};border-radius:14px;padding:18px;margin-bottom:12px;"><div style="font-size:14px;font-weight:700;color:${DK_TXT};margin-bottom:8px;">${c.icon||'🔮'} ${c.title||''}</div><p style="font-size:14px;color:#c4c4cc;line-height:1.75;margin:0 0 ${c.hook?'8px':'0'};">${c.body||''}</p>${c.hook?`<div style="font-size:13px;font-weight:600;color:${DK_ACCENT};">💡 ${c.hook}</div>`:''}</div>`;}
 function renderFull(intent,data){
-  const tName=(intent.target&&intent.target.name)||'그';
-  const woman=(data.womanCards||[]).map(_upsCardDark).join('');
-  const man=(data.manCards||[]).map(_upsCardDark).join('');
-  const inner=`<div style="max-width:440px;margin:0 auto;padding:48px 26px 40px;">`+
-    `<div style="font-size:11px;letter-spacing:2px;color:#FFD580;margin-bottom:16px;">🔓 ${UPSELL_LABEL[intent.type]}</div>`+
-    `<h1 style="font-family:'Nanum Myeongjo',serif;font-size:24px;font-weight:700;color:${DK_TXT};margin:0 0 24px;">${tName} 전체 분석</h1>`+
-    `<div style="font-size:12px;color:${DK_SUB};margin-bottom:12px;">먼저, 너에 대해</div>${woman}`+
-    `<div style="font-size:12px;color:${DK_SUB};margin:22px 0 12px;">그리고, ${tName}에 대해</div>${man}`+
-    `<button onclick="resetAll()" style="${DK_BTN}margin-top:18px;">🔄 처음으로</button>`+
+  const report = data.report || (data.cards ? {target_name:(intent.target&&intent.target.name)||'그', cards:data.cards} : null);
+  if(!report || !Array.isArray(report.cards) || !report.cards.length){
+    document.getElementById('loading-view').classList.remove('show');
+    _upsView();
+    alert('리포트 데이터를 불러오지 못했어요. 새로고침해서 다시 시도해줘!');
+    return;
+  }
+  const rid = data.reportId || intent.reportId || null;
+  if(rid){ try{ history.replaceState(null,'',`/rate?upsell=${rid}`); }catch(_){ } }
+  const reportHTML = (typeof window.renderDeepReport==='function') ? window.renderDeepReport(report) : '';
+  window._upsShareUrl = rid ? `https://sajublueprint.com/rate?upsell=${rid}` : null;
+  const shareBtn = window._upsShareUrl
+    ? `<button onclick="shareUpsell()" style="${DK_BTN}background:#c9a96a;color:#1a1410;margin-top:18px;">📤 이 리포트 공유하기</button>`
+    : '';
+  const inner = `<div style="max-width:480px;margin:0 auto;padding:14px 0 40px;">`+
+    reportHTML+
+    `<div style="padding:0 14px;">`+
+    shareBtn+
+    `<button onclick="resetAll()" style="${DK_BTN}margin-top:10px;">🔄 처음으로</button>`+
     `<a onclick="_upsBack()" style="${DK_BACK}">← 랭킹 결과로</a>`+
-    `<div style="text-align:center;font-size:11px;color:${DK_SUB};margin-top:20px;line-height:1.6;">재미로 보는 사주 분석이에요. 참고만 하세요 🙏</div></div>`;
+    `</div></div>`;
   _upsShell(inner);
 }
+
+function shareUpsell(){
+  const url=window._upsShareUrl||window.location.href;
+  const done=()=>alert('링크가 복사되었어요! 친구에게 공유해보세요 💌');
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(isMobile && navigator.share){
+    navigator.share({title:'사주 심층 분석 리포트',url}).catch(()=>{});
+    trackEvent('upsell_result_shared'); return;
+  }
+  navigator.clipboard.writeText(url).then(done).catch(()=>{
+    const el=document.createElement('textarea');el.value=url;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);done();
+  });
+  trackEvent('upsell_result_shared');
+}
+
 const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
 window.addEventListener('DOMContentLoaded',async()=>{
   addGuy();
-  trackEvent('page_view');
-  applySentenceBlur();
+  trackEvent('page_view',{is_iab:!!window._isIAB});
   const params=new URLSearchParams(window.location.search);
 
   const reportId=params.get('report');
@@ -982,31 +1039,105 @@ window.addEventListener('DOMContentLoaded',async()=>{
     }
   }
 
+   // ── 심층 리포트 재접속/공유 복원 ──
+  const upsellId=params.get('upsell');
+  if(upsellId){
+    document.getElementById('landing-view').style.display='none';
+    document.getElementById('loading-view').classList.add('show');
+    document.getElementById('loading-text').textContent='심층 리포트 불러오는 중...';
+    document.getElementById('loading-sub').textContent='잠깐만 기다려주세요';
+    try{
+      const res=await fetch(`/api/get-upsell-report?id=${upsellId}`);
+      if(!res.ok)throw new Error('not found');
+      const json=await res.json();
+      const report=json.report||null;
+      if(!report||!report.cards)throw new Error('no report');
+      _ups={type:json.upsell_type||'conquest',me:json.me,target:json.target,reportId:upsellId};
+      renderFull(_ups,{report,reportId:upsellId});
+    }catch(e){
+      console.error('[upsell restore]',e);
+      document.getElementById('loading-view').classList.remove('show');
+      document.getElementById('landing-view').style.display='block';
+      alert('심층 리포트를 찾을 수 없어요.');
+    }
+  }
+
   const paymentId=params.get('paymentId'),pgCode=params.get('code');
   // ⬇ 업셀(upsell_) 결제는 메인 핸들러가 가로채지 않도록 가드 추가
   if(paymentId&&paymentId.indexOf('upsell_')!==0&&params.get('transactionType')==='PAYMENT'&&!pgCode){
-    const savedForm=localStorage.getItem('ryex_form');
-    _userEmail=localStorage.getItem('ryex_email')||null;
-    if(savedForm){
-      formData=JSON.parse(savedForm);
-      trackEvent('payment_confirmed',{payment_id:paymentId});
-      fbq('track','Purchase',{value:4900,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
-      runAnalysis(formData);
+    const _payKey='ryex_paid_'+paymentId;
+    if(localStorage.getItem(_payKey)){
+      const _last=localStorage.getItem('ryex_last_share');
+      if(_last){location.replace(_last);}
+    } else {
+      localStorage.setItem(_payKey,'1');
+      const savedForm=localStorage.getItem('ryex_form');
+      _userEmail=localStorage.getItem('ryex_email')||null;
+      if(savedForm){
+        formData=JSON.parse(savedForm);
+        trackEvent('payment_confirmed',{payment_id:paymentId});
+        fbq('track','Purchase',{value:5900,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
+        runAnalysis(formData);
+      }
     }
   }
 
   // ⬇ 업셀 결제 복귀 처리 → 전체 리포트 생성
   if(paymentId&&paymentId.indexOf('upsell_')===0&&params.get('transactionType')==='PAYMENT'&&!pgCode){
-    const intent=JSON.parse(localStorage.getItem('ryex_upsell')||'null');
-    if(intent){
-      _userEmail=localStorage.getItem('ryex_email')||null;
-      trackEvent('upsell_payment_confirmed',{upsell_type:intent.type,payment_id:paymentId});
-      fbq('track','Purchase',{value:4900,currency:'KRW',content_name:'남자 심층 분석',content_type:'product'});
-      upsellFull();
+    const _payKey='ryex_paid_'+paymentId;
+    if(!localStorage.getItem(_payKey)){
+      localStorage.setItem(_payKey,'1');
+      const intent=JSON.parse(localStorage.getItem('ryex_upsell')||'null');
+      if(intent){
+        _userEmail=localStorage.getItem('ryex_email')||null;
+        trackEvent('upsell_payment_confirmed',{upsell_type:intent.type,payment_id:paymentId});
+        fbq('track','Purchase',{value:5900,currency:'KRW',content_name:'남자 심층 분석',content_type:'product'});
+        upsellFull();
+      }
     }
   }
 });
 </script>
+<!-- ══════════════════════════════════════════════════════════════
+     업셀(심층분석 리포트) 결제 임시 차단 패치
+     - 심층 리포트 생성 이슈 동안, 업셀 CTA를 누르면 "준비중" 팝업만 뜨고
+       결제/티저로 절대 안 넘어감. (랭킹 5,900원 결제는 그대로 정상 작동)
+     - 사용법: 기존 메인 <script>...</script> 가 끝난 "다음", </body> "앞"에
+       이 블록을 통째로 붙여넣기. (뒤에 와서 함수를 덮어씀)
+     - 원복: 리포트 고치면 이 블록만 삭제하면 됨.
+     ══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  // ── 준비중 팝업 ──
+  function _upsSoonPopup(){
+    try{ if(typeof trackEvent==='function') trackEvent('upsell_disabled_popup'); }catch(e){}
+    if(document.getElementById('ups-soon-modal')) return;
+    var wrap=document.createElement('div');
+    wrap.id='ups-soon-modal';
+    wrap.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(26,10,18,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;';
+    wrap.innerHTML=
+      '<div style="position:relative;background:#fff;border-radius:20px;padding:32px 24px 26px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);font-family:\'Pretendard\',-apple-system,sans-serif;">'
+      +  '<div style="font-size:38px;margin-bottom:12px;">🔮</div>'
+      +  '<div style="font-family:\'Nanum Myeongjo\',serif;font-size:19px;font-weight:800;color:#1A0A12;margin-bottom:10px;">준비 중이에요</div>'
+      +  '<p style="font-size:14px;color:#7A5060;line-height:1.75;margin:0 0 22px;">심층 분석 리포트는 지금 더 좋게 다듬고 있어요.<br>조금만 기다려 주세요 🙏</p>'
+      +  '<button id="ups-soon-close" style="width:100%;padding:14px;background:#E8547A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:\'Pretendard\',sans-serif;cursor:pointer;">확인</button>'
+      +'</div>';
+    document.body.appendChild(wrap);
+    function close(){ var m=document.getElementById('ups-soon-modal'); if(m) m.remove(); }
+    document.getElementById('ups-soon-close').addEventListener('click',close);
+    wrap.addEventListener('click',function(e){ if(e.target===wrap) close(); });
+  }
+  // 전역으로도 노출 (혹시 다른 곳에서 재사용)
+  window._upsSoonPopup = _upsSoonPopup;
 
+  // ── 업셀 진입점 3개 전부 차단 (팝업만 띄우고 결제/티저로 안 넘어감) ──
+  // 1) 결과 하단 큰 CTA
+  window.upsellStart = function(){ _upsSoonPopup(); };
+  // 2) 랭킹 카드별 "숨은 속마음 분석 →"
+  window.upsellStartWith = function(){ _upsSoonPopup(); };
+  // 3) 안전망: 어떤 경로로든 결제 함수까지 오면 여기서도 차단
+  window.upsellPay = function(){ _upsSoonPopup(); };
+})();
+</script>
 </body>
 </html>

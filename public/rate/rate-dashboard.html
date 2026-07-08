@@ -41,18 +41,47 @@ header { display: flex; align-items: center; justify-content: space-between; mar
 .filter-divider { width: 1px; height: 24px; background: var(--border); }
 .date-input { padding: 7px 12px; border-radius: 8px; font-size: 12px; font-family: var(--mono); background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; }
 .date-input:focus { outline: none; border-color: var(--pink); }
+.day-nav { display: flex; align-items: center; gap: 6px; }
+.day-arrow { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-bright); background: var(--surface-2); color: var(--pink); font-size: 16px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-family: var(--mono); }
+.day-arrow:hover:not(:disabled) { background: var(--pink); color: #fff; }
+.day-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+.day-display { min-width: 132px; text-align: center; padding: 6px 10px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border); font-family: var(--mono); cursor: pointer; transition: border-color 0.2s; }
+.day-display:hover { border-color: var(--pink); }
+.day-display .dd-date { font-size: 13px; font-weight: 600; color: var(--text); }
+.day-display .dd-rel { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+.day-display.is-today .dd-rel { color: var(--green); }
 .refresh-btn { padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: var(--mono); cursor: pointer; background: var(--surface-2); border: 1px solid var(--border-bright); color: var(--pink); transition: all 0.2s; }
 .refresh-btn:hover { background: var(--pink); color: #fff; }
+.export-btn { padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: var(--mono); cursor: pointer; background: var(--surface-2); border: 1px solid rgba(46,204,113,0.4); color: var(--green); transition: all 0.2s; }
+.export-btn:hover { background: var(--green); color: var(--deep); }
 .section-title { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.funnel-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px; margin-bottom: 32px; }
-.funnel-step { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; position: relative; transition: border-color 0.2s; }
+.funnel-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; margin-bottom: 32px; }
+.share-funnel { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1.2fr; gap: 12px; align-items: stretch; margin-bottom: 32px; }
+.share-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+.share-box.shared { border-color: rgba(241,196,15,0.3); background: var(--surface-3); }
+.share-box.inflow { border-color: rgba(93,173,226,0.35); background: var(--surface-3); }
+.share-box.inflow .share-box-num { color: var(--blue); }
+.share-box-label { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 8px; letter-spacing: 0.05em; }
+.share-box-num { font-size: 32px; font-weight: 700; font-family: var(--mono); color: var(--text); line-height: 1; }
+.share-box.shared .share-box-num { color: var(--yellow); }
+.share-box-sub { font-size: 10px; color: var(--text-hint); font-family: var(--mono); margin-top: 6px; }
+.share-arrow { display: flex; align-items: center; color: var(--text-hint); font-size: 20px; }
+.share-rate-box { border-radius: 14px; padding: 18px 16px; text-align: center; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--border-bright); }
+.share-rate-label { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 6px; letter-spacing: 0.05em; }
+.share-rate-num { font-size: 30px; font-weight: 800; font-family: var(--mono); line-height: 1; }
+.share-rate-hint { font-size: 10px; font-family: var(--mono); margin-top: 8px; padding: 3px 8px; border-radius: 12px; display: inline-block; }
+.share-rate-hint.hot { background: rgba(46,204,113,0.15); color: var(--green); }
+.share-rate-hint.mid { background: rgba(241,196,15,0.15); color: var(--yellow); }
+.share-rate-hint.low { background: rgba(232,84,122,0.15); color: var(--pink); }
+.funnel-step { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 10px; text-align: center; position: relative; transition: border-color 0.2s; }
 .funnel-step:hover { border-color: var(--border-bright); }
-.funnel-step::after { content: '→'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--text-hint); font-size: 14px; z-index: 2; }
+.funnel-step::after { content: '→'; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); color: var(--text-hint); font-size: 12px; z-index: 2; }
 .funnel-step:last-child::after { display: none; }
-.funnel-label { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 8px; }
-.funnel-num { font-size: 28px; font-weight: 700; font-family: var(--mono); color: var(--text); line-height: 1; }
-.funnel-rate { font-size: 11px; font-family: var(--mono); margin-top: 6px; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+.funnel-step.upsell { background: var(--surface-3); border-color: rgba(241,196,15,0.2); }
+.funnel-label { font-size: 9px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 8px; line-height: 1.3; }
+.funnel-num { font-size: 24px; font-weight: 700; font-family: var(--mono); color: var(--text); line-height: 1; }
+.funnel-rate { font-size: 10px; font-family: var(--mono); margin-top: 6px; padding: 2px 7px; border-radius: 20px; display: inline-block; }
 .funnel-rate.good { background: rgba(46,204,113,0.15); color: var(--green); }
 .funnel-rate.warn { background: rgba(241,196,15,0.15); color: var(--yellow); }
 .funnel-rate.bad { background: rgba(232,84,122,0.15); color: var(--pink); }
@@ -93,6 +122,7 @@ header { display: flex; align-items: center; justify-content: space-between; mar
 .report-link { color: var(--pink); text-decoration: none; font-family: var(--mono); font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .report-link:hover { text-decoration: underline; }
 .report-guys { color: var(--text-hint); font-size: 11px; }
+.report-link.deep { color: var(--yellow); }
 .loading { text-align: center; padding: 60px; color: var(--text-muted); font-family: var(--mono); font-size: 13px; }
 .spinner-sm { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--pink); border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -112,7 +142,9 @@ header { display: flex; align-items: center; justify-content: space-between; mar
 .src-filter-btn.s-share_link.active { background: var(--yellow); color: #1a0a00; }
 .src-filter-btn.s-direct.active { background: var(--surface-3); color: var(--text-muted); border-color: var(--border-bright); }
 @media (max-width: 768px) {
-  .funnel-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .funnel-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .share-funnel { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .share-arrow { display: none; }
   .funnel-step::after { display: none; }
   .two-col { grid-template-columns: 1fr; }
   header { flex-direction: column; align-items: flex-start; gap: 16px; }
@@ -132,15 +164,24 @@ header { display: flex; align-items: center; justify-content: space-between; mar
       <div class="live-badge" style="margin-left:12px;"><div class="live-dot"></div>LIVE</div>
     </div>
     <div class="filters">
-      <button class="filter-btn" onclick="setRange(0)">오늘</button>
-      <button class="filter-btn" onclick="setRange(1)">어제</button>
-      <button class="filter-btn active" onclick="setRange(7)">7일</button>
+      <div class="day-nav">
+        <button class="day-arrow" id="day-prev" onclick="shiftDay(-1)" title="이전 날">‹</button>
+        <div class="day-display" id="day-display" onclick="document.getElementById('hidden-day').showPicker?.(); document.getElementById('hidden-day').click();" title="날짜 선택">
+          <div class="dd-date" id="dd-date">—</div>
+          <div class="dd-rel" id="dd-rel"></div>
+        </div>
+        <button class="day-arrow" id="day-next" onclick="shiftDay(1)" title="다음 날">›</button>
+        <input type="date" id="hidden-day" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none;">
+      </div>
+      <div class="filter-divider"></div>
+      <button class="filter-btn" onclick="setRange(7)">7일</button>
       <button class="filter-btn" onclick="setRange(30)">30일</button>
       <div class="filter-divider"></div>
       <input type="date" class="date-input" id="date-from">
       <span style="color:var(--text-hint);font-size:12px;">~</span>
       <input type="date" class="date-input" id="date-to">
       <button class="refresh-btn" onclick="loadAll()">↻ 새로고침</button>
+      <button class="export-btn" onclick="exportFunnelCSV()">⤓ CSV 다운로드</button>
     </div>
   </header>
 
@@ -159,6 +200,11 @@ header { display: flex; align-items: center; justify-content: space-between; mar
   <div class="section-title">퍼널 분석</div>
   <div class="funnel-grid" id="funnel-grid">
     <div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>
+  </div>
+
+  <div class="section-title">공유 퍼널 · 바이럴 지표</div>
+  <div class="share-funnel" id="share-funnel">
+    <div class="loading"><span class="spinner-sm"></span>불러오는 중...</div>
   </div>
 
   <div class="two-col">
@@ -184,14 +230,13 @@ header { display: flex; align-items: center; justify-content: space-between; mar
   </div>
 
   <div class="card" style="margin-bottom:32px;">
-    <div class="card-title">생성된 리포트 URL</div>
+    <div class="card-title">생성된 리포트 URL (랭킹)</div>
     <div id="report-list"><div class="loading"><span class="spinner-sm"></span></div></div>
   </div>
 
   <div class="card" style="margin-bottom:32px;">
-    <div class="card-title">일별 page_view 트렌드</div>
-    <div class="chart-wrap" id="daily-chart" style="height:80px;"></div>
-    <div id="daily-labels" style="display:flex;gap:3px;margin-top:6px;"></div>
+    <div class="card-title">심층분석 리포트 URL (업셀)</div>
+    <div id="upsell-report-list"><div class="loading"><span class="spinner-sm"></span></div></div>
   </div>
 
 </div>
@@ -200,22 +245,38 @@ header { display: flex; align-items: center; justify-content: space-between; mar
 const SUPABASE_URL = 'https://rxntisncfnsgtjpbdmre.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4bnRpc25jZm5zZ3RqcGJkbXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MzAzMDYsImV4cCI6MjA4ODIwNjMwNn0.21UHPZZTP0IbDzXMAllitws_ezH7pXhE_S-MYXMMUzc';
 
-let fromDate = '', toDate = '', srcFilter = 'all';
-let allLogs = [], allPayments = [], allReports = [];
+let fromDate = '', toDate = '', srcFilter = new Set(); // 빈 Set = 전체
+let allLogs = [], allPayments = [], allReports = [], allUpsellReports = [];
 
 function setSrcFilter(src, btn) {
-  srcFilter = src;
-  document.querySelectorAll('.src-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (src === 'all') {
+    // 전체 선택 시 나머지 모두 해제
+    srcFilter.clear();
+    document.querySelectorAll('.src-filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.src-filter-btn.s-all').classList.add('active');
+  } else {
+    // 개별 토글
+    document.querySelector('.src-filter-btn.s-all').classList.remove('active');
+    if (srcFilter.has(src)) {
+      srcFilter.delete(src);
+      btn.classList.remove('active');
+    } else {
+      srcFilter.add(src);
+      btn.classList.add('active');
+    }
+    // 아무것도 안 남으면 전체로 복귀
+    if (srcFilter.size === 0) {
+      document.querySelector('.src-filter-btn.s-all').classList.add('active');
+    }
+  }
   renderAll();
 }
 
 function filterLogs(logs) {
-  if (srcFilter === 'all') return logs;
-  return logs.filter(l => parseSource(l.metadata, l.session_id) === srcFilter);
+  if (srcFilter.size === 0) return logs; // 전체
+  return logs.filter(l => srcFilter.has(parseSource(l.metadata, l.session_id)));
 }
 
-// metadata 안전하게 파싱 (string이든 object든 처리)
 function pm(meta) {
   try {
     return typeof meta === 'string' ? JSON.parse(meta) : (meta || {});
@@ -224,39 +285,107 @@ function pm(meta) {
 
 function toKST(d) {
   const dt = new Date(d);
-  dt.setHours(dt.getHours() + 9);
-  return dt;
+  // UTC 절대시각 + 9시간 = KST. 읽을 때는 반드시 getUTC* 게터 사용 (브라우저 타임존 무관)
+  return new Date(dt.getTime() + 9 * 3600 * 1000);
 }
 
 function fmtDate(d) {
   return d.toISOString().slice(0,10);
 }
 
+// KST 기준 오늘 날짜 문자열 (YYYY-MM-DD)
+function kstTodayStr() {
+  const now = new Date();
+  const kst = new Date(now.getTime() + 9 * 3600 * 1000);
+  return kst.toISOString().slice(0,10);
+}
+
+// 'YYYY-MM-DD' 에 days 더한 날짜 문자열 (정오 기준으로 더해서 DST/TZ 영향 제거)
+function addDaysStr(dateStr, days) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0,10);
+}
+
+// 단일 날짜(일 단위) 모드
+let currentDay = kstTodayStr();
+
+function setDay(dayStr) {
+  const today = kstTodayStr();
+  // 미래 날짜는 막기 (데이터 없음)
+  if (dayStr > today) dayStr = today;
+  currentDay = dayStr;
+  fromDate = dayStr;
+  toDate = dayStr;
+  // 기간 버튼 active 해제 (단일날짜 모드)
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('date-from').value = dayStr;
+  document.getElementById('date-to').value = dayStr;
+  renderDayDisplay();
+  loadAll();
+}
+
+function shiftDay(delta) {
+  setDay(addDaysStr(currentDay, delta));
+}
+
+function renderDayDisplay() {
+  const today = kstTodayStr();
+  const ddDate = document.getElementById('dd-date');
+  const ddRel = document.getElementById('dd-rel');
+  const disp = document.getElementById('day-display');
+  const nextBtn = document.getElementById('day-next');
+  // 날짜 표시 (MM/DD (요일))
+  const d = new Date(currentDay + 'T12:00:00Z');
+  const dow = ['일','월','화','수','목','금','토'][d.getUTCDay()];
+  ddDate.textContent = `${currentDay.slice(5,7)}/${currentDay.slice(8,10)} (${dow})`;
+  // 상대 표시
+  const diff = Math.round((new Date(currentDay+'T12:00:00Z') - new Date(today+'T12:00:00Z')) / 86400000);
+  let rel = '';
+  if (diff === 0) rel = '오늘';
+  else if (diff === -1) rel = '어제';
+  else if (diff === -2) rel = '그저께';
+  else if (diff < 0) rel = `${-diff}일 전`;
+  ddRel.textContent = rel;
+  disp.classList.toggle('is-today', diff === 0);
+  // 미래로는 못 가게 (오늘이면 › 비활성화)
+  nextBtn.disabled = (currentDay >= today);
+}
+
 function setRange(days) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  const now = new Date();
-  toDate = fmtDate(now);
-  const from = new Date(now);
-  from.setDate(from.getDate() - days);
-  fromDate = fmtDate(from);
+  const today = kstTodayStr();
+  toDate = today;
+  fromDate = addDaysStr(today, -days);
   document.getElementById('date-from').value = fromDate;
   document.getElementById('date-to').value = toDate;
+  // 단일날짜 표시는 그대로 두되 today로 리셋해 둠
   loadAll();
 }
 
 (function initDates() {
-  const now = new Date();
-  toDate = fmtDate(now);
-  const from = new Date(now);
-  from.setDate(from.getDate() - 7);
-  fromDate = fmtDate(from);
-  document.getElementById('date-from').value = fromDate;
-  document.getElementById('date-to').value = toDate;
+  // 기본: 오늘 하루 (단일 날짜 모드)
+  currentDay = kstTodayStr();
+  fromDate = currentDay;
+  toDate = currentDay;
+  document.getElementById('date-from').value = currentDay;
+  document.getElementById('date-to').value = currentDay;
+  renderDayDisplay();
 })();
+
+// 숨은 date picker로 날짜 직접 선택 → 단일날짜 모드로
+document.getElementById('hidden-day').addEventListener('change', e => { if(e.target.value) setDay(e.target.value); });
 
 document.getElementById('date-from').addEventListener('change', e => { fromDate = e.target.value; loadAll(); });
 document.getElementById('date-to').addEventListener('change', e => { toDate = e.target.value; loadAll(); });
+
+// 키보드 ← → 로 날짜 이동
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowLeft') shiftDay(-1);
+  else if (e.key === 'ArrowRight') { if (currentDay < kstTodayStr()) shiftDay(1); }
+});
 
 async function fetchLogs() {
   const from = document.getElementById('date-from').value || fromDate;
@@ -271,6 +400,28 @@ async function fetchLogs() {
     if (!res.ok) throw new Error(`${res.status} ${text}`);
     batch = JSON.parse(text);
     if (!Array.isArray(batch)) throw new Error(JSON.stringify(batch));
+    result = result.concat(batch);
+    offset += ps;
+  } while (batch.length === ps);
+  return result;
+}
+
+// 출처 판별 보강용: 조회 시작 하루 전부터의 로그도 가져와 세션맵을 채움
+// (자정을 넘나든 광고 세션의 page_view가 표시 범위 밖이라 direct로 잘못 잡히는 문제 해결)
+async function fetchSourceLogs() {
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+  const fromExt = addDaysStr(from, -1); // 하루 더 당겨서 직전 유입 포함
+  let offset = 0, ps = 1000, batch, result = [];
+  do {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/rate_logs?select=session_id,metadata&created_at=gte.${fromExt}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=${ps}&offset=${offset}`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    const text = await res.text();
+    if (!res.ok) throw new Error(`${res.status} ${text}`);
+    batch = JSON.parse(text);
+    if (!Array.isArray(batch)) break;
     result = result.concat(batch);
     offset += ps;
   } while (batch.length === ps);
@@ -300,39 +451,83 @@ async function fetchReports() {
   const data = JSON.parse(text);
   return Array.isArray(data) ? data : [];
 }
-// 세션별 소스 캐시 먼저 빌드
+
+async function fetchUpsellReports() {
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/rate_upsell_reports?select=id,created_at,target_name,upsell_type&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=50`,
+    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+  );
+  const text = await res.text();
+  const data = JSON.parse(text);
+  return Array.isArray(data) ? data : [];
+}
+
 function buildSessionSourceMap(logs) {
   const map = {};
-  // utm 있는 이벤트를 먼저 세션에 매핑
+  // 0차: 공유 링크(?report=/?upsell=)는 최우선 확정. 같은 세션에 광고 utm이 섞여도 공유가 이김.
   logs.forEach(l => {
     const m = pm(l.metadata);
-    if (m.utm_medium || m.utm_source || m.fbclid) {
-      if (!map[l.session_id]) {
-        map[l.session_id] = parseSourceFromMeta(m);
+    if (m.report || m.upsell) { map[l.session_id] = 'share_link'; return; }  // ← 여기로
+    const ref = m.referrer || '';
+    if (ref.includes('report=') || ref.includes('upsell=')) {
+      map[l.session_id] = 'share_link';
+    }
+  });
+  // 1차: 확실한 출처(광고/오가닉)를 가진 로그 우선. utm은 최상위 필드 또는 referrer URL 안에 있을 수 있음.
+  logs.forEach(l => {
+    const m = pm(l.metadata);
+    const ref = m.referrer || '';
+    const hasUtmSignal = m.utm_medium || m.utm_source || m.fbclid || ref.includes('utm_');
+    if (hasUtmSignal) {
+      const s = parseSourceFromMeta(m);
+      // direct/unknown이 아닌 확실한 출처만 1차에서 확정 (이미 잡힌 건 덮어쓰지 않음 → 공유 우선 유지)
+      if (s !== 'direct' && s !== 'unknown' && !map[l.session_id]) {
+        map[l.session_id] = s;
       }
     }
   });
-  // utm 없는 세션은 page_view referrer로 fallback
+  // 2차: 1차에서 못 잡은 세션은 아무 로그로라도 판별 (단 unknown은 direct로 안 떨어지게 보류)
   logs.forEach(l => {
     if (!map[l.session_id]) {
-      map[l.session_id] = parseSourceFromMeta(pm(l.metadata));
+      const s = parseSourceFromMeta(pm(l.metadata));
+      if (s !== 'unknown') map[l.session_id] = s;
     }
+  });
+  // 3차: 그래도 못 잡은 세션(결제 리다이렉트만 있는 경우 등)은 direct로
+  logs.forEach(l => {
+    if (!map[l.session_id]) map[l.session_id] = 'direct';
   });
   return map;
 }
 
 function parseSourceFromMeta(m) {
-  if (m.utm_medium === 'paid' && m.utm_source === 'ig') return 'ig_paid';
-  if (m.utm_medium === 'paid' && m.utm_source === 'fb') return 'fb_paid';
-  if (m.utm_medium === 'social') return 'ig_organic';
-  if (m.fbclid) return 'fb_organic';
   const ref = m.referrer || '';
-  if (ref.includes('?report=')) return 'share_link';
+  if (m.report || m.upsell) return 'share_link';
+  // 0) 공유 링크는 최우선 — ?report=/?upsell=는 명백한 공유 유입 신호 (utm보다 우선)
+  if (ref.includes('?report=') || ref.includes('?upsell=') || ref.includes('&report=') || ref.includes('&upsell=')) return 'share_link';
+  // 1) 최상위 utm 필드 우선
+  let src = m.utm_source, med = m.utm_medium;
+  // 2) 최상위에 없으면 referrer URL 안의 utm 파라미터에서 추출 (광고 page_view는 referrer에 utm이 박혀있음)
+  if ((!src || !med) && ref.includes('utm_')) {
+    try {
+      const qs = ref.split('?')[1] || '';
+      const params = new URLSearchParams(qs);
+      src = src || params.get('utm_source');
+      med = med || params.get('utm_medium');
+    } catch {}
+  }
+  if (med === 'paid' && (src === 'ig' || src === 'instagram')) return 'ig_paid';
+  if (med === 'paid' && (src === 'fb' || src === 'facebook')) return 'fb_paid';
+  if (med === 'social') return 'ig_organic';
+  if (m.fbclid) return 'fb_organic';
+  // 결제 리다이렉트 referrer는 진짜 유입원이 아님 → direct로 단정하지 말고 출처불명 처리(세션맵 폴백에 맡김)
+  if (ref.includes('paymentId=') || ref.includes('transactionType=PAYMENT')) return 'unknown';
   if (ref.includes('sajublueprint.com')) return 'direct';
   if (ref) return 'other';
   return 'direct';
 }
-
 
 function parseSource(meta, sessionId) {
   if (sessionId && window._sessionSrcMap?.[sessionId]) {
@@ -341,7 +536,52 @@ function parseSource(meta, sessionId) {
   return parseSourceFromMeta(pm(meta));
 }
 
+function computeFunnel(logs) {
+  const sessions = {};
+  logs.forEach(l => {
+    if (!sessions[l.session_id]) sessions[l.session_id] = new Set();
+    sessions[l.session_id].add(l.event_name);
+  });
+
+  const realSessions = Object.entries(sessions).filter(([sid]) => {
+    const log = logs.find(l => l.session_id === sid);
+    const m = pm(log?.metadata);
+    return !/(bot|crawler|AdsBot)/i.test(m.user_agent || '');
+  });
+  const count = (ev) => realSessions.filter(([,e]) => e.has(ev)).length;
+  const pv = count('page_view'), ar = count('analysis_requested'),
+        pw = count('paywall_shown'), pc = count('payment_confirmed'),
+        ucta = count('upsell_cta_click'), usel = count('upsell_man_selected'),
+        upw = count('upsell_paywall_shown'), upc = count('upsell_payment_confirmed');
+  const rate = (a, b) => b > 0 ? ((a/b)*100).toFixed(0)+'%' : '-';
+  const rateNum = (a, b) => b > 0 ? ((a/b)*100).toFixed(1) : '';
+  const cls = (r) => isNaN(r) ? 'base' : r >= 60 ? 'good' : r >= 30 ? 'warn' : 'bad';
+  // 각 단계: prev는 전환율 계산 기준(직전 단계 수)
+  return [
+    { label: 'PAGE VIEW', num: pv, prev: null, rate: '기준', rateNum: '', cls: 'base' },
+    { label: 'FORM 입력', num: ar, prev: pv, rate: rate(ar, pv), rateNum: rateNum(ar, pv), cls: cls(ar/pv*100) },
+    { label: 'PAYWALL', num: pw, prev: ar, rate: rate(pw, ar), rateNum: rateNum(pw, ar), cls: cls(pw/ar*100) },
+    { label: '결제 완료', num: pc, prev: pw, rate: rate(pc, pw), rateNum: rateNum(pc, pw), cls: cls(pc/pw*100) },
+    { label: '업셀 CTA', num: ucta, prev: pc, rate: rate(ucta, pc), rateNum: rateNum(ucta, pc), cls: cls(ucta/pc*100), up: true },
+    { label: '남자 선택', num: usel, prev: ucta, rate: rate(usel, ucta), rateNum: rateNum(usel, ucta), cls: cls(usel/ucta*100), up: true },
+    { label: '업셀 PAYWALL', num: upw, prev: usel, rate: rate(upw, usel), rateNum: rateNum(upw, usel), cls: cls(upw/usel*100), up: true },
+    { label: '업셀 결제', num: upc, prev: upw, rate: rate(upc, upw), rateNum: rateNum(upc, upw), cls: cls(upc/upw*100), up: true },
+  ];
+}
+
 function renderFunnel(logs) {
+  const steps = computeFunnel(logs);
+  document.getElementById('funnel-grid').innerHTML = steps.map(s => `
+    <div class="funnel-step${s.up ? ' upsell' : ''}">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-num">${s.num}</div>
+      <div class="funnel-rate ${s.cls}">${s.rate}</div>
+    </div>
+  `).join('');
+}
+
+function renderShareFunnel(logs, sourceAllLogs) {
+  // 봇 제외 후 세션 단위로 집계 (메인 퍼널과 동일 기준)
   const sessions = {};
   logs.forEach(l => {
     if (!sessions[l.session_id]) sessions[l.session_id] = new Set();
@@ -352,27 +592,60 @@ function renderFunnel(logs) {
     const m = pm(log?.metadata);
     return !/(bot|crawler|AdsBot)/i.test(m.user_agent || '');
   });
-  const count = (ev) => realSessions.filter(([,e]) => e.has(ev)).length;
-  const pv = count('page_view'), ar = count('analysis_requested'),
-        pw = count('paywall_shown'), pc = count('payment_confirmed'),
-        rs = count('result_shown'), rsh = count('result_shared');
-  const rate = (a, b) => b > 0 ? ((a/b)*100).toFixed(0)+'%' : '-';
-  const cls = (r) => r >= 60 ? 'good' : r >= 30 ? 'warn' : 'bad';
-  const steps = [
-    { label: 'PAGE VIEW', num: pv, rate: '기준', cls: 'base' },
-    { label: 'FORM 입력', num: ar, rate: rate(ar, pv), cls: cls(ar/pv*100) },
-    { label: 'PAYWALL', num: pw, rate: rate(pw, ar), cls: cls(pw/ar*100) },
-    { label: '결제 완료', num: pc, rate: rate(pc, pw), cls: cls(pc/pw*100) },
-    { label: '결과 확인', num: rs, rate: rate(rs, pc), cls: cls(rs/pc*100) },
-    { label: '공유', num: rsh, rate: rate(rsh, rs), cls: cls(rsh/rs*100) },
-  ];
-  document.getElementById('funnel-grid').innerHTML = steps.map(s => `
-    <div class="funnel-step">
-      <div class="funnel-label">${s.label}</div>
-      <div class="funnel-num">${s.num}</div>
-      <div class="funnel-rate ${s.cls}">${s.rate}</div>
+  const shown = realSessions.filter(([,e]) => e.has('result_shown')).length;
+  const shared = realSessions.filter(([,e]) => e.has('result_shared')).length;
+  const rate = shown > 0 ? (shared / shown * 100) : 0;
+  const rateStr = shown > 0 ? rate.toFixed(1) + '%' : '-';
+
+  // 공유 링크로 들어온 신규 유입 (share_link 소스의 page_view 세션 수)
+  // 소스 필터와 무관하게 전체 로그에서 절대수를 봄 (K값 측정용)
+  const baseLogs = sourceAllLogs || logs;
+  const inflowSessions = new Set();
+  baseLogs.forEach(l => {
+    if (l.event_name !== 'page_view') return;
+    const m = pm(l.metadata);
+    if (/(bot|crawler|AdsBot)/i.test(m.user_agent || '')) return;
+    if (parseSource(l.metadata, l.session_id) === 'share_link') inflowSessions.add(l.session_id);
+  });
+  const inflow = inflowSessions.size;
+
+  // K값 (바이럴 계수 근사) = 공유로 들어온 신규 유입 ÷ 공유 실행 수
+  const k = shared > 0 ? (inflow / shared) : 0;
+  const kStr = shared > 0 ? k.toFixed(2) : '-';
+
+  // K값 등급: 바이럴 성패 판단 기준
+  let hintCls, hintTxt, rateColor;
+  if (shared === 0) { hintCls = 'mid'; hintTxt = '공유 데이터 없음'; rateColor = 'var(--text-muted)'; }
+  else if (k >= 1) { hintCls = 'hot'; hintTxt = '🔥 자가증식 (K≥1)'; rateColor = 'var(--green)'; }
+  else if (k >= 0.5) { hintCls = 'hot'; hintTxt = '강한 증폭 · 무료전환 청신호'; rateColor = 'var(--green)'; }
+  else if (k >= 0.2) { hintCls = 'mid'; hintTxt = '약한 증폭 · 링크매력 개선여지'; rateColor = 'var(--yellow)'; }
+  else { hintCls = 'low'; hintTxt = '낮음 · 공유는 되나 유입 약함'; rateColor = 'var(--pink)'; }
+
+  document.getElementById('share-funnel').innerHTML = `
+    <div class="share-box">
+      <div class="share-box-label">RESULT SHOWN</div>
+      <div class="share-box-num">${shown}</div>
+      <div class="share-box-sub">결과 확인</div>
     </div>
-  `).join('');
+    <div class="share-arrow">→</div>
+    <div class="share-box shared">
+      <div class="share-box-label">RESULT SHARED</div>
+      <div class="share-box-num">${shared}</div>
+      <div class="share-box-sub">공유 실행 · ${rateStr}</div>
+    </div>
+    <div class="share-arrow">→</div>
+    <div class="share-box inflow">
+      <div class="share-box-label">공유링크 유입</div>
+      <div class="share-box-num">${inflow}</div>
+      <div class="share-box-sub">share_link 신규</div>
+    </div>
+    <div class="share-arrow">=</div>
+    <div class="share-rate-box">
+      <div class="share-rate-label">K값 (바이럴 계수)</div>
+      <div class="share-rate-num" style="color:${rateColor}">${kStr}</div>
+      <div class="share-rate-hint ${hintCls}">${hintTxt}</div>
+    </div>
+  `;
 }
 
 function renderSources(logs) {
@@ -408,7 +681,7 @@ function renderSources(logs) {
 function renderHourly(logs) {
   const pvLogs = logs.filter(l => l.event_name === 'page_view');
   const hours = Array(24).fill(0);
-  pvLogs.forEach(l => { hours[toKST(l.created_at).getHours()]++; });
+  pvLogs.forEach(l => { hours[toKST(l.created_at).getUTCHours()]++; });
   const max = Math.max(...hours, 1);
   document.getElementById('hourly-chart').innerHTML = hours.map((v, h) => `
     <div class="chart-bar-col">
@@ -427,14 +700,14 @@ function renderPayments(payments) {
   document.getElementById('payment-list').innerHTML = payments.map(p => {
     const m = pm(p.metadata);
     const kst = toKST(p.created_at);
-    const timeStr = `${String(kst.getMonth()+1).padStart(2,'0')}/${String(kst.getDate()).padStart(2,'0')} ${String(kst.getHours()).padStart(2,'0')}:${String(kst.getMinutes()).padStart(2,'0')}`;
+    const timeStr = `${String(kst.getUTCMonth()+1).padStart(2,'0')}/${String(kst.getUTCDate()).padStart(2,'0')} ${String(kst.getUTCHours()).padStart(2,'0')}:${String(kst.getUTCMinutes()).padStart(2,'0')}`;
     const pid = m.payment_id || '-';
     const src = parseSource(p.metadata, p.session_id); 
     return `<div class="payment-row">
       <span class="payment-time">${timeStr}</span>
       <span class="payment-id">${pid.length > 18 ? pid.slice(0,18)+'...' : pid}</span>
       <span class="source-badge badge-ig" style="font-size:10px;padding:2px 6px;">${srcLabels[src]||src}</span>
-      <span class="payment-amount">₩3,900</span>
+      <span class="payment-amount">₩4,900</span>
     </div>`;
   }).join('');
 }
@@ -444,6 +717,7 @@ function renderSummary(logs) {
   const pv = logs.filter(l => l.event_name === 'page_view').length;
   const ar = new Set(logs.filter(l => l.event_name === 'analysis_requested').map(l => l.session_id)).size;
   const pc = new Set(logs.filter(l => l.event_name === 'payment_confirmed').map(l => l.session_id)).size;
+  const upc = new Set(logs.filter(l => l.event_name === 'upsell_payment_confirmed').map(l => l.session_id)).size;
   const rs = new Set(logs.filter(l => l.event_name === 'result_shown').map(l => l.session_id)).size;
   const fb = logs.filter(l => {
     if (l.event_name !== 'feedback_submitted') return false;
@@ -451,15 +725,17 @@ function renderSummary(logs) {
   }).length;
   const days = Math.max(1, Math.ceil((new Date(toDate) - new Date(fromDate)) / 86400000) + 1);
   const overallCvr = pv > 0 ? ((pc/pv)*100).toFixed(1)+'%' : '-';
+  const revenue = pc*4900 + upc*4900;
   document.getElementById('summary-stats').innerHTML = `
     <div class="stat-row"><span class="stat-label">총 세션 수</span><span class="stat-val">${uniqueSessions}</span></div>
     <div class="stat-row"><span class="stat-label">총 page_view</span><span class="stat-val">${pv}</span></div>
     <div class="stat-row"><span class="stat-label">일평균 PV</span><span class="stat-val">${(pv/days).toFixed(1)}</span></div>
     <div class="stat-row"><span class="stat-label">폼 제출</span><span class="stat-val">${ar}</span></div>
-    <div class="stat-row"><span class="stat-label">결제 완료</span><span class="stat-val">${pc}</span></div>
+    <div class="stat-row"><span class="stat-label">결제 완료 (랭킹)</span><span class="stat-val">${pc}</span></div>
+    <div class="stat-row"><span class="stat-label">결제 완료 (업셀)</span><span class="stat-val" style="color:var(--yellow)">${upc}</span></div>
     <div class="stat-row"><span class="stat-label">결과 확인</span><span class="stat-val">${rs}</span></div>
     <div class="stat-row"><span class="stat-label">전체 CVR</span><span class="stat-val" style="color:var(--pink)">${overallCvr}</span></div>
-    <div class="stat-row"><span class="stat-label">추정 매출</span><span class="stat-val" style="color:var(--green)">₩${(pc*3900).toLocaleString()}</span></div>
+    <div class="stat-row"><span class="stat-label">추정 매출</span><span class="stat-val" style="color:var(--green)">₩${revenue.toLocaleString()}</span></div>
     <div class="stat-row"><span class="stat-label">후기 수</span><span class="stat-val">${fb}</span></div>
   `;
 }
@@ -471,7 +747,7 @@ function renderReports(reports) {
   }
   document.getElementById('report-list').innerHTML = reports.map(r => {
     const kst = toKST(r.created_at);
-    const timeStr = `${String(kst.getMonth()+1).padStart(2,'0')}/${String(kst.getDate()).padStart(2,'0')} ${String(kst.getHours()).padStart(2,'0')}:${String(kst.getMinutes()).padStart(2,'0')}`;
+    const timeStr = `${String(kst.getUTCMonth()+1).padStart(2,'0')}/${String(kst.getUTCDate()).padStart(2,'0')} ${String(kst.getUTCHours()).padStart(2,'0')}:${String(kst.getUTCMinutes()).padStart(2,'0')}`;
     const url = `https://sajublueprint.com/rate?report=${r.id}`;
     let partners = [];
     try {
@@ -486,25 +762,26 @@ function renderReports(reports) {
   }).join('');
 }
 
-function renderDaily(logs) {
-  const pvLogs = logs.filter(l => l.event_name === 'page_view');
-  const dailyCount = {};
-  pvLogs.forEach(l => {
-    const day = fmtDate(toKST(l.created_at));
-    dailyCount[day] = (dailyCount[day] || 0) + 1;
-  });
-  const days = Object.keys(dailyCount).sort();
-  if (!days.length) return;
-  const max = Math.max(...Object.values(dailyCount), 1);
-  document.getElementById('daily-chart').innerHTML = days.map(d => `
-    <div class="chart-bar-col" style="flex:1">
-      <div class="chart-bar" style="height:${(dailyCount[d]/max*100).toFixed(0)}%" title="${d}: ${dailyCount[d]}건"></div>
-    </div>
-  `).join('');
-  document.getElementById('daily-labels').innerHTML = days.map(d => `
-    <div style="flex:1;text-align:center;font-size:9px;color:var(--text-hint);font-family:var(--mono)">${d.slice(5)}</div>
-  `).join('');
+function renderUpsellReports(reports) {
+  if (!reports.length) {
+    document.getElementById('upsell-report-list').innerHTML = '<div style="color:var(--text-hint);font-size:12px;padding:16px 0;">심층분석 리포트 없음</div>';
+    return;
+  }
+  const typeLabels = { conquest: '공략집', reunion: '재회운' };
+  document.getElementById('upsell-report-list').innerHTML = reports.map(r => {
+    const kst = toKST(r.created_at);
+    const timeStr = `${String(kst.getUTCMonth()+1).padStart(2,'0')}/${String(kst.getUTCDate()).padStart(2,'0')} ${String(kst.getUTCHours()).padStart(2,'0')}:${String(kst.getUTCMinutes()).padStart(2,'0')}`;
+    const url = `https://sajublueprint.com/rate?upsell=${r.id}`;
+    const t = typeLabels[r.upsell_type] || r.upsell_type || '심층';
+    return `<div class="report-row">
+      <span class="report-time">${timeStr}</span>
+      <a class="report-link deep" href="${url}" target="_blank">${url}</a>
+      <span class="report-guys">${r.target_name || '?'} · ${t}</span>
+    </div>`;
+  }).join('');
 }
+
+let allSourceLogs = [];
 
 async function loadAll() {
   const from = document.getElementById('date-from').value || fromDate;
@@ -512,7 +789,7 @@ async function loadAll() {
   fromDate = from; toDate = to;
   document.getElementById('funnel-grid').innerHTML = '<div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>';
   try {
-    [allLogs, allPayments, allReports] = await Promise.all([fetchLogs(), fetchPayments(), fetchReports()]);
+    [allLogs, allPayments, allReports, allUpsellReports, allSourceLogs] = await Promise.all([fetchLogs(), fetchPayments(), fetchReports(), fetchUpsellReports(), fetchSourceLogs()]);
     renderAll();
   } catch(e) {
     document.getElementById('funnel-grid').innerHTML = `<div style="grid-column:1/-1;color:#f06a6a;font-family:var(--mono);font-size:12px;padding:20px;">에러: ${e.message}</div>`;
@@ -522,15 +799,112 @@ async function loadAll() {
 
 function renderAll() {
   const logs = filterLogs(allLogs);
-  window._sessionSrcMap = buildSessionSourceMap(allLogs); // 전체 기준으로 빌드
-  const payments = srcFilter === 'all' ? allPayments : allPayments.filter(p => parseSource(p.metadata, p.session_id) === srcFilter); 
+  // 세션 출처 맵은 확장 로그(직전 하루 포함)로 만들어 자정 넘나든 광고 세션도 잡음
+  window._sessionSrcMap = buildSessionSourceMap((allSourceLogs && allSourceLogs.length) ? allSourceLogs : allLogs);
+  const payments = srcFilter.size === 0 ? allPayments : allPayments.filter(p => srcFilter.has(parseSource(p.metadata, p.session_id)));
   renderFunnel(logs);
-  renderSources(allLogs); // 소스 현황은 항상 전체 표시
+  renderShareFunnel(logs, (allSourceLogs && allSourceLogs.length) ? allSourceLogs : allLogs);
+  renderSources(allLogs);
   renderHourly(logs);
   renderPayments(payments);
   renderSummary(logs);
   renderReports(allReports);
-  renderDaily(logs);
+  renderUpsellReports(allUpsellReports);
+}
+
+function exportFunnelCSV() {
+  if (!allLogs || !allLogs.length) { alert('데이터가 아직 로드되지 않았어요. 잠시 후 다시 시도해주세요.'); return; }
+  // 현재 소스 필터 적용
+  const logs = filterLogs(allLogs);
+
+  const srcLabels = {
+    ig_paid:'인스타 유료', fb_paid:'페북 유료', ig_organic:'인스타 오가닉',
+    fb_organic:'페북 오가닉', share_link:'공유 링크', direct:'직접/기타', other:'기타'
+  };
+  const selectedSrc = srcFilter.size === 0 ? '전체' : [...srcFilter].map(s => srcLabels[s] || s).join(' + ');
+  const from = document.getElementById('date-from').value || fromDate;
+  const to = document.getElementById('date-to').value || toDate;
+
+  // 로그를 KST 날짜별로 그룹핑
+  const byDay = {};
+  logs.forEach(l => {
+    const kst = toKST(l.created_at);
+    const dayStr = `${kst.getUTCFullYear()}-${String(kst.getUTCMonth()+1).padStart(2,'0')}-${String(kst.getUTCDate()).padStart(2,'0')}`;
+    if (dayStr < from || dayStr > to) return; // 범위 밖 방어
+    (byDay[dayStr] = byDay[dayStr] || []).push(l);
+  });
+
+  // from~to 사이 모든 날짜를 채움 (데이터 없는 날도 0행으로)
+  const days = [];
+  for (let d = from; d <= to; d = addDaysStr(d, 1)) days.push(d);
+
+  // CSV 셀 이스케이프
+  const esc = (v) => {
+    const s = String(v ?? '');
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+
+  const rows = [];
+  rows.push(['Rate 퍼널 — 일자별']);
+  rows.push(['기간', `${from} ~ ${to}`]);
+  rows.push(['유입 소스', selectedSrc]);
+  rows.push(['추출 시각', new Date().toLocaleString('ko-KR')]);
+  rows.push([]);
+  // 헤더 행: 날짜 + 8단계 + 핵심 전환율 + 매출
+  rows.push([
+    '날짜', '요일',
+    'PAGE VIEW', 'FORM 입력', 'PAYWALL', '결제 완료',
+    '업셀 CTA', '남자 선택', '업셀 PAYWALL', '업셀 결제',
+    'PV→FORM(%)', 'PAYWALL→결제(%)', '결제→업셀CTA(%)', '업셀PW→결제(%)',
+    '전체 CVR(%)', '추정매출(원)'
+  ]);
+
+  const dowArr = ['일','월','화','수','목','금','토'];
+  // 합계 누적용
+  const totals = { pv:0, ar:0, pw:0, pc:0, ucta:0, usel:0, upw:0, upc:0, rev:0 };
+
+  days.forEach(day => {
+    const dayLogs = byDay[day] || [];
+    const steps = computeFunnel(dayLogs);
+    const get = (label) => steps.find(s => s.label === label).num;
+    const pv = get('PAGE VIEW'), ar = get('FORM 입력'), pw = get('PAYWALL'), pc = get('결제 완료');
+    const ucta = get('업셀 CTA'), usel = get('남자 선택'), upw = get('업셀 PAYWALL'), upc = get('업셀 결제');
+    const rev = pc * 4900 + upc * 4900;
+    const r1 = (a,b) => b > 0 ? ((a/b)*100).toFixed(1) : '';
+    const dow = dowArr[new Date(day + 'T12:00:00Z').getUTCDay()];
+    rows.push([
+      day, dow,
+      pv, ar, pw, pc, ucta, usel, upw, upc,
+      r1(ar,pv), r1(pc,pw), r1(ucta,pc), r1(upc,upw),
+      r1(pc,pv), rev
+    ]);
+    totals.pv+=pv; totals.ar+=ar; totals.pw+=pw; totals.pc+=pc;
+    totals.ucta+=ucta; totals.usel+=usel; totals.upw+=upw; totals.upc+=upc; totals.rev+=rev;
+  });
+
+  // 합계 행
+  const rt = (a,b) => b > 0 ? ((a/b)*100).toFixed(1) : '';
+  rows.push([]);
+  rows.push([
+    '합계', '',
+    totals.pv, totals.ar, totals.pw, totals.pc,
+    totals.ucta, totals.usel, totals.upw, totals.upc,
+    rt(totals.ar,totals.pv), rt(totals.pc,totals.pw), rt(totals.ucta,totals.pc), rt(totals.upc,totals.upw),
+    rt(totals.pc,totals.pv), totals.rev
+  ]);
+
+  const csv = rows.map(r => r.map(esc).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fnameDate = (from === to) ? from : `${from}_${to}`;
+  const fnameSrc = srcFilter.size === 0 ? 'all' : [...srcFilter].join('-');
+  a.href = url;
+  a.download = `rate_funnel_daily_${fnameDate}_${fnameSrc}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 loadAll();

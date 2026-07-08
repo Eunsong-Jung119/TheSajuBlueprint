@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
 
   const { data, error } = await supabase
     .from('rate_analyses')
-    .select('result')
+    .select('result, my_year, my_month, my_day, my_hour, my_gender, partners')
     .eq('id', id)
     .single();
 
@@ -31,5 +31,13 @@ module.exports = async function handler(req, res) {
     return res.status(404).json({ error: 'Report not found' });
   }
 
-  return res.status(200).json({ result: data.result });
+  return res.status(200).json({
+    result: data.result,
+    my_year: data.my_year,
+    my_month: data.my_month,
+    my_day: data.my_day,
+    my_hour: data.my_hour,
+    my_gender: data.my_gender,
+    partners: data.partners,
+  });
 };

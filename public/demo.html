@@ -1,520 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rate My Exes — What the Chart Really Says 🔮</title>
-<meta name="description" content="Drop in your exes, your situationship, your talking stage. Find out who your birth chart actually says is right for you.">
-<meta property="og:title" content="Rate My Exes 🔮 — what the chart really says">
-<meta property="og:description" content="Drop in every guy. Find out who your chart says is actually your person.">
-<meta property="og:image" content="https://sajublueprint.com/og-rate-en.png">
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<script async defer src="https://js.whop.com/static/checkout/loader.js"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18045718869"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18045718869');</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNC8VKJZWG"></script>
-<script>gtag('config','G-PNC8VKJZWG');</script>
-<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1513677227103970');fbq('track','PageView');</script>
+<title>사주 랭킹 분석 — 예시 리포트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  /* soft dreamy palette — plum night → lavender, soft gold + dusty rose */
-  --gold:#e3c08a;--gold-dim:rgba(227,192,138,0.4);--gold-faint:rgba(227,192,138,0.1);
-  --plum:#1e1430;--plum-deep:#160e26;
-  --navy:#1e1430;/* alias kept for legacy refs → plum */
-  --navy-card:rgba(255,255,255,0.045);--navy-soft:rgba(255,255,255,0.04);
-  --text:#f3ecff;--text-dim:rgba(243,236,255,0.68);--text-faint:rgba(243,236,255,0.4);
-  --rose:#d99fb0;--rose-dim:rgba(217,159,176,0.5);
-  --lilac:#b89fd9;--lilac-soft:#cdb8e8;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'EB Garamond',serif;background:linear-gradient(168deg,#241640 0%,#33214f 30%,#46305f 58%,#5a3f73 80%,#6b4d80 100%);background-attachment:fixed;color:var(--text);min-height:100vh;overflow-x:hidden;}
-#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.glow-orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);opacity:0.5;}
-.glow-1{width:340px;height:340px;background:radial-gradient(circle,rgba(184,159,217,0.55),transparent 70%);top:-80px;right:-100px;}
-.glow-2{width:300px;height:300px;background:radial-gradient(circle,rgba(217,159,176,0.4),transparent 70%);top:40%;left:-120px;}
-.glow-3{width:260px;height:260px;background:radial-gradient(circle,rgba(227,192,138,0.3),transparent 70%);bottom:5%;right:-80px;}
-.star{position:absolute;border-radius:50%;background:var(--lilac-soft);opacity:0;animation:twinkle var(--d) ease-in-out infinite var(--delay);}
-@keyframes twinkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:var(--bright);transform:scale(1)}}
-
-/* TOP BAR */
-.top-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(36,22,64,0.6);backdrop-filter:blur(16px);border-bottom:1px solid var(--gold-dim);padding:10px 16px;display:flex;align-items:center;gap:10px;}
-.top-bar-thumb{width:34px;height:34px;border-radius:8px;background:var(--gold-faint);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.top-bar-info{flex:1;min-width:0;}
-.top-bar-title{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cormorant Garamond',serif;letter-spacing:0.5px;}
-.top-bar-price{display:flex;align-items:center;gap:6px;margin-top:1px;}
-.top-bar-original{font-size:11px;color:var(--text-faint);text-decoration:line-through;}
-.top-bar-sale{font-size:13px;font-weight:700;color:var(--gold);}
-.top-bar-btn{flex-shrink:0;padding:9px 18px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-size:12px;font-weight:600;font-family:'EB Garamond',serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;}
-
-.page-top-offset{height:56px;}
-.wrap{position:relative;z-index:1;max-width:540px;margin:0 auto;padding:0 20px 80px;}
-
-/* HERO */
-.hero{text-align:center;padding:52px 0 36px;}
-.brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:5px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:28px;}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,7vw,44px);font-weight:400;line-height:1.2;color:var(--text);margin-bottom:18px;letter-spacing:-0.5px;}
-.hero h1 em{font-style:italic;color:var(--gold);}
-.hero-sub{font-size:20px;color:var(--text-dim);line-height:1.6;max-width:420px;margin:0 auto;font-family:'Cormorant Garamond',serif;}
-
-/* PRICE BANNER */
-.price-banner{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));border:1px solid var(--gold-dim);border-radius:16px;padding:20px 22px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
-.price-event-label{display:inline-flex;align-items:center;gap:5px;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;}
-.price-original-big{font-size:13px;color:var(--text-faint);text-decoration:line-through;margin-bottom:2px;}
-.price-sale-big{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--gold);line-height:1;}
-.price-anchor{font-size:14px;color:var(--text-dim);margin-top:5px;font-family:'Cormorant Garamond',serif;}
-.price-cta-btn{flex-shrink:0;padding:14px 18px;background:var(--gold);color:var(--navy);border:none;border-radius:10px;font-size:13px;font-weight:600;font-family:'EB Garamond',serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;line-height:1.4;text-align:center;}
-
-/* SECTION LABEL */
-.section-label{font-size:10px;font-weight:500;color:var(--gold-dim);text-transform:uppercase;letter-spacing:.2em;margin-bottom:18px;display:flex;align-items:center;gap:10px;font-family:'Cormorant Garamond',serif;}
-.section-label::before,.section-label::after{content:'';flex:1;height:1px;background:var(--gold-dim);opacity:0.4;}
-
-/* REVIEWS */
-.review-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.16);border-radius:14px;padding:18px 20px;margin-bottom:10px;}
-.review-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.review-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--navy);font-weight:700;flex-shrink:0;}
-.review-name{font-size:15px;font-weight:500;color:var(--text-dim);font-family:'Cormorant Garamond',serif;letter-spacing:0.5px;}
-.review-date{font-size:11px;color:var(--text-faint);margin-left:auto;}
-.review-stars{color:var(--gold);font-size:11px;margin-bottom:7px;letter-spacing:2px;}
-.review-text{font-size:17px;line-height:1.7;color:var(--text-dim);font-style:italic;}
-.review-text em{font-style:normal;color:var(--gold);font-weight:500;}
-
-/* INCLUDE CARD */
-.include-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.16);border-radius:16px;padding:24px;margin-bottom:32px;}
-.include-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--text);margin-bottom:4px;}
-.include-subtitle{font-size:15px;color:var(--text-faint);margin-bottom:18px;}
-.include-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-.include-item:last-child{border-bottom:none;padding-bottom:0;}
-.include-item:first-of-type{padding-top:0;}
-.include-emoji{font-size:20px;flex-shrink:0;margin-top:2px;}
-.include-q{font-size:16px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.5;font-family:'Cormorant Garamond',serif;letter-spacing:0.3px;}
-.include-desc{font-size:15px;color:var(--text-faint);line-height:1.6;}
-
-/* SAMPLE REPORT */
-.sample-wrap{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.2);border-radius:16px;overflow:hidden;margin-bottom:32px;}
-.sample-header{background:linear-gradient(135deg,rgba(58,38,89,0.6),rgba(74,49,104,0.4));padding:18px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gold-dim);}
-.sample-label-small{font-size:9px;color:var(--gold-dim);margin-bottom:5px;letter-spacing:2px;text-transform:uppercase;}
-.sample-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);}
-.sample-archetype{font-size:14px;color:var(--rose);margin-top:3px;font-style:italic;}
-.sample-score{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--gold);line-height:1;}
-.sample-score span{font-size:14px;color:var(--text-faint);font-weight:400;}
-.sample-score-label{font-size:9px;color:var(--text-faint);margin-top:2px;text-align:right;letter-spacing:1px;text-transform:uppercase;}
-.sample-body{padding:20px;}
-.sample-section{margin-bottom:18px;}
-.sample-section-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;font-family:'Cormorant Garamond',serif;letter-spacing:0.5px;}
-.sample-section-score{margin-left:auto;font-size:12px;font-weight:700;color:var(--gold);}
-.sample-bar-track{height:4px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:9px;}
-.sample-bar-fill{height:100%;border-radius:3px;background:var(--gold);}
-.sample-section-text{font-size:15px;color:var(--text-dim);line-height:1.75;}
-.sample-section-summary{font-size:14px;color:var(--gold);margin-top:8px;padding:8px 12px;background:var(--gold-faint);border-radius:8px;font-style:italic;}
-.sample-blur-wrap{position:relative;margin:0 -20px -20px;padding:20px;}
-.sample-blur-content{filter:blur(6px);pointer-events:none;user-select:none;}
-.sample-blur-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,21,38,0) 0%,rgba(15,21,38,0.7) 35%,rgba(15,21,38,0.97) 70%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:28px;gap:10px;}
-.blur-unlock-badge{background:var(--gold);color:var(--navy);font-size:13px;font-weight:600;padding:12px 24px;border-radius:24px;cursor:pointer;border:none;font-family:'EB Garamond',serif;letter-spacing:1px;text-transform:uppercase;}
-.blur-unlock-sub{font-size:13px;color:var(--text-faint);font-style:italic;}
-
-/* RECOMMEND */
-.recommend-card{background:linear-gradient(135deg,rgba(58,38,89,0.6),rgba(74,49,104,0.4));border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:24px 22px;margin-bottom:32px;}
-.recommend-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);margin-bottom:16px;}
-.recommend-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
-.recommend-item:last-child{margin-bottom:0;}
-.recommend-check{width:20px;height:20px;border-radius:50%;background:var(--gold-faint);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0;margin-top:1px;}
-.recommend-text{font-size:16px;color:var(--text-dim);line-height:1.6;}
-
-/* FAQ */
-.faq-wrap{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.16);border-radius:16px;padding:24px;margin-bottom:32px;}
-.faq-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--text);margin-bottom:16px;}
-.faq-item{border-bottom:1px solid rgba(255,255,255,0.05);padding:14px 0;}
-.faq-item:last-child{border-bottom:none;padding-bottom:0;}
-.faq-item:first-of-type{padding-top:0;}
-/* faq-q replaced by toggle */
-.faq-q{font-size:16px;font-weight:500;color:var(--text);display:flex;gap:8px;align-items:flex-start;font-family:'Cormorant Garamond',serif;letter-spacing:0.3px;}
-.faq-q::before{content:'Q';color:var(--gold);font-weight:600;flex-shrink:0;}
-.faq-a{font-size:15px;color:var(--text-faint);line-height:1.7;padding-left:20px;margin-top:7px;}
-
-/* BOTTOM CTA */
-.bottom-cta{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.2);border-radius:16px;padding:26px 22px;margin-bottom:32px;text-align:center;}
-.bottom-cta-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--text);margin-bottom:6px;}
-.bottom-cta-sub{font-size:16px;color:var(--text-dim);margin-bottom:18px;font-family:'Cormorant Garamond',serif;}
-.bottom-price-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;}
-.bottom-original{font-size:15px;color:var(--text-faint);text-decoration:line-through;}
-.bottom-sale{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--gold);}
-.bottom-badge{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;}
-
-/* FORM */
-.form-section{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.18);border-radius:16px;padding:24px;margin-bottom:12px;}
-.card-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
-.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--gold-dim);}
-.avatar-me{background:rgba(74,144,217,0.12);}
-.avatar-guy{background:rgba(217,138,154,0.12);}
-.card-title{font-size:16px;font-weight:500;color:var(--text);font-family:'Cormorant Garamond',serif;letter-spacing:0.5px;}
-.field-group{margin-bottom:14px;}.field-group:last-child{margin-bottom:0;}
-.field-label{display:block;font-size:11px;font-weight:500;color:var(--gold-dim);margin-bottom:7px;letter-spacing:2px;text-transform:uppercase;font-family:'Cormorant Garamond',serif;}
-.field-label .req{color:var(--rose);margin-left:3px;}
-.row-3{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:10px;}
-input[type="text"],input[type="number"],input[type="email"],select{width:100%;height:46px;padding:0 14px;font-size:16px;font-family:'EB Garamond',serif;color:var(--text);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;outline:none;transition:border-color .2s, background .2s;-webkit-appearance:none;box-shadow:0 2px 8px rgba(0,0,0,0.2) inset;}
-input::placeholder{color:rgba(232,223,200,0.25);}
-input:focus,select:focus{border-color:var(--gold-dim);background:rgba(255,255,255,0.08);}
-input.input-error{border-color:var(--rose)!important;}
-select{cursor:pointer;}
-select option{background:#241640;color:var(--text);}
-input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;}
-.email-input-wrap{display:grid;grid-template-columns:1fr 18px 1.1fr;align-items:center;gap:6px;}
-.email-at-label{text-align:center;font-size:15px;color:var(--text-faint);}
-.email-hint{font-size:11px;color:var(--text-faint);margin-top:6px;font-style:italic;}
-.email-error{font-size:11px;color:var(--rose);margin-top:6px;display:none;}
-.guy-card{position:relative;}
-.remove-btn{position:absolute;top:20px;right:20px;width:26px;height:26px;border-radius:50%;background:rgba(217,138,154,0.12);border:1px solid var(--rose-dim);color:var(--rose);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.add-btn{width:100%;padding:14px;background:transparent;border:1.5px dashed var(--gold-dim);border-radius:14px;color:var(--gold);font-size:14px;font-weight:500;font-family:'EB Garamond',serif;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:18px;}
-.divider{display:flex;align-items:center;gap:12px;margin:22px 0 18px;}
-.divider hr{flex:1;border:none;border-top:1px solid var(--gold-dim);opacity:0.4;}
-.divider span{font-size:12px;color:var(--text-faint);white-space:nowrap;font-style:italic;font-family:'Cormorant Garamond',serif;}
-.cta-btn{width:100%;padding:18px;background:var(--gold);color:var(--navy);border:none;border-radius:14px;font-size:15px;font-weight:600;font-family:'EB Garamond',serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 24px rgba(227,192,138,0.3);transition:box-shadow .2s;}
-.cta-btn:hover{box-shadow:0 0 36px rgba(227,192,138,0.45);}
-.cta-price-tag{display:inline-block;background:rgba(9,13,26,0.2);padding:3px 10px;border-radius:6px;font-size:14px;font-weight:700;}
-.cta-hint{text-align:center;font-size:12px;color:var(--text-faint);margin-top:12px;font-style:italic;}
-
-/* LOADING / RESULT */
-#loading-view{display:none;text-align:center;padding:80px 20px;}
-#loading-view.show{display:block;}
-.spinner{width:44px;height:44px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 22px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-#loading-view p{font-size:18px;font-weight:400;color:var(--text);margin-bottom:6px;font-family:'Cormorant Garamond',serif;}
-#loading-view .sub{font-size:14px;color:var(--text-faint);}
-#result-view{display:none;}
-#result-view.show{display:block;}
-.result-hero{text-align:center;padding:44px 0 26px;}
-.result-hero h1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--text);margin-bottom:6px;}
-.winner-card{background:linear-gradient(150deg,rgba(184,159,217,0.18),rgba(227,192,138,0.08));backdrop-filter:blur(8px);border:1px solid rgba(227,192,138,0.3);border-radius:16px;padding:26px 22px;text-align:center;margin-bottom:16px;}
-.winner-crown{font-size:38px;margin-bottom:10px;}
-.winner-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--gold);margin-bottom:10px;}
-.winner-comment{font-size:15px;color:var(--text-dim);line-height:1.7;}
-.rank-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(184,159,217,0.16);border-radius:16px;padding:20px;margin-bottom:10px;}
+:root{--pink:#E8547A;--pink-light:#F9E4EA;--pink-dark:#C23A60;--deep:#1A0A12;--text:#2D1420;--text-muted:#7A5060;--text-hint:#B08090;--surface:#FFFFFF;--surface-2:#FDF5F7;--border:rgba(232,84,122,0.12);--border-strong:rgba(232,84,122,0.28);--radius:16px;--radius-sm:10px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard',-apple-system,sans-serif;background:#FDF5F7;color:var(--text);min-height:100vh;}
+.wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:24px 20px 60px;}
+.result-hero{text-align:center;padding:8px 0 24px;}
+.result-hero .pill{display:inline-flex;align-items:center;gap:6px;background:var(--pink-light);color:var(--pink-dark);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:16px;}
+.result-hero h1{font-family:'Nanum Myeongjo',serif;font-size:26px;font-weight:700;color:var(--deep);margin-bottom:6px;}
+.result-hero p{font-size:14px;color:var(--text-muted);}
+.winner-card{background:linear-gradient(135deg,#FFF5F8 0%,#FDE8EE 100%);border:1px solid var(--border-strong);border-radius:var(--radius);padding:24px 20px;text-align:center;margin-bottom:16px;}
+.winner-crown{font-size:36px;margin-bottom:8px;}
+.winner-name{font-family:'Nanum Myeongjo',serif;font-size:22px;font-weight:700;color:var(--pink-dark);margin-bottom:6px;}
+.winner-arch{font-size:13px;color:var(--pink);font-weight:600;margin-bottom:10px;}
+.winner-comment{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.ranking-comment{background:var(--pink-light);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;font-size:13px;color:var(--pink-dark);line-height:1.7;}
+.rank-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;}
 .rank-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.rank-badge{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
-.r1{background:rgba(201,168,76,0.2);color:var(--gold);}.r2{background:rgba(192,192,192,0.15);color:#c0c0c0;}.r3{background:rgba(205,127,50,0.15);color:#cd7f32;}.r4{background:rgba(255,255,255,0.06);color:var(--text-dim);}.r5{background:rgba(255,255,255,0.06);color:var(--text-dim);}
-.rank-name{font-size:16px;font-weight:500;color:var(--text);font-family:'Cormorant Garamond',serif;}
-.rank-label{font-size:12px;color:var(--rose);margin-top:1px;font-style:italic;}
-.rank-score{margin-left:auto;font-size:26px;font-weight:600;color:var(--text);line-height:1;font-family:'Cormorant Garamond',serif;}
-.rank-score span{font-size:12px;color:var(--text-faint);}
-.score-bar-wrap{margin-bottom:12px;}
-.score-bar{height:4px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
-.score-fill{height:100%;border-radius:3px;background:var(--gold);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
-.verdict-section{border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;}
-.action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
-.action-btn{padding:14px;border-radius:12px;font-size:13px;font-weight:500;font-family:'EB Garamond',serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-outline{background:transparent;border:1px solid var(--gold-dim);color:var(--text);}
-.btn-filled{background:var(--gold);border:none;color:var(--navy);}
-.disclaimer{text-align:center;font-size:11px;color:var(--text-faint);padding:18px 0 0;line-height:1.8;font-style:italic;}
-.disclaimer a{color:var(--text-faint);text-decoration:underline;}
-
-.fade-up{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease;}
-.fade-up.visible{opacity:1;transform:translateY(0);}
-
-.sample-section-text{position:relative;}
-
-/* WHOP MODAL */
-.whop-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-.whop-overlay.visible{display:flex;}
-.whop-modal{position:relative;width:min(540px,96vw);max-height:90vh;background:#241640;border:1px solid var(--gold-dim);display:flex;flex-direction:column;overflow:hidden;border-radius:8px;}
-.whop-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--gold-dim);flex-shrink:0;}
-.whop-modal-title{font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
-.whop-modal-close{background:none;border:none;color:var(--text-faint);font-size:22px;cursor:pointer;line-height:1;padding:0 4px;}
-.whop-modal-body{flex:1;overflow-y:auto;padding:16px;min-height:480px;display:flex;align-items:flex-start;justify-content:center;}
-#whopCheckoutDiv{width:100%;min-height:460px;}
-.modal-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text-faint);font-size:14px;}
-.modal-spinner{width:32px;height:32px;border:2px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
-
-@media(max-width:380px){.hero h1{font-size:26px;}}
-
-.faq-item{border-bottom:1px solid rgba(255,255,255,0.05);padding:0;}
-.faq-item:last-child{border-bottom:none;}
-.faq-item:first-of-type{padding-top:0;}
-.faq-toggle{width:100%;background:none;border:none;padding:16px 0;display:flex;align-items:flex-start;gap:8px;cursor:pointer;text-align:left;}
-.faq-toggle::before{content:'Q';color:var(--gold);font-weight:600;flex-shrink:0;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--gold);}
-.faq-toggle-text{font-size:16px;font-weight:500;color:var(--text);font-family:'Cormorant Garamond',serif;letter-spacing:0.3px;flex:1;}
-.faq-chevron{flex-shrink:0;font-size:11px;color:var(--text-faint);transition:transform .25s ease;margin-top:3px;}
-.faq-item.open .faq-chevron{transform:rotate(180deg);}
-.faq-answer{font-size:15px;color:var(--text-faint);line-height:1.7;padding:0 0 16px 24px;display:none;}
-.faq-item.open .faq-answer{display:block;}
+.rank-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+.r1{background:#FEF3C7;color:#92400E;}.r2{background:#F1F5F9;color:#475569;}.r3{background:#FEF3E8;color:#9A3412;}.r4{background:#F0FDF4;color:#166534;}
+.rank-name{font-size:15px;font-weight:600;color:var(--text);}
+.rank-label{font-size:11px;color:var(--pink);font-weight:600;margin-top:1px;}
+.rank-score{margin-left:auto;font-size:24px;font-weight:700;color:var(--text);line-height:1;}
+.rank-score span{font-size:11px;color:var(--text-hint);font-weight:400;}
+.score-bar{height:5px;background:var(--pink-light);border-radius:3px;overflow:hidden;margin-bottom:12px;}
+.score-fill{height:100%;border-radius:3px;}
+.mini-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.mini-emoji{font-size:13px;width:20px;text-align:center;}
+.mini-label{font-size:11px;color:var(--text-muted);width:88px;flex-shrink:0;}
+.mini-track{flex:1;height:4px;background:var(--pink-light);border-radius:2px;overflow:hidden;}
+.mini-fill{height:100%;border-radius:2px;}
+.mini-num{font-size:11px;color:var(--text-muted);width:24px;text-align:right;}
+.detail-toggle{width:100%;background:none;border:1px solid var(--border-strong);border-radius:8px;padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'Pretendard',sans-serif;margin:12px 0 2px;}
+.detail{display:none;padding-top:14px;}
+.detail.open{display:block;}
+.detail-sec{margin-bottom:14px;}
+.detail-sec-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.detail-sec-text{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:6px;}
+.detail-sec-summary{font-size:12px;color:var(--pink-dark);font-weight:500;padding:8px 12px;background:var(--pink-light);border-radius:8px;}
+.detail-overall{font-size:13px;color:var(--text-muted);line-height:1.7;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;}
+.flow{text-align:center;font-size:11px;color:var(--text-hint);padding:18px 0 0;line-height:1.9;}
+.disclaimer{text-align:center;font-size:11px;color:var(--text-hint);padding:20px 0 0;line-height:1.8;}
 </style>
 </head>
 <body>
-<div id="stars"></div>
-<div class="glow-orb glow-1"></div>
-<div class="glow-orb glow-2"></div>
-<div class="glow-orb glow-3"></div>
-
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="top-bar-thumb">🔮</div>
-  <div class="top-bar-info">
-    <div class="top-bar-title">Rate My Exes · Four Pillars</div>
-    <div class="top-bar-price">
-      <span class="top-bar-original">$9.99</span>
-      <span class="top-bar-sale">$4.99</span>
-    </div>
-  </div>
-  <button class="top-bar-btn" onclick="window.location.href='/rate-en-form'">Start</button>
-</div>
-
-<div class="page-top-offset"></div>
-
-<!-- LANDING -->
-<div id="landing-view">
-<div class="wrap">
-
-  <div class="hero fade-up">
-    <div class="brand">✦ The Saju Blueprint ✦</div>
-    <h1>Your ex. Your situationship.<br>Your talking stage.<br><em>Who does the chart pick?</em></h1>
-    <p class="hero-sub">Drop in every guy you've got. Your birth charts decide who's actually your person — and who you should've blocked months ago.</p>
-  </div>
-
-  <!-- PRICE BANNER -->
-  <div class="price-banner fade-up">
-    <div>
-      <div class="price-event-label">✦ 50% Launch Price</div>
-      <div class="price-original-big">$9.99</div>
-      <div class="price-sale-big">$4.99</div>
-      <div class="price-anchor">Cheaper than the latte you'll cry into</div>
-    </div>
-    <button class="price-cta-btn" onclick="window.location.href='/rate-en-form'">Start<br>Now</button>
-  </div>
-
-  <!-- REVIEWS -->
-  <div class="fade-up">
-    <div class="section-label">What people are saying</div>
-    <div class="review-card">
-      <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#d98a9a,#c97a8a);">M</div><div class="review-name">madison.____</div><div class="review-date">May 21</div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">put in all 4 of my exes and it <em>ranked the worst one dead last</em>. the chart just KNEW. screenshotted it to the gc immediately</div>
-    </div>
-    <div class="review-card">
-      <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#a8b8e0,#8a9ed9);">a</div><div class="review-name">ashleyy</div><div class="review-date">May 18</div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">my situationship scored a 51 and the breakdown said <em>"he likes the attention more than he likes you"</em> ... ma'am. anyway i'm healed now</div>
-    </div>
-    <div class="review-card">
-      <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#c9a84c,#b09038);">j</div><div class="review-name">jenna_marie</div><div class="review-date">May 14</div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">did this with my roommate at 1am and we did NOT sleep. <em>put in our crushes, our exes, the guy from hinge</em> — honestly more useful than therapy that week lol</div>
-    </div>
-    <div class="review-card">
-      <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#9ed9b8,#7ac99a);">s</div><div class="review-name">sof.ia</div><div class="review-date">May 10</div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">the one I was about to text back ranked LAST. <em>crisis averted by an ancient chinese chart.</em> wild</div>
-    </div>
-    <div class="review-card">
-      <div class="review-header"><div class="review-avatar" style="background:linear-gradient(135deg,#d9b8a8,#c99a7a);">k</div><div class="review-name">kayla.b</div><div class="review-date">May 7</div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">I'm in my dating-around era so I put in everyone I'm talking to. <em>the rankings actually made me rethink who I'm giving energy to.</em> kind of need this monthly</div>
-    </div>
-  </div>
-
-  <!-- INCLUDE -->
-  <div class="include-card fade-up">
-    <div class="include-title">What's in the reading</div>
-    <div class="include-subtitle">5 dimensions × every guy you enter</div>
-    <div class="include-item"><div class="include-emoji">❤️</div><div><div class="include-q">How deep will he actually fall for you?</div><div class="include-desc">Emotional depth · why the pull is there · how the attachment forms</div></div></div>
-    <div class="include-item"><div class="include-emoji">🚀</div><div><div class="include-q">Does he make you better, or just tired?</div><div class="include-desc">Whether he fuels your growth or quietly drains it</div></div></div>
-    <div class="include-item"><div class="include-emoji">🏠</div><div><div class="include-q">What does fighting with him look like long-term?</div><div class="include-desc">Conflict patterns · stability · whether this actually lasts</div></div></div>
-    <div class="include-item"><div class="include-emoji">🪞</div><div><div class="include-q">Do you see the world the same way?</div><div class="include-desc">Values around money, freedom, and the big life choices</div></div></div>
-    <div class="include-item"><div class="include-emoji">⏳</div><div><div class="include-q">When does it get good — or fall apart?</div><div class="include-desc">Year-by-year forecast of the connection, 2026–2035</div></div></div>
-  </div>
-
-  <!-- SAMPLE -->
-  <div class="fade-up">
-    <div class="section-label">A real reading</div>
-    <div class="sample-wrap">
-      <div class="sample-header">
-        <div><div class="sample-label-small">🥈 #2 · Compatibility</div><div class="sample-name">The Ex</div><div class="sample-archetype">🔥 fatal chemistry — zero future alignment</div></div>
-        <div style="text-align:right;"><div class="sample-score">61<span>/100</span></div><div class="sample-score-label">Total</div></div>
-      </div>
-      <div class="sample-body">
-        <div class="sample-section">
-          <div class="sample-section-title"><span>❤️</span> Emotional Depth<span class="sample-section-score" style="color:#e07a4a;">89</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:89%;background:#e07a4a;"></div></div>
-          <div class="sample-section-text">The pull here is not in your head. Your charts are structurally electric — sharing that same Wood drive, mirroring energy, and that instant recognition that felt like fate. It was real. That's exactly why it keeps pulling you back even when everything else falls apart. The problem was never the chemistry. The chart knows that too.</div>
-          <div class="sample-section-summary">💡 The chemistry is genuine. That's what makes moving on so brutal.</div>
-        </div>
-        <div class="sample-section">
-          <div class="sample-section-title"><span>🚀</span> Growth<span class="sample-section-score">63</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:63%;background:#8a9ed9"></div></div>
-          <div class="sample-section-text">Being around him pushed you — but the growth came from friction, not from support. His competitive energy made you sharper, more self-aware, and quicker to defend your position. That's real development, but it cost too much. Growth through pressure is still growth, but it's not sustainable. Your chart isn't built to run on friction indefinitely.</div>
-          <div class="sample-section-summary">💡 He made you better at surviving chaos. That's not the same as thriving.</div>
-        </div>
-        <div class="sample-section" style="margin-bottom:0;">
-          <div class="sample-section-title"><span>🏠</span> Stability<span class="sample-section-score">55</span></div>
-          <div class="sample-bar-track"><div class="sample-bar-fill" style="width:55%;background:#7ac99a"></div></div>
-          <div class="sample-section-text">Your charts show a fundamental clash in pace. Your Day Master wants to deep-root and build toward something lasting, while his chart is inherently restless — always scanning for the next peak, uncomfortable the moment things start to settle. Every time it got good between you, something shifted. This pattern isn't a phase; it's structural.</div>
-          <div class="sample-section-summary">💡 You were looking for a safe harbor. He is built to chase the next storm.</div>
-        </div>
-        <div class="sample-blur-wrap" style="margin-top:18px;">
-          <div class="sample-blur-content">
-            <div style="padding:16px;background:rgba(227,192,138,0.08);border-radius:10px;border:1px solid var(--gold-dim);">
-              <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px;letter-spacing:1px;">💬 THE BLUEPRINT VERDICT</div>
-              <div style="font-size:13px;color:var(--text-dim);line-height:1.75;">"The chart isn't calling him a bad person. It's calling an 89 on chemistry with a 38 on timing the most exhausting combination in the system — high enough to keep you hooked, misaligned enough to keep falling apart. You've been running on that gap for a while. You already know how this one ends."</div>
-            </div>
-          </div>
-          <div class="sample-blur-overlay">
-            <button class="blur-unlock-badge" onclick="window.location.href='/rate-en-form'">🔮 Unlock the full reading</button>
-            <div class="blur-unlock-sub">The verdict + every guy, fully decoded</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  
-  <!-- FOUR PILLARS PREVIEW -->
-  <div class="fade-up" style="margin-bottom:32px;">
-    <div class="section-label">The System</div>
-    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.18);border-radius:16px;padding:22px 16px 26px;overflow:hidden;">
-      <div style="text-align:center;margin-bottom:20px;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);margin-bottom:12px;">What is Four Pillars?</div>
-        <p style="font-size:15px;color:var(--text-dim);line-height:1.75;font-family:'Cormorant Garamond',serif;max-width:420px;margin:0 auto 10px;">Your exact birth moment is broken into four pillars — Year, Month, Day, and Hour. Each pillar holds two layers: your core energy and the conditions you were born into.</p>
-        <p style="font-size:14px;color:var(--text-faint);line-height:1.7;font-family:'Cormorant Garamond',serif;font-style:italic;">This is why two people born on the same day can have completely different personalities, life paths, and relationship chemistry.</p>
-      </div>
-      <div style="border-top:1px solid rgba(184,159,217,0.12);padding-top:18px;margin-bottom:6px;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:rgba(227,192,138,0.5);text-transform:uppercase;margin-bottom:4px;text-align:center;">Sample · Birth Chart</div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px;">
-        <!-- Year -->
-        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.12);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div style="font-size:9px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;">Year</div>
-          <div style="font-size:20px;">🕯️</div>
-          <div style="font-size:8px;font-weight:600;letter-spacing:1px;background:rgba(224,122,74,0.15);color:#e07a4a;padding:2px 7px;border-radius:10px;text-transform:uppercase;">Bold</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;color:#e07a4a;text-align:center;line-height:1.3;">Fire</div>
-          <div style="width:100%;height:0.5px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
-          <div style="font-size:18px;">🐂</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#c8a85a;text-align:center;line-height:1.3;">Earth · Ox</div>
-        </div>
-        <!-- Month -->
-        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.12);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div style="font-size:9px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;">Month</div>
-          <div style="font-size:20px;">⚔️</div>
-          <div style="font-size:8px;font-weight:600;letter-spacing:1px;background:rgba(160,184,200,0.15);color:#a0b8c8;padding:2px 7px;border-radius:10px;text-transform:uppercase;">Steady</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;color:#a0b8c8;text-align:center;line-height:1.3;">Metal</div>
-          <div style="width:100%;height:0.5px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
-          <div style="font-size:18px;">🐕</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#c8a85a;text-align:center;line-height:1.3;">Earth · Dog</div>
-        </div>
-        <!-- Day - highlighted -->
-        <div style="background:rgba(255,255,255,0.07);border:1.5px solid rgba(227,192,138,0.4);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;">
-          <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:1px;background:var(--gold);color:#160e26;padding:2px 8px;border-radius:8px;white-space:nowrap;font-weight:700;text-transform:uppercase;">✦ Core Self</div>
-          <div style="font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:4px;margin-top:4px;">Day</div>
-          <div style="font-size:20px;">🌳</div>
-          <div style="font-size:8px;font-weight:600;letter-spacing:1px;background:rgba(93,184,122,0.15);color:#5db87a;padding:2px 7px;border-radius:10px;text-transform:uppercase;">Self</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;color:#5db87a;text-align:center;line-height:1.3;">Wood</div>
-          <div style="width:100%;height:0.5px;background:rgba(227,192,138,0.2);margin:4px 0;"></div>
-          <div style="font-size:18px;">🐉</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#c8a85a;text-align:center;line-height:1.3;">Earth · Dragon</div>
-        </div>
-        <!-- Hour -->
-        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(184,159,217,0.12);border-radius:12px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div style="font-size:9px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:4px;">Hour</div>
-          <div style="font-size:20px;">⚔️</div>
-          <div style="font-size:8px;font-weight:600;letter-spacing:1px;background:rgba(160,184,200,0.15);color:#a0b8c8;padding:2px 7px;border-radius:10px;text-transform:uppercase;">Steady</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;color:#a0b8c8;text-align:center;line-height:1.3;">Metal</div>
-          <div style="width:100%;height:0.5px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
-          <div style="font-size:18px;">🐎</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:#e07a4a;text-align:center;line-height:1.3;">Fire · Horse</div>
-        </div>
-      </div>
-      <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-faint);font-style:italic;font-family:'Cormorant Garamond',serif;">Over 500,000 possible combinations. This is what yours looks like.</div>
-    </div>
-  </div>
-  <!-- RECOMMEND -->
-  <div class="recommend-card fade-up">
-    <div class="recommend-title">This is for you if…</div>
-    <div class="recommend-item"><div class="recommend-check">✓</div><div class="recommend-text">You can't tell if your ex or your current crush is the better bet</div></div>
-    <div class="recommend-item"><div class="recommend-check">✓</div><div class="recommend-text">You keep falling for the same type and want to know why</div></div>
-    <div class="recommend-item"><div class="recommend-check">✓</div><div class="recommend-text">You're not fully over someone and need a little closure</div></div>
-    <div class="recommend-item"><div class="recommend-check">✓</div><div class="recommend-text">You're talking to multiple people and want a tiebreaker</div></div>
-    <div class="recommend-item"><div class="recommend-check">✓</div><div class="recommend-text">You and your friends need something to argue about tonight</div></div>
-  </div>
-
-  <!-- FAQ -->
-  <div class="faq-wrap fade-up">
-    <div class="faq-title">Questions</div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">What system is this based on?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Four Pillars Astrology — an ancient Eastern system thousands of years old. Instead of mapping planets like Western astrology, it calculates the exact natural energies at the moment of your birth. Unlike the 12 zodiac signs, Four Pillars creates over 500,000 unique combinations.</div></div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">What if I don't know his birth time?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Totally fine — birth time is optional. The reading works without it.</div></div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">Where do I see my results?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Instantly on the form page after checkout. We also email you the link so you can come back to it.</div></div>
-    <div class="faq-item"><button class="faq-toggle" onclick="toggleFaq(this)"><span class="faq-toggle-text">How many guys can I add?</span><span class="faq-chevron">▾</span></button><div class="faq-answer">Up to 5 at once — rank them all head to head.</div></div>
-  </div>
-
-  <!-- BOTTOM CTA -->
-  <div class="bottom-cta fade-up">
-    <div class="bottom-cta-title">Find out who the chart picks</div>
-    <div class="bottom-cta-sub">Just birth dates. Results in seconds.</div>
-    <div class="bottom-price-row">
-      <span class="bottom-original">$9.99</span>
-      <span class="bottom-sale">$4.99</span>
-      <span class="bottom-badge">50% Off</span>
-    </div>
-    <button class="cta-btn" onclick="window.location.href='/rate-en-form'">🔮 Start My Reading</button>
-  </div>
-
-  <!-- FORM -->
-  
-  </div>
-
-  <div class="disclaimer" style="margin-top:24px;">
-    <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a><br>
-    For entertainment and self-reflection purposes only.
-  </div>
-</div>
-</div>
-
+<div class="wrap" id="result-wrap"></div>
 <script>
-const starsEl=document.getElementById('stars');
-for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*1.5+0.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(3+Math.random()*5)+'s;--delay:-'+Math.random()*8+'s;--bright:'+(0.1+Math.random()*0.3);starsEl.appendChild(s);}
-function getSessionId(){let s=localStorage.getItem('ryex_en_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_en_sid',s);}return s;}
-function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign')};}
-function trackEvent(name,props){try{gtag('event',name,{session_id:getSessionId()});}catch(e){}fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_name:name,session_id:getSessionId(),metadata:Object.assign({lang:'en'},getUTM(),props||{})})}).catch(function(){});}
-const observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.1});
-document.querySelectorAll('.fade-up').forEach(function(el){observer.observe(el);});
-function applySentenceBlur(){
-  document.querySelectorAll('.sample-section-text').forEach(function(el){
-    el.style.maxHeight='5.4em';
-    el.style.overflow='hidden';
-    el.style.webkitMaskImage='linear-gradient(to bottom,black 0%,black 35%,transparent 100%)';
-    el.style.maskImage='linear-gradient(to bottom,black 0%,black 35%,transparent 100%)';
+const barColors=['#E8547A','#6B9EE8','#27AE8A','#E8A054'];
+const SECTION_LABELS={heart:{emoji:'❤️',label:'감정의 깊이'},growth:{emoji:'🚀',label:'성장의 힘'},stability:{emoji:'🏠',label:'관계 안정성'},perspective:{emoji:'🪞',label:'세상을 보는 방식'},timing:{emoji:'⏳',label:'삶의 속도'}};
+const rankClass=['r1','r2','r3','r4'],rankEmoji=['🥇','🥈','🥉','4위'];
+
+const DATA={
+  ranking_comment:"네 명 다 너한테 뭔가를 남긴 사람들이야 — 방식이 달랐을 뿐이지. 썸붕이는 너를 가장 크게 성장시키는데 서로의 속도, 즉 타이밍이 아쉬운 관계고, 썸남이는 알아가는 데 노력은 들지만 자진합(子辰合)이 받쳐줘서 가장 든든해. 전남1은 갑기합(甲己合)으로 편하긴 했는데 설렘이 없었고, 전남2는 금극목(金克木)으로 뜨겁게 타올랐지만 결국 너를 자르던 관계라 미련 가질 필요 없어. 지금 네가 원하는 게 성장과 설렘이면 썸붕이, 안정과 신뢰면 썸남이야.",
+  results:[
+    {name:"썸붕이",archetype:"🌱 서로를 성장시키지만, 타이밍이 아쉬운 관계",
+     scores:{total:82,heart:85,growth:88,timing:68,stability:72,perspective:84},
+     overall:"썸붕이는 네 명 중에 너를 가장 크게 성장시키는 사람인데, 딱 하나 타이밍이 아쉬운 관계야. 같은 갑목(甲木) 일간이라 말 안 해도 통하고, 처음 만났을 때부터 '이 사람 나랑 비슷하다'는 자석 같은 끌림이 있었을 거야. 근데 둘 다 배우자궁이 직접 연결되진 않아서, 가까워질수록 '근데 진짜 우리 잘 맞나?'라는 묘한 물음이 계속 따라붙어. 진짜 매력은 둘이 있으면 서로를 더 크게 만든다는 데 있어. 지금 서로의 속도만 맞출 수 있다면, 1위가 괜히 1위가 아니야.",
+     sections:{
+       heart:{text:"같은 갑목(甲木) 일간이라 성장 욕구도, 자존심도, 자기만의 방향성을 중요하게 여기는 것도 닮았어. 그래서 초반엔 유독 '이 사람은 날 이해해준다'는 느낌이 크게 들었을 거야. 근데 좋아하는 방식은 미묘하게 달라 — 너는 갑진(甲辰)이라 관계가 깊어질수록 '이 사람이 내 미래 안에 들어올 수 있나'를 보기 시작하는데, 썸붕이는 비견(比肩) 기운이 강해서 '나는 이 사람한테 어떤 존재지' 쪽으로 더 기울어. 배우자궁이 무관계라 강한 끌림은 분명한데, 그 끌림이 확신으로 바뀌기까진 시간이 좀 걸려.",summary:"👉 쉽게 끌리고 쉽게 깊어지지만, 확신은 천천히 오는 관계."},
+       growth:{text:"썸붕이는 너를 안주하게 만드는 사람이 아니라, 원래의 너보다 한 발 더 나가게 만드는 사람이야. 그의 식신(食神)과 정인(正印) 기운이 너한테 자꾸 새로운 시각을 던져줘서, 네가 미처 보지 못한 가능성을 보게 해. 너는 확신이 생기고 기반이 잡혀야 움직이는 편인데, 걔는 압박 속에서도 일단 부딪혀보는 타입이라 '완벽하지 않아도 시작할 수 있구나'를 배우게 돼. 다만 둘 다 고집이 세고 방향성이 확고해서, 서로 의견을 조율하는 데는 시간이 좀 걸릴 수 있어.",summary:"👉 둘이 있으면 각자의 한계가 넓어지는, 성장 잠재력 폭발인 관계."},
+       timing:{text:"이게 이 관계의 핵심이자 가장 아쉬운 지점이야. 2026 병오년과 2027 정미년 화(火) 구간엔 둘 다 감정 소비가 커서, 이때 만나면 불꽃처럼 강렬할 수 있어. 근데 2028 무신년부터 2030 경술년 금(金) 구간으로 넘어가면 현실적인 판단이 필요해지는데, 그때 둘의 속도 차이가 본격적으로 드러날 가능성이 있어. 2031 신해년과 2032 임자년은 물(水) 기운이 들어오면서 서로의 감정을 다시 깊게 이해할 수 있는 기회의 시기야.",summary:"👉 원하는 방향은 같은데, 도착하고 싶은 속도가 살짝 어긋나는 관계."},
+       stability:{text:"쉽게 뜨거워졌다 쉽게 식는 타입은 아니야. 둘 다 갈등이 생겨도 바로 놓기보단 오래 곱씹는 편이라, 관계 자체는 생각보다 길게 갈 힘이 있어. 문제는 갈등을 푸는 방식이 다르다는 건데, 너는 시간을 두고 미래를 기준으로 판단하려 하고, 걔는 일지 절(絶) 기운 때문에 힘들면 잠깐 거리를 두거나 혼자 정리하려는 경향이 있어. 그래서 '왜 넌 생각만 해?'와 '왜 넌 힘들면 혼자 들어가?'가 반복될 수 있어 — 서로의 불안 반응을 이해해야 유지되는 관계야.",summary:"👉 자연스럽게 안정되기보다, 서로의 불안을 이해해야 단단해지는 관계."},
+       perspective:{text:"둘 다 갑목이라 원하는 삶 자체는 비슷해 — 성장하고 싶고, 남들 기준보다 내 기준대로 살고 싶은 거. 근데 세상을 대하는 태도는 꽤 달라. 너는 경술월(戌)이라 리스크를 먼저 계산하고 안정성을 확보해야 움직이는 편이고, 걔는 불확실성 자체를 기회로 보는 성향이 강해. 그래서 같은 상황에서도 너는 '이게 현실적으로 가능할까', 걔는 '해보면 알지 않을까'를 먼저 봐. 이 차이 때문에 서로 없는 부분을 가진 사람처럼 느껴져서 더 끌리는 거야.",summary:"👉 비슷해서 편한 게 아니라, 달라서 배우는 관계."}
+     }},
+    {name:"썸남이",archetype:"🌾 이해하려면 노력이 필요하지만, 그만큼 단단한 관계",
+     scores:{total:78,heart:75,growth:78,timing:74,stability:85,perspective:74},
+     overall:"썸남이는 알아가는 데 노력이 좀 들지만, 그만큼 단단해지는 가장 든든한 선택지야. 무토(戊土)라 처음엔 표현 방식이 너무 달라서 어색했을 텐데, 너의 진토(辰土)와 그의 자수(子) 배우자궁이 자진합(子辰合)으로 묶여 있어서 시간이 지날수록 의외로 편안해져. 그는 너한테 편재(偏財)라, 자유롭고 현실적인 감각으로 너를 끌어당기는 사람이야. 설렘보단 신뢰로 굴러가는 타입이라, 지금 당장 심장이 터지진 않아도 곁에 오래 둘 수 있는 사람이야.",
+     sections:{
+       heart:{text:"너는 갑목이라 감정을 자연스럽게 밖으로 뻗어내고 싶은데, 썸남이는 무토라 감정을 안에 묵직하게 담아두고 천천히 보여주는 타입이야. 그래서 초반엔 '이 사람 날 좋아하는 거 맞나' 싶을 정도로 온도 차가 느껴졌을 거야. 근데 배우자궁이 자진합(子辰合)으로 연결돼 있어서, 시간이 흐를수록 그 묵직함이 부담이 아니라 안정감으로 다가와. 불꽃 같은 시작은 아니어도, 알아갈수록 깊어지는 정이 쌓이는 구조야.",summary:"👉 시작은 어색해도, 알아갈수록 편해지는 관계."},
+       growth:{text:"썸남이의 현실 감각은 네가 자꾸 놓치는 부분을 채워줘. 그의 편재(偏財) 기운은 돈이든 계획이든 실질적인 걸 중시해서, 네가 가능성만 보고 달릴 때 '근데 이거 진짜 돼?'를 짚어주는 사람이야. 처음엔 그 현실적인 태도가 답답하게 느껴질 수도 있는데, 장기적으론 네 큰 그림을 구체적인 실행으로 바꿔주는 든든한 조력자가 될 수 있어. 다만 그가 너무 안정만 추구할 때 네 확장 욕구가 눌릴 수 있으니, 그 균형은 신경 써야 해.",summary:"👉 들뜬 나를 땅에 발 붙이게 해주는 현실적 파트너."},
+       timing:{text:"2026 병오년과 2027 정미년 화 구간엔 서로의 다른 표현 방식을 이해하는 데 집중해야 하는 시기야. 2028 무신년부터 2030 경술년 금·토 구간엔 현실적인 문제들을 같이 풀어가게 되는데, 이때 함께 잘 넘기면 관계가 훨씬 단단해져. 2032 임자년은 감정적으로 한 단계 더 깊어질 수 있는 좋은 시기라, 이 흐름을 잘 타면 신뢰가 확신으로 바뀔 수 있어.",summary:"👉 급하게 타오르기보단, 천천히 데워지는 관계."},
+       stability:{text:"이 항목이 네 명 중 제일 높아. 둘 다 안정과 지속성을 중요하게 보는 데다 배우자궁 자진합(子辰合)이 받쳐줘서, 갈등이 생겨도 쉽게 흔들리지 않는 구조야. 무토 특유의 책임감이 관계의 기반을 단단하게 잡아주고, 네 진토의 안정 지향과도 결이 잘 맞아. 장기적으로 봤을 때, 네 곁에 가장 오래 남을 수 있는 사람이야.",summary:"👉 설렘보단 신뢰로 굴러가는, 오래 갈 힘이 있는 관계."},
+       perspective:{text:"무토는 현실·책임 중심이고, 너는 확장·가능성 중심이라 접근 방식이 자주 갈려. 여행 계획 하나를 짜도 너는 새로운 곳을 다 가보고 싶은데, 걔는 효율과 현실성을 먼저 따질 가능성이 커. 처음엔 이 차이가 답답할 수 있지만, 서로의 방식을 인정하면 오히려 부족한 부분을 메워주는 팀이 돼. 네가 방향을 제시하고 걔가 그걸 현실로 다듬는 식이면 시너지가 꽤 좋아.",summary:"👉 다른 시각을 존중할수록 시너지가 커지는 관계."}
+     }},
+    {name:"전남1",archetype:"⚖️ 안정적이지만, 스파크는 부족했던 관계",
+     scores:{total:71,heart:68,growth:66,timing:68,stability:82,perspective:68},
+     overall:"전남1은 기토(己土)고, 너한테는 정재(正財)야. 게다가 갑목과 기토는 천간에서 갑기합(甲己合)을 이루는, 소위 '중정지합'이라 편안하고 무던한 인연이야. 책임감 있고 차분하고 믿음직했지만, 딱 거기까지였을 가능성이 커. 편한 건 맞는데 가슴이 뛰진 않았던, 안정은 있지만 스파크는 없던 그런 관계야.",
+     sections:{
+       heart:{text:"갑기합(甲己合) 덕분에 처음부터 큰 갈등 없이 자연스럽게 편안한 사람이었을 거야. 기토는 안정과 신뢰를 말보다 행동으로 보여주는 타입이라 든든했지. 근데 배우자궁이 직접 연결되는 충도 합도 아니라, 강한 끌림보다는 서서히 쌓이는 정으로 시작되는 쪽에 가까웠어. '편안한데 설렘이 부족하다'가 이 관계를 가장 정확하게 설명하는 말이야.",summary:"👉 안정감은 있는데, 심장이 안 뛰는 관계."},
+       growth:{text:"기토의 정재(正財) 기운은 현실적이고 구체적인 조언을 많이 해줬을 거야. 네가 들떠 있을 때 차분하게 중심을 잡아주는 역할은 확실히 했어. 근데 새로운 자극이나 시야를 넓혀주는 사람은 아니라서, 안전한 자리에 머무르게 하는 면이 있었어. 가끔은 그 안정감이 지나치게 보수적으로 느껴져서 답답했을 수도 있어.",summary:"👉 나를 흔드는 게 아니라, 제자리에서 같이 머무는 타입."},
+       timing:{text:"2026 병오년과 2027 정미년 구간엔 관계의 정체기를 느끼기 쉬워 — 큰 변화 없이 잔잔하게 흘러가는 시기야. 2028 무신년부터 2030 경술년 금·토 구간엔 현실적인 문제들이 떠오르면서 '이대로 괜찮나'를 진지하게 고민하게 될 가능성이 커. 만약 다시 이어진다면 2033 계축년쯤이 관계를 재정립하기 좋은 해야.",summary:"👉 큰 사건 없이 흘러가지만, 그래서 더 무뎌질 수 있는 관계."},
+       stability:{text:"여기는 확실히 높아. 둘 다 안정 지향인 데다 갑기합까지 받쳐줘서, 큰 다툼 없이 잔잔하게 유지되는 구조야. 갈등이 생겨도 서로 크게 부딪히기보단 조용히 넘어가는 편이었을 거야. 다만 그 안정이 어느 순간 편안함이 아니라 지루함으로 바뀔 수 있다는 게 이 관계의 함정이야.",summary:"👉 흔들림은 없지만, 그래서 심심해질 수 있는 관계."},
+       perspective:{text:"둘 다 현실적인 성향이라 큰 충돌은 없는데, 그만큼 새로운 시각이나 자극을 주고받기도 어려웠어. 너는 그래도 가능성과 확장을 보는 갑목인데, 기토는 있는 걸 잘 지키고 다듬는 쪽이라 방향성에서 미묘하게 갈렸을 거야. 비슷해서 편한 만큼, 비슷해서 무뎌지는 관계였던 셈이야.",summary:"👉 갈등은 적지만, 새로운 바람도 적은 관계."}
+     }},
+    {name:"전남2",archetype:"🔥 격렬하게 타올랐지만, 결국 나를 자르던 관계",
+     scores:{total:66,heart:85,growth:68,timing:64,stability:52,perspective:60},
+     overall:"전남2는 경금(庚金)이고, 너한테는 편관(偏官) — 그중에서도 제일 센 칠살(七殺)이야. 금극목(金克木), 쇠가 나무를 자르는 구조에 천간 갑경충(甲庚冲)까지 겹쳐서, 처음엔 미친 듯이 끌렸지만 그만큼 너를 깎아내리는 관계였을 가능성이 커. 불꽃은 분명 강했는데, 그 불꽃이 너를 데우는 게 아니라 태우는 쪽이었어. 4위인 데는 이유가 있어 — 굳이 그리워할 필요 없는 관계야.",
+     sections:{
+       heart:{text:"갑목인 너와 경금인 그는 천간 갑경충(甲庚冲)에 금극목까지 겹쳐서, 처음부터 강렬한 자극이 있었어. 끌림이 셀수록 긴장감도 그만큼 셌을 거야. 특히 배우자궁이 충(沖)이라, 감정이 뜨겁게 붙었다가도 한순간에 차갑게 식는 패턴이 반복됐을 가능성이 높아. 도파민은 넘쳤지만, 그게 진짜 사랑인지 자극 중독인지 헷갈리게 만드는 관계였어.",summary:"👉 강하게 끌리지만, 그만큼 서로를 베는 관계."},
+       growth:{text:"경금은 편관(칠살) 기운이라 기준과 압박이 강한 편이라, 너를 자극하긴 확실히 했어. 근데 그 자극이 성장보다 위축으로 이어졌을 가능성이 커. 자꾸 너를 자기 기준에 맞춰 깎고 다듬으려 해서, 너 스스로 '내가 원래 이런 사람이었나' 싶을 만큼 작아졌을 수도 있어. 자극제는 맞는데, 너를 키우는 자극이 아니라 깎는 자극이었다는 게 핵심이야.",summary:"👉 자극은 줬지만, 나를 키우기보단 깎던 관계."},
+       timing:{text:"2026 병오년과 2027 정미년 화 구간엔 감정이 극단으로 치닫기 쉬워 — 자존심 싸움이나 감정 기복이 가장 커지는 시기야. 2028 무신년부터 2030 경술년 금 구간은 그의 경금 기운이 한층 더 세지는 때라, 너의 목 기운이 또 한 번 눌릴 위험이 있어. 솔직히 이 관계는 뜨거운 시기일수록 더 조심해야 하는 구조야.",summary:"👉 뜨거운 시기일수록, 오히려 더 위험한 관계."},
+       stability:{text:"네 명 중 가장 낮은 항목이야. 배우자궁 충(沖)에 금극목 구조까지 겹쳐서 안정감을 기대하기가 어려워. 갈등이 생기면 서로 방어기제가 강하게 작동해서 쉽게 풀리지 않고, 불같이 타오르다 갑자기 꺼지는 일이 계속 반복돼. 감정의 온도는 높은데 기반은 늘 흔들리니까, 같이 있어도 마음 한구석이 불안한 관계였을 거야.",summary:"👉 감정은 뜨거운데, 기반은 늘 흔들리는 관계."},
+       perspective:{text:"너는 가능성과 확장을 보고, 그는 완성도와 통제를 봐. 처음엔 그 단호하고 깔끔한 태도가 멋있게 느껴졌을 수도 있어. 근데 시간이 지날수록 그 기준이 너를 옥죄는 벽처럼 다가왔을 거야. 매력적이라 끌렸던 그 차이가, 결국 너를 베는 칼날이 되던 관계였어.",summary:"👉 매력적인 차이가, 결국 갈등의 칼날이 되던 관계."}
+     }}
+  ]
+};
+
+function render(data){
+  const wrap=document.getElementById('result-wrap');
+  const sorted=[...data.results].sort((a,b)=>b.scores.total-a.scores.total);
+  const w=sorted[0];
+  let html=`<div class="result-hero"><div class="pill">✨ 분석 완료</div><h1>결과 나왔어요 👀</h1><p>사주가 말해주는 진짜 궁합</p></div>
+  <div class="winner-card"><div class="winner-crown">👑</div><div class="winner-name">${w.name}</div><div class="winner-arch">${w.archetype}</div><p class="winner-comment">${w.overall}</p></div>
+  <div class="ranking-comment">📊 ${data.ranking_comment}</div>`;
+  sorted.forEach((r,i)=>{
+    const t=Math.round(r.scores.total),s=r.scores;
+    const mini=Object.entries(SECTION_LABELS).map(([k,m])=>`<div class="mini-row"><span class="mini-emoji">${m.emoji}</span><span class="mini-label">${m.label}</span><div class="mini-track"><div class="mini-fill" style="width:${s[k]}%;background:${barColors[i]};"></div></div><span class="mini-num">${Math.round(s[k])}</span></div>`).join('');
+    const det=Object.entries(SECTION_LABELS).map(([k,m])=>{const sec=r.sections[k];return `<div class="detail-sec"><div class="detail-sec-title">${m.emoji} ${m.label}</div><p class="detail-sec-text">${sec.text}</p><div class="detail-sec-summary">${sec.summary}</div></div>`;}).join('');
+    html+=`<div class="rank-card"><div class="rank-header"><div class="rank-badge ${rankClass[i]}">${rankEmoji[i]}</div><div><div class="rank-name">${r.name}</div><div class="rank-label">${r.archetype}</div></div><div class="rank-score">${t}<span>/100</span></div></div>
+    <div class="score-bar"><div class="score-fill" style="width:${t}%;background:${barColors[i]};"></div></div>
+    <div>${mini}</div>
+    <button class="detail-toggle" onclick="(function(b){var d=b.nextElementSibling;var o=d.classList.toggle('open');b.textContent=o?'상세 분석 닫기 ▴':'상세 분석 보기 ▾';})(this)">상세 분석 보기 ▾</button>
+    <div class="detail">${det}<div class="detail-overall">${r.overall}</div></div></div>`;
   });
+  html+=`<div class="flow">🔮 2026 병오(火火) · 2027 정미(火土) · 2028 무신(土金) · 2029 기유(土金) · 2030 경술(金土)<br>2031 신해(金水) · 2032 임자(水水) · 2033 계축(水土) · 2034 갑인(木木) · 2035 을묘(木木)</div>
+  <div class="disclaimer">재미로 보는 사주 분석이에요. 참고만 하세요 🙏<br>예시 리포트 · 광고용</div>`;
+  wrap.innerHTML=html;
 }
-
-function toggleFaq(btn){
-  const item=btn.closest('.faq-item');
-  const isOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item.open').forEach(function(el){el.classList.remove('open');});
-  if(!isOpen) item.classList.add('open');
-}
-
-function isInAppBrowser(){
-  var ua=navigator.userAgent||'';
-  return /Instagram|FBAN|FBAV|FB_IAB|Line|KAKAOTALK|TikTok/i.test(ua);
-}
-function showIABAlert(){
-  if(!isInAppBrowser()) return;
-  var overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
-  overlay.innerHTML=`
-    <div style="background:#241640;border:1px solid rgba(227,192,138,0.4);border-radius:20px;padding:32px 26px;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.5);">
-      <div style="font-size:42px;margin-bottom:16px;">🔮</div>
-      <div style="font-family:'EB Garamond',serif;font-size:22px;font-weight:600;color:#e3c08a;margin-bottom:14px;">Open in Safari or Chrome</div>
-      <div style="font-size:15px;color:rgba(243,236,255,0.68);line-height:1.75;margin-bottom:28px;">For the best experience and to make sure your reading loads correctly, open this page in Safari or Chrome.</div>
-      <button onclick="this.closest('[style*=fixed]').remove()" style="width:100%;padding:12px;background:transparent;color:rgba(243,236,255,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:13px;cursor:pointer;font-family:'EB Garamond',serif;">Continue anyway</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-}
-window.addEventListener('DOMContentLoaded',function(){showIABAlert();
-  var params=new URLSearchParams(window.location.search);
-  if(params.get('report')){window.location.href='/rate-en-form'+window.location.search;return;}
-  trackEvent('page_viewed');
-  applySentenceBlur();
-});
-
+render(DATA);
 </script>
 </body>
 </html>
