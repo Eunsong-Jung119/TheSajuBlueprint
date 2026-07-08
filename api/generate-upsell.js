@@ -2,7 +2,7 @@
 // phase별 분기:
 //   manTeaser   → 템플릿 기반 남자카드 2장 (GPT X, calcSaju만). { cards:[{id,lines[],basis}] }
 //   womanTeaser → (구버전 호환) 템플릿 여자카드. { cards:[...] }
-//   full        → 결제 후 GPT 심층 리포트 5섹션. { report:{ target_name, cards:[5] }, reportId }
+//   full        → 결제 후 GPT 심층 리포트 5섹션. { report:{ target_name, sections:[5] }, reportId }
 //                 (+ 결제검증 / 메타CAPI / Supabase 저장 / 이메일)
 //
 // 필요 env: full phase에서만 OPENAI_API_KEY
@@ -103,15 +103,15 @@ export default async function handler(req, res) {
     try { parsed = JSON.parse(raw); }
     catch (e) { console.error('[generate-upsell] parse fail', raw.slice(0, 400)); return res.status(502).json({ error: 'Malformed GPT output' }); }
 
-    const cards = Array.isArray(parsed.cards) ? parsed.cards : [];
-    if (cards.length < 5) {
-      console.error('[generate-upsell] expected 5 cards, got', cards.length);
+    const sections = Array.isArray(parsed.sections) ? parsed.sections : [];
+    if (sections.length < 5) {
+      console.error('[generate-upsell] expected 5 sections, got', sections.length, raw.slice(0, 400));
       return res.status(502).json({ error: 'Incomplete report' });
     }
 
     const report = {
       target_name: parsed.target_name || (target && target.name) || '그',
-      cards,
+      sections,
     };
 
     const reportId = 'ups_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -134,33 +134,43 @@ export default async function handler(req, res) {
             upsell_type: upsellType || 'conquest',
             target_name: report.target_name,
             me, target,
-            report,             // 5카드 전체 JSON
+            report,             // 5섹션 전체 JSON
           }),
         });
       } catch (e) { console.error('[generate-upsell] supabase fail', e); }
     }
 
-    // ── 이메일 발송 (5카드 구조) ──
+    // ── 이메일 발송 (5섹션 구조) ──
     if (email && process.env.RESEND_API_KEY) {
       try {
         const tName = report.target_name;
         const esc = (s) => String(s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        const cardHtml = cards.map((c) => {
-          let extra = '';
-          if (c.timeline && Array.isArray(c.timeline)) {
-            const rows = c.timeline.map(t =>
+        const cardHtml = sections.map((sec) => {
+          let innerHtml = '';
+          // 섹션 1~4: subsections 구조
+          if (Array.isArray(sec.subsections) && sec.subsections.length) {
+            innerHtml = sec.subsections.map(ss =>
+              `<div style="margin-bottom:10px;">
+                <div style="font-size:12px;font-weight:600;color:#8a5a2b;margin-bottom:4px;">${esc(ss.subtitle || '')}</div>
+                <div style="font-size:13px;color:#3a322a;line-height:1.7;">${esc(ss.body || '')}</div>
+                ${ss.checkpoint ? `<div style="margin-top:6px;font-size:12px;color:#8a5a2b;background:#f6ede0;border-radius:7px;padding:6px 10px;">${esc(ss.checkpoint)}</div>` : ''}
+              </div>`
+            ).join('<hr style="border:none;border-top:1px solid #ece3d3;margin:8px 0;">');
+          }
+          // 섹션 5: timeline 구조
+          if (Array.isArray(sec.timeline)) {
+            if (sec.approach) innerHtml += `<div style="font-size:13px;color:#3a322a;margin-bottom:10px;">${esc(sec.approach)}</div>`;
+            const rows = sec.timeline.map(t =>
               `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0e8da;font-size:13px;"><span style="color:#8a5a2b;font-weight:600;">${esc(t.month)} ${esc(t.emoji || '')}</span><span style="color:#3a322a;">${esc(t.verdict || '')}</span></div>`
             ).join('');
-            extra = `<div style="margin-top:10px;">${rows}</div>`;
-            if (c.best_time) extra += `<div style="margin-top:10px;font-size:13px;color:#1a1410;">🔥 <b>가장 좋은 시기</b> · ${esc(c.best_time.month)} — ${esc(c.best_time.reason)}</div>`;
-            if (c.caution_time) extra += `<div style="margin-top:6px;font-size:13px;color:#1a1410;">⚠️ <b>주의 시기</b> · ${esc(c.caution_time.month)} — ${esc(c.caution_time.reason)}</div>`;
-            if (c.tip) extra += `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#C23A60;">${esc(c.tip)}</div>`;
+            innerHtml += `<div style="margin-top:6px;">${rows}</div>`;
+            if (sec.best_time) innerHtml += `<div style="margin-top:10px;font-size:13px;color:#1a1410;">🔥 <b>가장 좋은 시기</b> · ${esc(sec.best_time.month)} — ${esc(sec.best_time.reason)}</div>`;
+            if (sec.caution_time) innerHtml += `<div style="margin-top:6px;font-size:13px;color:#1a1410;">⚠️ <b>주의 시기</b> · ${esc(sec.caution_time.month)} — ${esc(sec.caution_time.reason)}</div>`;
+            if (sec.tip) innerHtml += `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#C23A60;">${esc(sec.tip)}</div>`;
           }
           return `<div style="border:1px solid #ece3d3;border-radius:12px;padding:16px;margin-bottom:10px;background:#fff;">
-            <div style="font-weight:700;color:#1a1410;font-size:15px;margin-bottom:4px;">${esc(c.title)}</div>
-            <div style="font-size:12px;color:#b09a78;margin-bottom:8px;">${esc(c.subtitle || '')}</div>
-            <div style="font-size:14px;color:#3a322a;line-height:1.75;">${esc(c.body || c.approach || '')}</div>
-            ${extra}
+            <div style="font-weight:700;color:#1a1410;font-size:15px;margin-bottom:4px;">${esc(sec.title || '')}</div>
+            ${innerHtml}
           </div>`;
         }).join('');
 

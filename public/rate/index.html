@@ -963,8 +963,8 @@ async function upsellFull(){
 }
 function _upsCardDark(c){return `<div style="border:1px solid ${DK_BORDER};border-radius:14px;padding:18px;margin-bottom:12px;"><div style="font-size:14px;font-weight:700;color:${DK_TXT};margin-bottom:8px;">${c.icon||'🔮'} ${c.title||''}</div><p style="font-size:14px;color:#c4c4cc;line-height:1.75;margin:0 0 ${c.hook?'8px':'0'};">${c.body||''}</p>${c.hook?`<div style="font-size:13px;font-weight:600;color:${DK_ACCENT};">💡 ${c.hook}</div>`:''}</div>`;}
 function renderFull(intent,data){
-  const report = data.report || (data.cards ? {target_name:(intent.target&&intent.target.name)||'그', cards:data.cards} : null);
-  if(!report || !Array.isArray(report.cards) || !report.cards.length){
+  const report = data.report || null;
+  if(!report || !Array.isArray(report.sections) || !report.sections.length){
     document.getElementById('loading-view').classList.remove('show');
     _upsView();
     alert('리포트 데이터를 불러오지 못했어요. 새로고침해서 다시 시도해줘!');
@@ -1051,7 +1051,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
       if(!res.ok)throw new Error('not found');
       const json=await res.json();
       const report=json.report||null;
-      if(!report||!report.cards)throw new Error('no report');
+      if(!report||!Array.isArray(report.sections)||!report.sections.length)throw new Error('no report');
       _ups={type:json.upsell_type||'conquest',me:json.me,target:json.target,reportId:upsellId};
       renderFull(_ups,{report,reportId:upsellId});
     }catch(e){
