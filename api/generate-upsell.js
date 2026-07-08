@@ -23,6 +23,14 @@ const { calcSaju } = sajuEngine;
 const { buildWomanCards, buildManCards } = templates;
 const { verifyPortone, sendMetaPurchase } = paymentLib;
 
+// fetch에 타임아웃 (하나가 멈춰도 함수 전체가 60초까지 매달리지 않게)
+async function fetchT(url, ms, opts) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
+  try { return await fetch(url, { ...opts, signal: ac.signal }); }
+  finally { clearTimeout(t); }
+}
+
 function pillarsFrom(p) {
   const h = (p.hour !== '' && p.hour != null) ? +p.hour : 12;
   const s = calcSaju(+p.year, +p.month, +p.day, h, 0, false, null);
@@ -81,13 +89,13 @@ export default async function handler(req, res) {
     // me: { year, month, day, hour, gender } / target: { name, year, month, day, hour }
     const messages = buildDeepPromptMessages(me, target, new Date());
 
-    const gptRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 50000, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         temperature: 0.7,
-        max_tokens: 10000, // 5섹션 + 6개월 타임라인이라 넉넉히
+        max_tokens: 6000, // 5섹션 충분 + 생성 시간 단축(60초 타임아웃 방지)
         response_format: { type: 'json_object' },
         messages,
       }),
@@ -121,7 +129,7 @@ export default async function handler(req, res) {
     // ── Supabase 저장 (재접속/공유용) ──
     if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
       try {
-        await fetch(`${process.env.SUPABASE_URL}/rest/v1/rate_upsell_reports`, {
+        await fetchT(`${process.env.SUPABASE_URL}/rest/v1/rate_upsell_reports`, 8000, {
           method: 'POST',
           headers: {
             'apikey': process.env.SUPABASE_ANON_KEY,
@@ -185,7 +193,7 @@ export default async function handler(req, res) {
           <div style="font-size:11px;color:#aaa;margin-top:20px;text-align:center;">재미로 보는 사주 분석이에요 🙏 · sajublueprint.com</div>
         </div>`;
 
-        await fetch('https://api.resend.com/emails', {
+        await fetchT('https://api.resend.com/emails', 8000, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
