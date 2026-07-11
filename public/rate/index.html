@@ -893,10 +893,16 @@ function _reportSlide(rc,payHTML,big){
 function renderManTeaser(){
   const tName=(_ups.target&&_ups.target.name)||'그';
   const mc=_ups.manCards||[];
+  const emailPre=(localStorage.getItem('ryex_email')||'').replace(/["'<>]/g,'');
   const pay=`<div style="border:1px solid #3a3340;border-radius:16px;padding:18px 16px;text-align:center;background:#13111a;">`+
     `<div style="font-size:15px;font-weight:700;color:${DK_TXT};margin-bottom:4px;">${tName}의 전체 분석 받기</div>`+
     `<div style="font-size:11px;color:${DK_SUB};line-height:1.5;margin-bottom:12px;">끌리는 여자 · 숨은 본성 · 진짜 욕망 전부 공개</div>`+
     `<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;"><span style="font-size:12px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:21px;font-weight:800;color:#FFD580;">5,900원</span></div>`+
+    `<div style="text-align:left;margin-bottom:12px;">`+
+      `<label style="display:block;font-size:11px;color:${DK_SUB};margin-bottom:5px;">📩 리포트 받을 이메일</label>`+
+      `<input id="ups-email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" value="${emailPre}" placeholder="you@example.com" oninput="var e=document.getElementById('ups-email-err');if(e)e.style.display='none';" style="width:100%;box-sizing:border-box;height:42px;padding:0 12px;font-size:14px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:8px;outline:none;">`+
+      `<div id="ups-email-err" style="display:none;font-size:11px;color:#ff6b8a;margin-top:5px;">올바른 이메일을 입력해줘.</div>`+
+    `</div>`+
     `<button onclick="upsellPay()" style="${DK_BTN}background:#FFD580;padding:13px;">🔓 전체 분석 받기</button></div>`+
     `<a onclick="upsellManSelect()" style="${DK_BACK}">← 다른 사람 고르기</a>`;
 
@@ -926,6 +932,16 @@ function renderManTeaser(){
 // STEP 5: 결제
 async function upsellPay(){
   if(!_ups||!_ups.target){alert('남자를 먼저 선택해줘!');return;}
+  // 리포트 받을 이메일 확정 (prefill된 값 수정 가능, 필수·검증)
+  const emEl=document.getElementById('ups-email');
+  const em=(emEl?emEl.value:'').trim();
+  if(!em||!validateEmail(em)){
+    const err=document.getElementById('ups-email-err');
+    if(err)err.style.display='block';
+    if(emEl){emEl.focus();emEl.scrollIntoView({block:'center',behavior:'smooth'});}
+    return;
+  }
+  _userEmail=em; localStorage.setItem('ryex_email',em);
   localStorage.setItem('ryex_upsell',JSON.stringify({type:_ups.type,me:_ups.me,target:_ups.target,ts:Date.now()}));
   trackEvent('upsell_paywall_shown',{upsell_type:_ups.type});
   try{
