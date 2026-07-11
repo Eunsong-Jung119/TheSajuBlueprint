@@ -892,30 +892,75 @@ function _reportSlide(rc,payHTML,big){
 
 function renderManTeaser(){
   const tName=(_ups.target&&_ups.target.name)||'그';
-  const mc=_ups.manCards||[];
   const emailPre=(localStorage.getItem('ryex_email')||'').replace(/["'<>]/g,'');
-  const pay=`<div style="border:1px solid #3a3340;border-radius:16px;padding:18px 16px;text-align:center;background:#13111a;">`+
-    `<div style="font-size:15px;font-weight:700;color:${DK_TXT};margin-bottom:4px;">${tName}의 전체 분석 받기</div>`+
-    `<div style="font-size:11px;color:${DK_SUB};line-height:1.5;margin-bottom:12px;">끌리는 여자 · 숨은 본성 · 진짜 욕망 전부 공개</div>`+
-    `<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;"><span style="font-size:12px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:21px;font-weight:800;color:#FFD580;">5,900원</span></div>`+
-    `<div style="text-align:left;margin-bottom:12px;">`+
-      `<label style="display:block;font-size:11px;color:${DK_SUB};margin-bottom:5px;">📩 리포트 받을 이메일</label>`+
-      `<input id="ups-email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" value="${emailPre}" placeholder="you@example.com" oninput="var e=document.getElementById('ups-email-err');if(e)e.style.display='none';" style="width:100%;box-sizing:border-box;height:42px;padding:0 12px;font-size:14px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:8px;outline:none;">`+
+  const RED='#e1566a', TITLE='#f4f4f6', BODY='#a8a8b2', GOLD='#f4b740';
+  const SEC='flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-sizing:border-box;padding:0 34px;display:flex;flex-direction:column;justify-content:center;';
+  const SECV=SEC+'overflow-y:auto;';
+  const H='font-size:38px;line-height:1.2;font-weight:800;letter-spacing:-1px;color:'+TITLE+';word-break:keep-all;margin:0 0 22px;';
+  const DIV='width:38px;height:3px;background:'+RED+';border-radius:2px;margin:0 0 28px;';
+  const P='font-size:16.5px;line-height:1.78;color:'+BODY+';margin:0 0 20px;word-break:keep-all;text-wrap:pretty;';
+
+  // 1. 그는 결국 어떤 여자한테 넘어갈까
+  const s1=`<section style="${SEC}">`+
+    `<h2 style="${H}">그는 결국<br>어떤 여자한테<br><span style="color:${RED}">넘어갈까?</span></h2>`+
+    `<div style="${DIV}"></div>`+
+    `<p style="${P}">예쁜 여자?<br>화려한 여자? …아니.</p>`+
+    `<p style="${P}">그가 본능적으로 약해지는 타입이<br>그의 사주에 새겨져 있어.</p></section>`;
+
+  // 2. 네가 아는 그는, 절반도 안 돼
+  const s2=`<section style="${SECV}">`+
+    `<h2 style="${H}">네가 아는 그는,<br><span style="color:${RED}">절반</span>도 안 돼.</h2>`+
+    `<div style="${DIV}"></div>`+
+    `<p style="${P}color:#d6d6dc;">“쿨한 줄 알았지만 회피형이었어요”</p>`+
+    `<p style="${P}color:#d6d6dc;">“연애 때까지는 엄청 잘해주다가 결혼하자마자 사람이 변했어요”</p>`+
+    `<p style="${P}">남의 이야기일 줄만 알았던 것이<br>내 현실이 될 수도 있어.</p>`+
+    `<p style="${P}">겉으론 드러나지 않는 그의 숨은 연애본능,<br>궁금하지 않아?</p></section>`;
+
+  // 3. 우리가 헤어지면 다시 만날 수 있을까
+  const s3=`<section style="${SEC}">`+
+    `<h2 style="${H}">우리가 <span style="color:${RED}">헤어지면</span><br>다시 만날 수<br>있을까?</h2>`+
+    `<div style="${DIV}"></div>`+
+    `<p style="${P}">깨졌다 붙었다를 반복하는 인연이 있고,<br>한 번 이별하면 영영 남이 되는 인연이 있지.</p>`+
+    `<p style="${P}">그와 나의 인연은 얼마나 질길까?</p>`+
+    `<p style="${P}">우리가 헤어진다면, 누가 더 오래 힘들어할까?</p></section>`;
+
+  // 4. 그는, 바람기가 있는 사람일까
+  const s4=`<section style="${SECV}">`+
+    `<h2 style="${H}">그는, <span style="color:${RED}">바람기</span>가<br>있는 사람일까?</h2>`+
+    `<div style="${DIV}"></div>`+
+    `<p style="${P}">단정하기는 어렵지만…<br>유독 유혹에 취약한 사람이 있어.<br>주변에 이성이 많고,<br>흔들릴 만한 상황을 겪게 되는 그런 사람 말이야.</p>`+
+    `<p style="${P}">네 남자는 어떨까?<br>도화살, 홍염살이 팔자에 있는지,<br>어떤 환경 속에서 발현될 수 있을지 가감없이 봐줄게.</p></section>`;
+
+  // 5. 이미 2,847명이 확인했어요 (사회적 증거)
+  const rev=(quote,who)=>`<div style="border:1px solid #24242c;border-radius:14px;background:#141419;padding:16px;margin-bottom:12px;">`+
+    `<div style="color:${GOLD};font-size:12px;letter-spacing:2px;margin-bottom:8px;">★★★★★</div>`+
+    `<p style="font-size:14.5px;line-height:1.7;color:#d6d6dc;margin:0 0 10px;word-break:keep-all;">${quote}</p>`+
+    `<div style="font-size:12px;color:#6b6b78;">— ${who}</div></div>`;
+  const s5=`<section style="${SECV}">`+
+    `<h2 style="${H}">이미 <span style="color:${RED}">2,847명</span>이<br>그 사람을<br>확인했어요.</h2>`+
+    `<div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;"><span style="color:${GOLD};font-size:15px;letter-spacing:2px;">★★★★★</span><span style="font-size:17px;font-weight:800;color:${TITLE};">4.9</span><span style="font-size:12px;color:#6b6b78;">· 2,847개 후기</span></div>`+
+    rev('“소름… 연애할 때 진짜 이랬어요. 헤어진 이유까지 정확해서 한참 울었네요.”','김**, 29세')+
+    rev('“그가 어떤 여자한테 약한지 보고 납득했어요. 저랑은 많이 다른 모습이더군요. 잘 봤습니다.”','이**, 33세')+
+    `</section>`;
+
+  // 6. 결제 CTA (+ 이메일 입력칸 유지)
+  const s6=`<section style="${SECV}text-align:center;">`+
+    `<div style="font-size:11px;letter-spacing:3px;color:${RED};font-weight:700;margin-bottom:18px;">그남자 심층분석 리포트</div>`+
+    `<h2 style="font-size:35px;line-height:1.22;font-weight:800;letter-spacing:-1px;color:${TITLE};word-break:keep-all;margin:0 0 22px;">지금, 그 사람<br>사주 <span style="color:${RED}">몰래</span><br>확인하기</h2>`+
+    `<div style="display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:12px;"><span style="font-size:15px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:34px;font-weight:800;color:${TITLE};">5,900원</span></div>`+
+    `<div style="margin-bottom:22px;"><span style="display:inline-block;font-size:12px;font-weight:700;color:${RED};border:1px solid rgba(225,86,106,0.4);border-radius:20px;padding:6px 16px;">40% OFF · 오늘만 이 가격</span></div>`+
+    `<div style="text-align:left;margin-bottom:14px;">`+
+      `<label style="display:block;font-size:11px;color:${BODY};margin-bottom:6px;">📩 리포트 받을 이메일</label>`+
+      `<input id="ups-email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" value="${emailPre}" placeholder="you@example.com" oninput="var e=document.getElementById('ups-email-err');if(e)e.style.display='none';" style="width:100%;box-sizing:border-box;height:46px;padding:0 14px;font-size:14px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:10px;outline:none;">`+
       `<div id="ups-email-err" style="display:none;font-size:11px;color:#ff6b8a;margin-top:5px;">올바른 이메일을 입력해줘.</div>`+
     `</div>`+
-    `<button onclick="upsellPay()" style="${DK_BTN}background:#FFD580;padding:13px;">🔓 전체 분석 받기</button></div>`+
-    `<a onclick="upsellManSelect()" style="${DK_BACK}">← 다른 사람 고르기</a>`;
+    `<button onclick="upsellPay()" style="width:100%;padding:17px;border:none;border-radius:14px;background:${RED};color:#fff;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit;box-shadow:0 6px 22px rgba(225,86,106,0.4);">그의 속마음 파헤치기 →</button>`+
+    `<div style="font-size:12px;color:#6b6b78;margin-top:16px;word-break:keep-all;">결제 즉시 4개 챕터 · 4000자 전체 공개</div></section>`;
 
-  const eyebrows=['그는 어떤 사람','보이는 게 다가 아니야'];
-  let slides='';
-  if(mc[0])slides+=_darkSlide(mc[0].lines||[mc[0].body],eyebrows[0],false);
-  if(mc[1])slides+=_darkSlide(mc[1].lines||[mc[1].body],eyebrows[1],true);
-  REPORT_SAMPLE.forEach((rc,i)=>{const isLast=i===REPORT_SAMPLE.length-1;slides+=_reportSlide(rc, isLast?pay:null, !isLast);});
-
-  const total=(mc[0]?1:0)+(mc[1]?1:0)+REPORT_SAMPLE.length;
+  const slides=s1+s2+s3+s4+s5+s6;
+  const total=6;
   const dots=Array.from({length:total},(_,i)=>`<span class="ups-dot" style="width:7px;height:7px;border-radius:50%;background:${i===0?DK_TXT:DK_DOT};transition:all .2s;"></span>`).join('');
   const arr='position:absolute;top:46%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid #2a2a32;background:rgba(255,255,255,0.05);color:#f2f2f4;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;';
-  // 코치마크 (처음 1회, 스와이프하면 사라짐)
   const coach=`<div id="ups-coach" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;background:rgba(13,13,17,0.82);border:1px solid #2a2a32;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:8px;pointer-events:none;transition:opacity .4s;backdrop-filter:blur(2px);">`+
     `<span style="font-size:18px;animation:upsSwipeHint 1.2s ease-in-out infinite;">👈</span>`+
     `<span style="font-size:13px;color:#f2f2f4;white-space:nowrap;">옆으로 넘겨보세요</span></div>`;
@@ -925,7 +970,7 @@ function renderManTeaser(){
     coach+
     `<div id="ups-track" style="flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;min-height:0;">${slides}</div>`+
     `<div style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 0 18px;">${dots}</div></div>`;
-    _upsShell(inner, true);   
+  _upsShell(inner, true);
   _bindSwipe();
 }
 
