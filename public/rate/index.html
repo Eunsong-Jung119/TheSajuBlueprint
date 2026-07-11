@@ -966,7 +966,7 @@ async function upsellFull(){
   const intent=(_ups&&_ups.target)?_ups:JSON.parse(localStorage.getItem('ryex_upsell')||'null');
   if(!intent||!intent.target){alert('결제 정보를 찾을 수 없어요.');return;}
   _ups=intent;
-  _upsLoad((UPSELL_ORDER[intent.type]||'리포트')+' 작성 중...','30초 정도 걸려요');
+  _upsLoad('리포트를 생성하고 있어요, 창을 닫지 말아 주세요!','생성은 최대 1분 정도 소요될 수 있어요. 만들어진 리포트는 이메일로도 전송이 되어요.');
   try{
     const email=_userEmail||localStorage.getItem('ryex_email')||null;
     const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,phase:'full',me:intent.me,target:intent.target,session_id:getSessionId(),email})});

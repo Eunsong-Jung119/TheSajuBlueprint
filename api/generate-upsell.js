@@ -16,7 +16,7 @@ import deepEngine from '../lib/deep-report-engine.js';
 import sajuEngine from '../lib/saju-engine.js';
 import templates from '../lib/upsell-templates.js';
 import paymentLib from '../lib/payment.js';
-export const config = { maxDuration: 60 };
+export const config = { maxDuration: 120 };
 
 const { buildDeepPromptMessages } = deepEngine;
 const { calcSaju } = sajuEngine;
@@ -89,13 +89,13 @@ export default async function handler(req, res) {
     // me: { year, month, day, hour, gender } / target: { name, year, month, day, hour }
     const messages = buildDeepPromptMessages(me, target, new Date());
 
-    const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 50000, {
+    const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 95000, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         temperature: 0.9,
-        max_tokens: 6000, // 5섹션 충분 + 생성 시간 단축(60초 타임아웃 방지)
+        max_tokens: 7500, // 5섹션 + 3~4문장 body 여유 (maxDuration 120s / GPT 95s 예산 내)
         response_format: { type: 'json_object' },
         messages,
       }),
