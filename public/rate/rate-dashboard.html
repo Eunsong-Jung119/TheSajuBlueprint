@@ -415,7 +415,7 @@ async function fetchSourceLogs() {
   let offset = 0, ps = 1000, batch, result = [];
   do {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/rate_logs?select=session_id,metadata&created_at=gte.${fromExt}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=${ps}&offset=${offset}`,
+      `${SUPABASE_URL}/rest/v1/rate_logs?select=event_name,session_id,metadata&created_at=gte.${fromExt}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=${ps}&offset=${offset}`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
     );
     const text = await res.text();
@@ -593,7 +593,7 @@ function renderShareFunnel(logs, sourceAllLogs) {
     return !/(bot|crawler|AdsBot)/i.test(m.user_agent || '');
   });
   const shown = realSessions.filter(([,e]) => e.has('result_shown')).length;
-  const shared = realSessions.filter(([,e]) => e.has('result_shared')).length;
+  const shared = realSessions.filter(([,e]) => e.has('result_shared') || e.has('upsell_result_shared')).length;
   const rate = shown > 0 ? (shared / shown * 100) : 0;
   const rateStr = shown > 0 ? rate.toFixed(1) + '%' : '-';
 
@@ -707,9 +707,27 @@ function renderPayments(payments) {
       <span class="payment-time">${timeStr}</span>
       <span class="payment-id">${pid.length > 18 ? pid.slice(0,18)+'...' : pid}</span>
       <span class="source-badge badge-ig" style="font-size:10px;padding:2px 6px;">${srcLabels[src]||src}</span>
-      <span class="payment-amount">₩4,900</span>
+      <span class="payment-amount">₩${(Number(m.amount) > 0 ? Number(m.amount) : LEGACY_PRICE).toLocaleString()}</span>
     </div>`;
   }).join('');
+}
+
+// 매출 집계: metadata.amount(실제 결제금액)를 읽고, 없으면(과거 로그) LEGACY_PRICE로 폴백
+const LEGACY_PRICE = 4900; // amount 필드가 없던 시절 로그의 판매가
+function sumRev(logs, eventName) {
+  const seen = new Set();
+  let sum = 0;
+  logs.forEach(l => {
+    if (l.event_name !== eventName) return;
+    if (seen.has(l.session_id)) return;
+    seen.add(l.session_id);
+    const amt = Number(pm(l.metadata).amount);
+    sum += (Number.isFinite(amt) && amt > 0) ? amt : LEGACY_PRICE;
+  });
+  return sum;
+}
+function totalRev(logs) {
+  return sumRev(logs, 'payment_confirmed') + sumRev(logs, 'upsell_payment_confirmed');
 }
 
 function renderSummary(logs) {
@@ -725,7 +743,7 @@ function renderSummary(logs) {
   }).length;
   const days = Math.max(1, Math.ceil((new Date(toDate) - new Date(fromDate)) / 86400000) + 1);
   const overallCvr = pv > 0 ? ((pc/pv)*100).toFixed(1)+'%' : '-';
-  const revenue = pc*4900 + upc*4900;
+  const revenue = totalRev(logs);
   document.getElementById('summary-stats').innerHTML = `
     <div class="stat-row"><span class="stat-label">총 세션 수</span><span class="stat-val">${uniqueSessions}</span></div>
     <div class="stat-row"><span class="stat-label">총 page_view</span><span class="stat-val">${pv}</span></div>
@@ -869,7 +887,7 @@ function exportFunnelCSV() {
     const get = (label) => steps.find(s => s.label === label).num;
     const pv = get('PAGE VIEW'), ar = get('FORM 입력'), pw = get('PAYWALL'), pc = get('결제 완료');
     const ucta = get('업셀 CTA'), usel = get('남자 선택'), upw = get('업셀 PAYWALL'), upc = get('업셀 결제');
-    const rev = pc * 4900 + upc * 4900;
+    const rev = totalRev(dayLogs);
     const r1 = (a,b) => b > 0 ? ((a/b)*100).toFixed(1) : '';
     const dow = dowArr[new Date(day + 'T12:00:00Z').getUTCDay()];
     rows.push([

@@ -472,6 +472,10 @@ const PAY_CHANNEL_KEY = IS_TEST_PAY
   ? 'channel-key-42310ca7-0d20-42d1-90d7-4abaed5778ba'   // 테스트 (INIpayTest, V2)
   : 'channel-key-633ce4cf-a5a7-4b28-94f9-2f5d5c49dbfc';  // 실결제 (MOI1435306)
 
+// 가격 단일 출처(SSOT) — 여기만 바꾸면 결제/픽셀/대시보드 매출집계가 전부 따라감
+const PRICE_RANK = 5900;    // 랭킹 리포트
+const PRICE_UPSELL = 5900;  // 심층 분석 업셀
+
 function _chrome(show){const t=document.querySelector('.top-bar'),b=document.querySelector('.timer-bar');if(t)t.style.display=show?'':'none';if(b)b.style.display=show?'':'none';}
 function getSessionId(){let s=localStorage.getItem('ryex_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_sid',s);}return s;}
 function _detectBrowser(){const u=navigator.userAgent||'';if(/KAKAOTALK/i.test(u))return'kakao';if(/Instagram/i.test(u))return'instagram';if(/FBAN|FBAV/i.test(u))return'facebook';if(/NAVER/i.test(u))return'naver';if(/Edg\//i.test(u))return'edge';if(/SamsungBrowser/i.test(u))return'samsung';if(/CriOS|Chrome/i.test(u))return'chrome';if(/FxiOS|Firefox/i.test(u))return'firefox';if(/Safari/i.test(u))return'safari';return'other';}
@@ -595,7 +599,7 @@ async function openPaywall(){
       channelKey:PAY_CHANNEL_KEY,
       paymentId:'rate_'+Date.now(),
       orderName:'사주 기반 랭킹 분석',
-      totalAmount:5900,
+      totalAmount:PRICE_RANK,
       currency:'KRW',
       payMethod:'CARD',
       customer:{
@@ -606,8 +610,8 @@ async function openPaywall(){
       redirectUrl:'https://sajublueprint.com/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
-    trackEvent('payment_confirmed',{payment_id:response.paymentId});
-    fbq('track','Purchase',{value:5900,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
+    trackEvent('payment_confirmed',{payment_id:response.paymentId,amount:PRICE_RANK});
+    fbq('track','Purchase',{value:PRICE_RANK,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
     if(formData)runAnalysis(formData);
   }catch(e){console.error('[PortOne]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
@@ -995,13 +999,13 @@ async function upsellPay(){
       channelKey:PAY_CHANNEL_KEY,
       paymentId:'upsell_'+Date.now(),
       orderName:UPSELL_ORDER[_ups.type]||'심층 분석',
-      totalAmount:5900,currency:'KRW',payMethod:'CARD',
+      totalAmount:PRICE_UPSELL,currency:'KRW',payMethod:'CARD',
       customer:{email:_userEmail||localStorage.getItem('ryex_email')||'guest@sajublueprint.com',phoneNumber:'01000000000',fullName:'구매자'},
       redirectUrl:'https://sajublueprint.com/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
-    trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId});
-    fbq('track','Purchase',{value:5900,currency:'KRW',content_name:UPSELL_ORDER[_ups.type],content_type:'product'});
+    trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId,amount:PRICE_UPSELL});
+    fbq('track','Purchase',{value:PRICE_UPSELL,currency:'KRW',content_name:UPSELL_ORDER[_ups.type],content_type:'product'});
     upsellFull();
   }catch(e){console.error('[upsellPay]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
@@ -1136,8 +1140,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
       _userEmail=localStorage.getItem('ryex_email')||null;
       if(savedForm){
         formData=JSON.parse(savedForm);
-        trackEvent('payment_confirmed',{payment_id:paymentId});
-        fbq('track','Purchase',{value:5900,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
+        trackEvent('payment_confirmed',{payment_id:paymentId,amount:PRICE_RANK});
+        fbq('track','Purchase',{value:PRICE_RANK,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
         runAnalysis(formData);
       }
     }
@@ -1151,8 +1155,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
       const intent=JSON.parse(localStorage.getItem('ryex_upsell')||'null');
       if(intent){
         _userEmail=localStorage.getItem('ryex_email')||null;
-        trackEvent('upsell_payment_confirmed',{upsell_type:intent.type,payment_id:paymentId});
-        fbq('track','Purchase',{value:5900,currency:'KRW',content_name:'남자 심층 분석',content_type:'product'});
+        trackEvent('upsell_payment_confirmed',{upsell_type:intent.type,payment_id:paymentId,amount:PRICE_UPSELL});
+        fbq('track','Purchase',{value:PRICE_UPSELL,currency:'KRW',content_name:'남자 심층 분석',content_type:'product'});
         upsellFull();
       }
     }
