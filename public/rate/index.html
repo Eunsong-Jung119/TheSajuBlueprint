@@ -639,7 +639,8 @@ async function runAnalysis(data){
         const m=saveJson.shareUrl.match(/[?&]report=([^&]+)/)||saveJson.shareUrl.match(/\/([^\/?#]+)(?:[?#]|$)/);
         rid=m?m[1]:null;
       }
-      shareUrl=rid?`https://sajublueprint.com/rate?report=${rid}`:(saveJson.shareUrl||null);
+      // 공유는 /r/{id} (봇에 개인화 OG 썸네일, 사람은 /rate?report= 로 리다이렉트)
+      shareUrl=rid?`https://sajublueprint.com/r/${rid}`:(saveJson.shareUrl||null);
       // 이메일 발송
       if(emailToSend&&shareUrl){
         fetch('/api/send-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailToSend,shareUrl,result})}).catch(e=>console.error('[send-rating-report]',e));
@@ -1096,7 +1097,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
           localStorage.setItem('ryex_form',JSON.stringify(restored));
         }
       }catch(e){console.error('[restore form]',e);}
-      showResult(json.result,`https://sajublueprint.com/rate?report=${reportId}`);
+      showResult(json.result,`https://sajublueprint.com/r/${reportId}`);
     }catch(e){
       document.getElementById('loading-view').classList.remove('show');
       document.getElementById('landing-view').style.display='block';
