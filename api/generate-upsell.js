@@ -95,7 +95,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         temperature: 0.85,
-        max_tokens: 7500, // 5섹션 + 3~4문장 body 여유 (maxDuration 120s / GPT 95s 예산 내)
+        max_tokens: 8500, // 5섹션 + 3~4문장 body 여유 (maxDuration 120s / GPT 95s 예산 내)
         response_format: { type: 'json_object' },
         messages,
       }),
