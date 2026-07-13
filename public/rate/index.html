@@ -479,6 +479,26 @@ const PRICE_UPSELL = 5900;  // 심층 분석 업셀
 function _chrome(show){const t=document.querySelector('.top-bar'),b=document.querySelector('.timer-bar');if(t)t.style.display=show?'':'none';if(b)b.style.display=show?'':'none';}
 function getSessionId(){let s=localStorage.getItem('ryex_sid');if(!s){s=crypto.randomUUID();localStorage.setItem('ryex_sid',s);}return s;}
 function _detectBrowser(){const u=navigator.userAgent||'';if(/KAKAOTALK/i.test(u))return'kakao';if(/Instagram/i.test(u))return'instagram';if(/FBAN|FBAV/i.test(u))return'facebook';if(/NAVER/i.test(u))return'naver';if(/Edg\//i.test(u))return'edge';if(/SamsungBrowser/i.test(u))return'samsung';if(/CriOS|Chrome/i.test(u))return'chrome';if(/FxiOS|Firefox/i.test(u))return'firefox';if(/Safari/i.test(u))return'safari';return'other';}
+// ── Meta 픽셀 헬퍼 ─────────────────────────────
+// eventID를 payment_id에서 결정적으로 파생 → 서버 CAPI가 같은 값을 쓰면 중복제거됨.
+function _fbEventId(paymentId){ return String(paymentId||''); } // 서버 CAPI의 event_id(=paymentId)와 동일해야 dedup됨
+function _cookie(n){ const m=document.cookie.match(new RegExp('(^|;\\s*)'+n+'=([^;]*)')); return m?decodeURIComponent(m[2]):null; }
+function getFbIds(){ return { fbp:_cookie('_fbp'), fbc:_cookie('_fbc')||(new URLSearchParams(location.search).get('fbclid')?'fb.1.'+Date.now()+'.'+new URLSearchParams(location.search).get('fbclid'):null) }; }
+
+// 랭킹/업셀을 content_ids로 구분. 값이 있어야 ROAS가 잡히므로 이벤트명은 Purchase 유지.
+function firePurchase(kind, paymentId){
+  const isUp = kind==='upsell';
+  try{
+    fbq('track','Purchase',{
+      value: isUp?PRICE_UPSELL:PRICE_RANK,
+      currency:'KRW',
+      content_type:'product',
+      content_ids:[isUp?'upsell':'rank'],
+      content_name: isUp?'남자 심층 분석':'사주 궁합 랭킹',
+    },{ eventID:_fbEventId(paymentId) });
+  }catch(e){ console.error('[fbq]',e); }
+}
+
 function getUTM(){const p=new URLSearchParams(window.location.search);return{utm_source:p.get('utm_source'),utm_medium:p.get('utm_medium'),utm_campaign:p.get('utm_campaign'),utm_content:p.get('utm_content'),utm_term:p.get('utm_term'),fbclid:p.get('fbclid'),gclid:p.get('gclid'),report:p.get('report'),upsell:p.get('upsell'),referrer:document.referrer||null,browser:_detectBrowser(),is_mobile:/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||''),is_iab:!!window._isIAB};}
 function trackEvent(eventName, extra){
   try{
@@ -610,8 +630,11 @@ async function openPaywall(){
       redirectUrl:'https://sajublueprint.com/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
-    trackEvent('payment_confirmed',{payment_id:response.paymentId,amount:PRICE_RANK});
-    fbq('track','Purchase',{value:PRICE_RANK,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
+    trackEvent('payment_confirmed',{payment_id:response.paymentId,amount:PRICE_RANK,...getFbIds()});
+    firePurchase('rank',response.paymentId);
+    // 서버 결제검증 + CAPI에 필요
+    window._rankPaymentId=response.paymentId;
+    localStorage.setItem('ryex_rank_pid',response.paymentId);
     if(formData)runAnalysis(formData);
   }catch(e){console.error('[PortOne]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
@@ -631,7 +654,9 @@ async function runAnalysis(data){
     let shareUrl=null;
     const emailToSend=_userEmail||localStorage.getItem('ryex_email')||null;
     try{
-      const saveRes=await fetch('/api/save-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:getSessionId(),whop_receipt_id:null,email:emailToSend,my_year:myInfo.year,my_month:myInfo.month,my_day:myInfo.day,my_hour:myInfo.hour,my_gender:myInfo.gender,partners,result})});
+      const _fbR=getFbIds();
+      const _rankPid=window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||null;
+      const saveRes=await fetch('/api/save-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:getSessionId(),whop_receipt_id:null,email:emailToSend,payment_id:_rankPid,fbp:_fbR.fbp,fbc:_fbR.fbc,my_year:myInfo.year,my_month:myInfo.month,my_day:myInfo.day,my_hour:myInfo.hour,my_gender:myInfo.gender,partners,result})});
       const saveJson=await saveRes.json();
       // 공유 URL을 한국판 경로로 강제 (영문 포맷으로 새는 것 방지)
       let rid=saveJson.shareId||saveJson.id||saveJson.report_id||null;
@@ -1005,8 +1030,11 @@ async function upsellPay(){
       redirectUrl:'https://sajublueprint.com/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
-    trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId,amount:PRICE_UPSELL});
-    fbq('track','Purchase',{value:PRICE_UPSELL,currency:'KRW',content_name:UPSELL_ORDER[_ups.type],content_type:'product'});
+    trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId,amount:PRICE_UPSELL,...getFbIds()});
+    firePurchase('upsell',response.paymentId);
+    // 결제검증 + 서버 CAPI에 필요 → intent에 payment_id를 남긴다
+    _ups.payment_id=response.paymentId;
+    try{const _i=JSON.parse(localStorage.getItem('ryex_upsell')||'{}');_i.payment_id=response.paymentId;localStorage.setItem('ryex_upsell',JSON.stringify(_i));}catch(e){}
     upsellFull();
   }catch(e){console.error('[upsellPay]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
@@ -1019,7 +1047,8 @@ async function upsellFull(){
   _upsLoad('리포트를 생성하고 있어요, 창을 닫지 말아 주세요!','생성은 최대 1분 정도 소요될 수 있어요. 만들어진 리포트는 이메일로도 전송이 되어요.');
   try{
     const email=_userEmail||localStorage.getItem('ryex_email')||null;
-    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,phase:'full',me:intent.me,target:intent.target,session_id:getSessionId(),email})});
+    const _fb=getFbIds();
+    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,phase:'full',me:intent.me,target:intent.target,session_id:getSessionId(),email,payment_id:intent.payment_id||null,fbp:_fb.fbp,fbc:_fb.fbc})});
     if(!res.ok)throw new Error('full '+res.status);
     const data=await res.json();
     renderFull(intent,data);
@@ -1139,10 +1168,13 @@ window.addEventListener('DOMContentLoaded',async()=>{
       localStorage.setItem(_payKey,'1');
       const savedForm=localStorage.getItem('ryex_form');
       _userEmail=localStorage.getItem('ryex_email')||null;
+      // 결제는 이미 성사됨. localStorage가 유실돼도(인앱브라우저) 매출 이벤트는 반드시 쏜다.
+      trackEvent('payment_confirmed',{payment_id:paymentId,amount:PRICE_RANK,...getFbIds()});
+      firePurchase('rank',paymentId);
+      window._rankPaymentId=paymentId;
+      localStorage.setItem('ryex_rank_pid',paymentId);
       if(savedForm){
         formData=JSON.parse(savedForm);
-        trackEvent('payment_confirmed',{payment_id:paymentId,amount:PRICE_RANK});
-        fbq('track','Purchase',{value:PRICE_RANK,currency:'KRW',content_name:'Rate Your Ex 사주 궁합 분석',content_type:'product'});
         runAnalysis(formData);
       }
     }
@@ -1154,10 +1186,14 @@ window.addEventListener('DOMContentLoaded',async()=>{
     if(!localStorage.getItem(_payKey)){
       localStorage.setItem(_payKey,'1');
       const intent=JSON.parse(localStorage.getItem('ryex_upsell')||'null');
+      _userEmail=localStorage.getItem('ryex_email')||null;
+      // 위와 동일: intent가 없어도 결제는 성사된 것이므로 매출 이벤트는 쏜다.
+      trackEvent('upsell_payment_confirmed',{upsell_type:(intent&&intent.type)||null,payment_id:paymentId,amount:PRICE_UPSELL,...getFbIds()});
+      firePurchase('upsell',paymentId);
       if(intent){
-        _userEmail=localStorage.getItem('ryex_email')||null;
-        trackEvent('upsell_payment_confirmed',{upsell_type:intent.type,payment_id:paymentId,amount:PRICE_UPSELL});
-        fbq('track','Purchase',{value:PRICE_UPSELL,currency:'KRW',content_name:'남자 심층 분석',content_type:'product'});
+        intent.payment_id=paymentId;
+        localStorage.setItem('ryex_upsell',JSON.stringify(intent));
+        _ups=intent;
         upsellFull();
       }
     }

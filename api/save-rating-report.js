@@ -24,7 +24,8 @@ module.exports = async function handler(req, res) {
     session_id,
     whop_receipt_id,
     email,
-    payment_id,                 // ← 프론트에서 새로 넘겨받음 (PortOne paymentId)
+    payment_id,                 // ← 프론트에서 넘겨받음 (PortOne paymentId)
+    fbp, fbc,                   // ← 메타 CAPI 매칭률 향상용 브라우저 쿠키
     my_year, my_month, my_day, my_hour, my_gender,
     partners,
     result,
@@ -50,7 +51,7 @@ module.exports = async function handler(req, res) {
   }
 
   const shareId = crypto.randomBytes(4).toString('hex').slice(0, 6);
-  const shareUrl = `https://sajublueprint.com?report=${shareId}`;
+  const shareUrl = `https://sajublueprint.com/r/${shareId}`;
 
   const { error } = await supabase
     .from('rate_analyses')
@@ -77,10 +78,13 @@ module.exports = async function handler(req, res) {
     await sendMetaPurchase({
       paymentId: payment_id,
       value: verified.amount,
-      contentName: 'Rate Your Ex 사주 궁합 분석',
+      contentName: '사주 궁합 랭킹',
+      contentId: 'rank',             // 프론트 픽셀 content_ids와 동일
       email,
       ip,
       ua: req.headers['user-agent'],
+      fbp,                           // 매칭률↑
+      fbc,
     });
   }
 

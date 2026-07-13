@@ -48,7 +48,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
 
   try {
-    const { upsellType, phase, me, target, session_id, email, payment_id } = req.body || {};
+    const { upsellType, phase, me, target, session_id, email, payment_id, fbp, fbc } = req.body || {};
     const ph = (phase === 'womanTeaser' || phase === 'manTeaser' || phase === 'full') ? phase : 'full';
     if (!me) return res.status(400).json({ error: 'Missing me' });
 
@@ -213,9 +213,12 @@ export default async function handler(req, res) {
         paymentId: payment_id,
         value: _verified.amount,
         contentName: '남자 심층 분석',
+        contentId: 'upsell',           // 프론트 픽셀 content_ids와 동일
         email,
         ip,
         ua: req.headers['user-agent'],
+        fbp,                           // 매칭률↑
+        fbc,
       });
     }
 
