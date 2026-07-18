@@ -109,6 +109,22 @@ header { display: flex; align-items: center; justify-content: space-between; mar
 .chart-label { font-size: 9px; color: var(--text-hint); font-family: var(--mono); }
 .payment-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--mono); }
 .payment-row:last-child { border-bottom: none; }
+.payment-row.is-excluded { opacity: .4; }
+.card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.card-head .card-title { margin-bottom:0; }
+.head-actions { display:flex; align-items:center; gap:8px; }
+.btn-xs { font-family: var(--mono); font-size:11px; padding:4px 10px; border-radius:6px;
+  border:1px solid var(--border); background:transparent; color:var(--text-muted); cursor:pointer; }
+.btn-xs:hover:not(:disabled) { color:#fff; border-color:#888; }
+.btn-xs:disabled { opacity:.35; cursor:default; }
+.btn-xs.danger:hover:not(:disabled) { color:#f06a6a; border-color:#f06a6a; }
+.excl-chip { font-family: var(--mono); font-size:10px; color:var(--text-muted); }
+.sess-chk { cursor:pointer; accent-color:#f06a6a; }
+.excl-panel { margin-top:12px; padding:10px; border:1px dashed var(--border); border-radius:8px;
+  font-family: var(--mono); font-size:11px; color:var(--text-muted); }
+.excl-panel .row { display:flex; justify-content:space-between; padding:4px 0; }
+.excl-panel input { background:transparent; border:1px solid var(--border); border-radius:5px;
+  color:#fff; font-family:var(--mono); font-size:11px; padding:4px 8px; width:260px; }
 .payment-time { color: var(--text-muted); min-width: 100px; }
 .payment-id { color: var(--text-hint); flex: 1; overflow: hidden; text-overflow: ellipsis; }
 .payment-amount { color: var(--pink); font-weight: 600; }
@@ -220,8 +236,22 @@ header { display: flex; align-items: center; justify-content: space-between; mar
 
   <div class="two-col">
     <div class="card">
-      <div class="card-title">최근 결제 내역</div>
+      <div class="card-head">
+        <div class="card-title">최근 결제 내역</div>
+        <div class="head-actions">
+          <span class="excl-chip" id="excl-count"></span>
+          <button class="btn-xs" id="btn-excl-toggle" onclick="toggleExclPanel()">관리</button>
+        </div>
+      </div>
       <div id="payment-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+      <div class="excl-panel" id="excl-panel" style="display:none;">
+        <div style="margin-bottom:8px;color:#888;">제외된 세션 (집계에서 빠짐 · 원본 로그는 보존됨)</div>
+        <div id="excl-list"></div>
+        <div style="margin-top:10px;display:flex;gap:6px;align-items:center;">
+          <input id="excl-manual" placeholder="세션 ID 직접 입력 (결제 없는 테스트 세션용)">
+          <button class="btn-xs" onclick="excludeManual()">추가</button>
+        </div>
+      </div>
     </div>
     <div class="card">
       <div class="card-title">기간 요약</div>
@@ -230,12 +260,18 @@ header { display: flex; align-items: center; justify-content: space-between; mar
   </div>
 
   <div class="card" style="margin-bottom:32px;">
-    <div class="card-title">생성된 리포트 URL (랭킹)</div>
+    <div class="card-head">
+      <div class="card-title">생성된 리포트 URL (랭킹)</div>
+      <button class="btn-xs danger" id="btn-exclude-rep" onclick="excludeSelected('report-list')" disabled>제외</button>
+    </div>
     <div id="report-list"><div class="loading"><span class="spinner-sm"></span></div></div>
   </div>
 
   <div class="card" style="margin-bottom:32px;">
-    <div class="card-title">심층분석 리포트 URL (업셀)</div>
+    <div class="card-head">
+      <div class="card-title">심층분석 리포트 URL (업셀)</div>
+      <button class="btn-xs danger" id="btn-exclude-ups" onclick="excludeSelected('upsell-report-list')" disabled>제외</button>
+    </div>
     <div id="upsell-report-list"><div class="loading"><span class="spinner-sm"></span></div></div>
   </div>
 
@@ -387,6 +423,137 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowRight') { if (currentDay < kstTodayStr()) shiftDay(1); }
 });
 
+
+// ═══════════════════════════════════════════════════════════
+// 제외 세션 (내가 직접 만든 리포트 등 내부 트래픽 제거)
+//   - 원본 로그는 절대 지우지 않는다. 집계에서만 뺀다.
+//   - loadAll() 직후 한 곳에서만 필터링하므로 하위 집계는 자동 반영됨.
+// ═══════════════════════════════════════════════════════════
+let excludedSessions = new Set();
+
+async function fetchExcluded() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/excluded_sessions?select=session_id,excluded_at,reason&order=excluded_at.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (e) { console.warn('[excluded] fetch 실패', e); return []; }
+}
+
+async function addExcluded(ids, reason) {
+  const rows = ids.map(id => ({ session_id: id, reason: reason || null }));
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/excluded_sessions`, {
+    method: 'POST',
+    headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
+               'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify(rows)
+  });
+  if (!res.ok) throw new Error(await res.text());
+}
+
+async function removeExcluded(id) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/excluded_sessions?session_id=eq.${encodeURIComponent(id)}`,
+    { method: 'DELETE', headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+  );
+  if (!res.ok) throw new Error(await res.text());
+}
+
+// 선택된 결제 행 → 세션 제외
+async function excludeSelected(containerId) {
+  const scope = containerId ? document.getElementById(containerId) : document;
+  const ids = [...scope.querySelectorAll('.sess-chk:checked')].map(c => c.dataset.sid);
+  if (!ids.length) return;
+  const uniq = [...new Set(ids)];
+
+  // 영향 범위 미리 계산해서 보여줌 (실유저 세션을 실수로 빼는 것 방지)
+  const affected = allLogs.filter(l => uniq.includes(l.session_id));
+  const revenue = affected
+    .filter(l => l.event_name === 'payment_confirmed' || l.event_name === 'upsell_payment_confirmed')
+    .reduce((sum, l) => {
+      const m = pm(l.metadata);
+      return sum + (Number(m.amount) > 0 ? Number(m.amount) : LEGACY_PRICE);
+    }, 0);
+  const events = [...new Set(affected.map(l => l.event_name))].join(', ');
+
+  const msg =
+    `세션 ${uniq.length}개를 집계에서 제외합니다.\n\n` +
+    `· 영향받는 로그: ${affected.length}건\n` +
+    `· 포함 이벤트: ${events || '없음'}\n` +
+    `· 제외될 매출: ₩${revenue.toLocaleString()}\n\n` +
+    (revenue > 0 ? '⚠️ 매출이 0원이 아닙니다. 실제 유저 세션이 아닌지 확인하세요.\n\n' : '') +
+    `원본 로그는 삭제되지 않으며 언제든 복구할 수 있습니다.`;
+  if (!confirm(msg)) return;
+
+  try {
+    await addExcluded(uniq, 'dashboard');
+    await loadAll();
+  } catch (e) { alert('제외 실패: ' + e.message); }
+}
+
+async function excludeManual() {
+  const el = document.getElementById('excl-manual');
+  const id = (el.value || '').trim();
+  if (!id) return;
+  if (!confirm(`세션 ${id} 을(를) 집계에서 제외합니다.`)) return;
+  try {
+    await addExcluded([id], 'manual');
+    el.value = '';
+    await loadAll();
+  } catch (e) { alert('제외 실패: ' + e.message); }
+}
+
+async function restoreExcluded(id) {
+  if (!confirm(`세션 ${id} 을(를) 집계에 다시 포함합니다.`)) return;
+  try { await removeExcluded(id); await loadAll(); }
+  catch (e) { alert('복구 실패: ' + e.message); }
+}
+
+// 같은 이메일로 만든 리포트를 한 번에 선택 (내 테스트 계정 정리용)
+function selectByEmail(email) {
+  const rows = document.querySelectorAll('#report-list .report-row');
+  let n = 0;
+  rows.forEach(row => {
+    if (row.dataset.email !== email) return;
+    const c = row.querySelector('.sess-chk');
+    if (c) { c.checked = true; n++; }
+  });
+  onPayCheck();
+  if (n) console.log(`[excl] ${email} 리포트 ${n}건 선택됨`);
+}
+
+function toggleExclPanel() {
+  const el = document.getElementById('excl-panel');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// 카드별 제외 버튼 상태 갱신
+function onPayCheck() {
+  [['report-list','btn-exclude-rep'],
+   ['upsell-report-list','btn-exclude-ups']].forEach(function (pair) {
+    var list = document.getElementById(pair[0]), btn = document.getElementById(pair[1]);
+    if (!list || !btn) return;
+    var n = list.querySelectorAll('.sess-chk:checked').length;
+    btn.disabled = n === 0;
+    btn.textContent = n ? '제외 (' + n + ')' : '제외';
+  });
+}
+
+function renderExcludedPanel(rows) {
+  document.getElementById('excl-count').textContent =
+    rows.length ? `제외됨 ${rows.length}건` : '';
+  document.getElementById('excl-list').innerHTML = rows.length
+    ? rows.map(r => {
+        const t = r.excluded_at ? new Date(r.excluded_at).toLocaleDateString('ko-KR') : '';
+        return `<div class="row"><span>${r.session_id.slice(0,8)}… <span style="color:#555">${t} ${r.reason||''}</span></span>` +
+               `<button class="btn-xs" onclick="restoreExcluded('${r.session_id}')">복구</button></div>`;
+      }).join('')
+    : '<div style="color:#555">없음</div>';
+}
+
 async function fetchLogs() {
   const from = document.getElementById('date-from').value || fromDate;
   const to = document.getElementById('date-to').value || toDate;
@@ -444,11 +611,11 @@ async function fetchReports() {
   const from = document.getElementById('date-from').value || fromDate;
   const to = document.getElementById('date-to').value || toDate;
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/rate_analyses?select=id,created_at,partners&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=50`,
+    `${SUPABASE_URL}/rest/v1/rate_analyses?select=id,created_at,partners,session_id,email` +
+    `&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=50`,
     { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
   );
-  const text = await res.text();
-  const data = JSON.parse(text);
+  const data = JSON.parse(await res.text());
   return Array.isArray(data) ? data : [];
 }
 
@@ -456,7 +623,7 @@ async function fetchUpsellReports() {
   const from = document.getElementById('date-from').value || fromDate;
   const to = document.getElementById('date-to').value || toDate;
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/rate_upsell_reports?select=id,created_at,target_name,upsell_type&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=50`,
+    `${SUPABASE_URL}/rest/v1/rate_upsell_reports?select=id,created_at,target_name,upsell_type,session_id&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=50`,
     { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
   );
   const text = await res.text();
@@ -710,6 +877,7 @@ function renderPayments(payments) {
       <span class="payment-amount">₩${(Number(m.amount) > 0 ? Number(m.amount) : LEGACY_PRICE).toLocaleString()}</span>
     </div>`;
   }).join('');
+  onPayCheck();
 }
 
 // 매출 집계: metadata.amount(실제 결제금액)를 읽고, 없으면(과거 로그) LEGACY_PRICE로 폴백
@@ -772,12 +940,21 @@ function renderReports(reports) {
       const p = typeof r.partners === 'string' ? JSON.parse(r.partners) : (r.partners || []);
       partners = p.map(x => x.nickname || x.name || '?');
     } catch {}
-    return `<div class="report-row">
+    const chk = r.session_id
+      ? `<input type="checkbox" class="sess-chk" data-sid="${r.session_id}" onchange="onPayCheck()" title="${r.session_id}">`
+      : '<span style="width:13px;display:inline-block"></span>';
+    const mail = r.email
+      ? `<span class="mail-chip" onclick="selectByEmail('${r.email}')" title="이 이메일로 만든 리포트 전체 선택">${r.email}</span>`
+      : '<span class="mail-chip" style="color:#444">-</span>';
+    return `<div class="report-row" data-email="${r.email || ''}">
+      ${chk}
       <span class="report-time">${timeStr}</span>
       <a class="report-link" href="${url}" target="_blank">${url}</a>
+      ${mail}
       <span class="report-guys">${partners.length}명 · ${partners.join(', ').slice(0,20)}</span>
     </div>`;
   }).join('');
+  onPayCheck();
 }
 
 function renderUpsellReports(reports) {
@@ -791,12 +968,17 @@ function renderUpsellReports(reports) {
     const timeStr = `${String(kst.getUTCMonth()+1).padStart(2,'0')}/${String(kst.getUTCDate()).padStart(2,'0')} ${String(kst.getUTCHours()).padStart(2,'0')}:${String(kst.getUTCMinutes()).padStart(2,'0')}`;
     const url = `https://sajublueprint.com/rate?upsell=${r.id}`;
     const t = typeLabels[r.upsell_type] || r.upsell_type || '심층';
+    const chk = r.session_id
+      ? `<input type="checkbox" class="sess-chk" data-sid="${r.session_id}" onchange="onPayCheck()" title="${r.session_id}">`
+      : '<span style="width:13px;display:inline-block"></span>';
     return `<div class="report-row">
+      ${chk}
       <span class="report-time">${timeStr}</span>
       <a class="report-link deep" href="${url}" target="_blank">${url}</a>
       <span class="report-guys">${r.target_name || '?'} · ${t}</span>
     </div>`;
   }).join('');
+  onPayCheck();
 }
 
 let allSourceLogs = [];
@@ -807,7 +989,24 @@ async function loadAll() {
   fromDate = from; toDate = to;
   document.getElementById('funnel-grid').innerHTML = '<div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>';
   try {
-    [allLogs, allPayments, allReports, allUpsellReports, allSourceLogs] = await Promise.all([fetchLogs(), fetchPayments(), fetchReports(), fetchUpsellReports(), fetchSourceLogs()]);
+    let exclRows;
+    [allLogs, allPayments, allReports, allUpsellReports, allSourceLogs, exclRows] = await Promise.all([
+      fetchLogs(), fetchPayments(), fetchReports(), fetchUpsellReports(), fetchSourceLogs(), fetchExcluded()
+    ]);
+
+    // ── 제외 세션 필터: 여기 한 곳에서만 거른다 ──
+    // 하위 집계(퍼널/소스/시간대/매출/요약/공유)는 전부 이 배열들을 쓰므로 자동 반영됨.
+    excludedSessions = new Set(exclRows.map(r => r.session_id));
+    if (excludedSessions.size) {
+      const keep = x => !excludedSessions.has(x.session_id);
+      allLogs          = allLogs.filter(keep);
+      allPayments      = allPayments.filter(keep);
+      allSourceLogs    = allSourceLogs.filter(keep);
+      // session_id가 없는 행(구버전)은 판단 불가 → 보수적으로 남긴다
+      allReports       = allReports.filter(r => !r.session_id || keep(r));
+      allUpsellReports = allUpsellReports.filter(r => !r.session_id || keep(r));
+    }
+    renderExcludedPanel(exclRows);
     renderAll();
   } catch(e) {
     document.getElementById('funnel-grid').innerHTML = `<div style="grid-column:1/-1;color:#f06a6a;font-family:var(--mono);font-size:12px;padding:20px;">에러: ${e.message}</div>`;
