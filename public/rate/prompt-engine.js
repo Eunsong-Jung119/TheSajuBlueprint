@@ -1,7 +1,4 @@
-// ═══════════════════════════════════════════════════════════
-//  prompt-engine.js  (saju-score 내장 통합본)
-//  이 파일 하나만 로드하면 됩니다. 별도 <script> 태그 불필요.
-// ═══════════════════════════════════════════════════════════
+// prompt-engine.js (saju-score 내장 통합본)
 
 // ═══════════════════════════════════════════════════════════
 // saju-score.js — 궁합 점수 결정론적 계산 엔진
@@ -716,13 +713,35 @@ const SYSTEM_PROMPT = `
 - 출력 JSON에 scores 필드를 넣지 마라. 서버가 붙인다.
 - 네가 할 일은 **주어진 점수를 텍스트로 납득시키는 것**이다.
 
+3-0. 점수 숫자 인용 금지 (엄수):
+본문(sections[].text)과 checkpoint에 **점수 숫자를 쓰지 마라.**
+"감정 점수 92는~", "여기가 67점으로 나왔어", "안정성 56은~" 같은 문장을 전면 금지한다.
+점수는 이미 화면에 그래프로 표시된다. 숫자를 되풀이하는 것은 정보량이 0이고,
+"67점인 이유는 미묘한 차이 때문이야" 같은 순환논법만 만든다.
+네가 할 일은 그 숫자가 실제 연애에서 **어떻게 느껴지는지를 장면으로** 쓰는 것이다.
+overall에서도 숫자 대신 "1위인데", "제일 낮은데" 처럼 순위·정도로만 표현한다.
+
+3-01. 상대별 텍스트 중복 절대 금지 (엄수):
+상대가 여러 명일 때, 서로 다른 상대의 text/summary를 **재사용하거나 복사하지 마라.**
+문장을 그대로 옮기는 것은 물론이고, 같은 골격에 단어만 바꾸는 것도 금지한다.
+특히 4번째·5번째 상대에서 앞사람 문장을 베끼는 실수가 잦다.
+마지막 상대도 첫 상대와 같은 밀도·같은 구체성으로 새로 써라.
+한 리포트 안에서 동일한 checkpoint 문장이 두 번 나오면 실패다.
+
 3-1. 점수 → 텍스트 정합성 (엄수):
 - 🏠 안정성이 50 미만이면, 그 섹션은 반드시 관계가 무너지는 구체적 장면으로 채워라.
   "조금 불안정해" 수준으로 뭉개지 마라. 무엇 때문에 어떻게 깨지는지 써라.
 - ❤️ 감정이 85 이상인데 🏠 안정성이 55 이하면, 그 대비 자체가 이 관계의 정체다.
   "못 잊는데 못 돌아간다", "심장은 뛰는데 같이 살 수는 없다" 같은 구조를 정면으로 다뤄라.
 - ❤️ 감정이 60 이하면 "편한데 설레지 않는다"는 방향으로 써라. 억지로 뜨겁게 쓰지 마라.
-- 총점이 55 미만인 상대는 미화하지 마라. 왜 낮은지 아프게 정확히 써라.
+- 총점이 60 미만인 상대는 미화하지 마라. "서로 이해하려는 노력이 필요해",
+  "서로의 차이를 존중해야 해" 같은 무해한 마무리를 금지한다. 그건 아무 말도 안 한 것이다.
+  대신 **무엇이 어떻게 안 맞아서 관계가 굴러가지 않는지**를 구체적 장면으로 써라.
+  (X) "서로의 감정을 존중하며 이해하려는 노력이 필요해"
+  (O) "같이 있으면 대화가 자꾸 끊겨. 할 말이 없어서가 아니라, 네가 중요하다고 생각하는 걸
+      걔는 별일 아니라고 넘기거든. 두 번 세 번 반복되면 말을 꺼내는 것 자체가 귀찮아져."
+- 개별 축이 45 미만이면 그 축은 명확히 나쁜 것이다. "미세한 차이가 존재해" 같은 완충 표현을
+  쓰지 말고, 그 낮음이 실제로 어떤 불편으로 나타나는지 정면으로 써라.
 - 총점이 85 이상인 상대도 치명적 약점 하나는 반드시 짚어라.
 
 3-2. 명리 해석 방향 (점수 계산용이 아니라 서술용 기준):
@@ -1106,14 +1125,14 @@ const FEW_SHOT_ASSISTANT = `
         },
         "perspective": {
           "text": "큰 방향은 의외로 잘 맞았어. 돈 모으는 이유나 몇 년 뒤 그림 같은 건 굳이 설명 안 해도 통했지. 둘 다 토(土)가 절반을 넘는 사주라 현실 감각의 눈금이 비슷하거든. 다만 걔는 화개살이 세 자리나 겹쳐서 가끔 자기 세계로 훅 들어가는데, 그때 너는 밖에 남겨진 기분이었을 거야.",
-          "summary": "👉 '얘랑은 말이 통해'랑 '얘는 가끔 어디 갔는지 모르겠어'가 같이 있었으면, 이 축이 66점인 이유야."
+          "summary": "👉 '얘랑은 말이 통해'랑 '얘는 가끔 어디 갔는지 모르겠어'가 같이 있었으면, 이 축이 유독 낮은 이유야."
         },
         "timing": {
           "text": "2026년 병오년엔 걔한테 연락이 와. 화(火)가 묵은 감정을 들쑤시는 해라 별 이유 없는 안부 같은 게 오거든. 2028년 무신년이 제일 위험해 — 네 배우자궁 진(辰)이 자극받아서 '그때 내가 성급했나' 싶어지는 시기야. 2030년 경술년엔 네 월지 술(戌)이 눌리면서 현실이 앞으로 확 나와서, 다시 만났다면 여기서 결론이 나. 2033년 계축년은 걔 일지 축(丑)이 그대로 들어오는 해라 어떤 형태로든 한 번은 더 마주쳐.",
           "summary": "👉 2028년에 오는 연락은 그리움이 아니라 관성이야. 답장하기 전에 이 줄 다시 읽어."
         }
       },
-      "overall": "구남친1이 총점 85로 1위인데, 이 85는 '편하다'가 아니라 '이만큼 세게 물려 있다'는 뜻이야. 감정 92에 성장 81이 나올 만큼 너를 흔들고 키운 사람인 건 맞아. 근데 안정성 56이 말하는 건 그 강도가 생활로 내려오는 순간 계속 삐걱댄다는 거고, 돌아가도 같은 자리에서 같은 싸움을 해. 다시 만날지는 '아직 좋아하나'가 아니라 '그 싸움을 한 번 더 할 수 있나'로 정해야 해."
+      "overall": "구남친1이 1위인데, 그건 '편하다'가 아니라 '이만큼 세게 물려 있다'는 뜻이야. 너를 흔들고 키운 사람인 건 맞아. 근데 그 강도가 생활로 내려오는 순간 계속 삐걱대고, 돌아가도 같은 자리에서 같은 싸움을 해. 다시 만날지는 '아직 좋아하나'가 아니라 '그 싸움을 한 번 더 할 수 있나'로 정해야 해."
     },
     {
       "name": "썸남1",
@@ -1121,18 +1140,18 @@ const FEW_SHOT_ASSISTANT = `
       "sections": {
         "heart": {
           "text": "만나면 편한데 헤어지고 나면 딱히 생각이 안 나지. 연락이 이틀 없어도 아무렇지 않고, 걔가 다른 사람 얘기를 해도 별 감흥이 없어. 둘 다 갑목(甲木) 일간이라 그래 — 같은 나무끼리는 금방 편해지는 대신 서로를 이성으로 안 봐. 배우자궁도 서로 아무 관계가 없어서 걸릴 고리 자체가 없어.",
-          "summary": "👉 걔 프사 바뀐 걸 일주일 뒤에 알았으면, 감정 43점이 정확한 거야."
+          "summary": "👉 걔 프사 바뀐 걸 일주일 뒤에 알았으면, 그게 이 관계의 온도야."
         },
         "growth": {
           "text": "얘랑 있으면 안 가던 데를 가긴 해. 너한테 아예 없는 수(水)를 25% 갖고 있어서 시야가 넓어지는 건 사실이거든. 근데 진월(辰月)인 그가 밀고 술월(戌月)인 네가 버티는 구도라, 서로 방향을 트는 게 아니라 각자 하던 대로 가. 자극은 있는데 그게 너를 바꾸는 데까지는 안 가.",
           "summary": "👉 걔 만나고 나서 새로 시작한 게 하나도 없으면, 이 관계는 딱 여기까지야."
         },
         "stability": {
-          "text": "싸울 일이 없어. 근데 그건 잘 맞아서가 아니라 부딪힐 만큼 깊이 안 들어가서야. 그의 일지 12운성이 절(絶)이라 관계를 끊었다 이었다 하는 게 기본값이고, 며칠 조용해져도 둘 다 딱히 안 궁금해해. 안정성 60은 튼튼하다는 뜻이 아니라 흔들릴 무게가 없다는 뜻이야.",
+          "text": "싸울 일이 없어. 근데 그건 잘 맞아서가 아니라 부딪힐 만큼 깊이 안 들어가서야. 그의 일지 12운성이 절(絶)이라 관계를 끊었다 이었다 하는 게 기본값이고, 며칠 조용해져도 둘 다 딱히 안 궁금해해. 안정적으로 보이는 건 튼튼해서가 아니라 흔들릴 무게가 없어서야.",
           "summary": "👉 이 사람 때문에 마지막으로 속상했던 게 언제인지 기억이 안 나면, 그게 답이야."
         },
         "perspective": {
-          "text": "말은 진짜 잘 통해. 돈 쓰는 기준도 비슷하고, 여행 가서도 서로 설명할 게 별로 없어. 월지가 둘 다 토(土)라 세상 보는 틀 자체가 같거든 — 다만 술(戌)과 진(辰)이 정면으로 충(冲)이라 같은 걸 보고 반대로 움직일 때가 있어. 그래도 다섯 축 중에 여기가 83으로 제일 높아, 친구로는 오래 갈 사람이야.",
+          "text": "말은 진짜 잘 통해. 돈 쓰는 기준도 비슷하고, 여행 가서도 서로 설명할 게 별로 없어. 월지가 둘 다 토(土)라 세상 보는 틀 자체가 같거든 — 다만 술(戌)과 진(辰)이 정면으로 충(冲)이라 같은 걸 보고 반대로 움직일 때가 있어. 그래도 다섯 축 중에 여기가 제일 높아, 친구로는 오래 갈 사람이야.",
           "summary": "👉 '얘랑 얘기하면 편해'가 이 사람에 대한 첫 문장이면, 그건 연애 감정이 아니야."
         },
         "timing": {
@@ -1140,10 +1159,10 @@ const FEW_SHOT_ASSISTANT = `
           "summary": "👉 2028년에 '우리 뭐야' 대화가 안 나오면, 그해를 넘기면서 흐지부지돼."
         }
       },
-      "overall": "썸남1은 나쁜 사람이 아니라 아무 일도 안 일어나는 사람이야. 관점 83이 말해주듯 다섯 명 중에 대화는 제일 잘 통하는데, 감정 43은 그 편안함이 끝까지 편안함으로만 남는다는 뜻이야. 절(絶)의 리듬 때문에 네가 먼저 연락 안 하면 그대로 멀어지고, 실제로 그렇게 정리돼. 억지로 밀어붙이는 것보다 좋은 친구로 두는 게 둘 다한테 나아."
+      "overall": "썸남1은 나쁜 사람이 아니라 아무 일도 안 일어나는 사람이야. 대화는 제일 잘 통하는데, 그 편안함이 끝까지 편안함으로만 남아. 절(絶)의 리듬 때문에 네가 먼저 연락 안 하면 그대로 멀어지고, 실제로 그렇게 정리돼. 억지로 밀어붙이는 것보다 좋은 친구로 두는 게 둘 다한테 나아."
     }
   ],
-  "ranking_comment": "구남친1이 85점, 썸남1이 58점으로 27점 차야. 근데 이 85점은 추천이 아니라 경고에 가까워 — 감정 92는 최고인데 안정성이 56이라, 세게 끌리는 만큼 세게 부딪히는 사람이라는 뜻이거든. 반대로 썸남1은 관점이 83으로 제일 높은데 감정이 43이라, 사람은 좋은데 연애가 안 굴러가는 전형이야. 지금 네 선택지가 '아픈 걸 한 번 더 할래'랑 '아무 일도 안 일어나는 걸 계속 볼래'로 갈려 있다면, 둘 다 싫은 게 정상이고 다른 사람을 보는 게 맞아."
+  "ranking_comment": "구남친1이 1위인데 이건 추천이 아니라 경고에 가까워. 세게 끌리는 만큼 세게 부딪히는 사람이거든. 반대로 썸남1은 말은 제일 잘 통하는데 심장이 안 뛰어서, 사람은 좋은데 연애가 안 굴러가는 전형이야. 지금 네 선택지가 '아픈 걸 한 번 더 할래'랑 '아무 일도 안 일어나는 걸 계속 볼래'로 갈려 있다면, 둘 다 싫은 게 정상이고 다른 사람을 보는 게 맞아."
 }
 `.trim();
 
@@ -1197,7 +1216,7 @@ const FEW_SHOT_ASSISTANT2 = `
           "summary": "👉 '괜찮아'라고 했는데 다음 날 말수가 줄었으면, 그건 안 괜찮았던 거야."
         },
         "perspective": {
-          "text": "주말에 뭐 할지부터 매번 갈리지. 너는 어디든 나가야 쉰 것 같은데 걔는 집에 있어야 쉰 거고, 이건 대화로 좁혀지는 종류가 아니야. 걔는 수(水)가 38%에 화(火)가 0%라 안으로만 고이는 사람이고, 토(土)가 55%인 너와는 애초에 세상을 재는 자(尺)가 달라. 다섯 축 중에 여기가 41점으로 제일 낮은 이유가 이거야 — 감정이 아니라 기준이 안 맞는 거라 시간이 지나도 안 좁혀져.",
+          "text": "주말에 뭐 할지부터 매번 갈리지. 너는 어디든 나가야 쉰 것 같은데 걔는 집에 있어야 쉰 거고, 이건 대화로 좁혀지는 종류가 아니야. 걔는 수(水)가 38%에 화(火)가 0%라 안으로만 고이는 사람이고, 토(土)가 55%인 너와는 애초에 세상을 재는 자(尺)가 달라. 다섯 축 중에 여기가 제일 낮은 이유가 이거야 — 감정이 아니라 기준이 안 맞는 거라 시간이 지나도 안 좁혀져.",
           "summary": "👉 데이트 코스를 매번 네가 정하고 있으면, 맞춰주는 게 아니라 관심이 거기 없는 거야."
         },
         "timing": {
@@ -1213,31 +1232,75 @@ const FEW_SHOT_ASSISTANT2 = `
 `.trim();
 
 
-function buildPromptMessages(myInfo, partners) {
-  const annualFlow = getAnnualFlow(2026, 10);
+// ═══════════════════════════════════════════════════════════
+//  병렬 생성 구조
+//   - 워커: 남자 1명당 1콜. Promise.all 로 동시 발사.
+//     (기존엔 5명 25개 subsection을 한 콜에 뽑느라 4~5위에서 문장 복붙 붕괴가 났음)
+//   - 총평: 워커 결과가 다 모인 뒤 ranking_comment만 짧게 1콜.
+//   - 상대 1명이면 워커 1콜만 하고 총평은 생략.
+// ═══════════════════════════════════════════════════════════
 
-  // 나
+// 연간 연주의 지지 인덱스 (점수 엔진용)
+function getAnnualBranches(startYear = 2026, count = 10) {
+  const out = [];
+  for (let i = 0; i < count; i++) out.push(((startYear + i - 4) % 12 + 12) % 12);
+  return out;
+}
+
+// 워커는 상대 1명만 다룬다. 기존 규칙은 그대로 두고 출력 스키마만 덮어쓴다.
+const WORKER_SCHEMA_OVERRIDE = `
+
+═══════════════════════════════════════
+이번 요청의 출력 형식 (다른 모든 형식 지시보다 우선)
+═══════════════════════════════════════
+이번 요청은 **상대 단 한 명**만 분석한다.
+results 배열, ranking_comment, annual_flow 를 넣지 마라. 아래 스키마 그대로 최상위에 출력한다.
+
+{
+  "name": "상대 이름 그대로",
+  "archetype": "이모지 1개 + 한 줄",
+  "sections": {
+    "heart":       { "text": "정확히 4문장", "summary": "👉 로 시작하는 관찰 신호 한 줄" },
+    "growth":      { "text": "...", "summary": "..." },
+    "stability":   { "text": "...", "summary": "..." },
+    "perspective": { "text": "...", "summary": "..." },
+    "timing":      { "text": "...", "summary": "..." }
+  },
+  "overall": "3~4문장"
+}
+
+이 한 명에게 온전히 집중해라. 분량을 아끼지 말고 5개 섹션 모두 같은 밀도로 써라.`;
+
+// 퓨샷을 1인용으로 변환 (기존 퓨샷 JSON에서 결과 객체 하나만 뽑아 씀)
+function _workerFewShots() {
+  const headEnd = FEW_SHOT_USER.indexOf('\n\n[상대');
+  const header = FEW_SHOT_USER.slice(0, headEnd);                  // 연주 + 나
+  const blocks = FEW_SHOT_USER.slice(headEnd).split('\n\n[상대')
+    .filter(Boolean).map(b => '[상대' + b.trim());
+  let parsed;
+  try { parsed = JSON.parse(FEW_SHOT_ASSISTANT); } catch (e) { return []; }
+  const out = [];
+  // results[0]=구남친1(상대B), results[1]=썸남1(상대A) → 블록 순서와 맞춰 매핑
+  const byName = {};
+  (parsed.results || []).forEach(r => { byName[r.name] = r; });
+  blocks.forEach(b => {
+    const m = b.match(/\[상대[A-Z] - "([^"]+)"/);
+    if (!m) return;
+    const r = byName[m[1]];
+    if (!r) return;
+    out.push({ user: header + '\n\n' + b, assistant: JSON.stringify(r, null, 2) });
+  });
+  return out;
+}
+const WORKER_FEW_SHOTS = _workerFewShots();
+
+// ── 사람별 텍스트 조립 ──────────────────────────────────
+function buildContext(myInfo, partners) {
+  const annualFlow = getAnnualFlow(2026, 10);
   const genderLabel = myInfo.gender === 'female' ? '여' : '남';
   const myBirth = `${myInfo.year}.${String(myInfo.month).padStart(2,'0')}.${String(myInfo.day).padStart(2,'0')}`;
-  const myData = buildPersonText(
-    `나 - ${genderLabel}, ${myBirth}`,
-    myInfo.year, myInfo.month, myInfo.day, myInfo.hour, true
-  );
+  const myData = buildPersonText(`[나 - ${genderLabel}, ${myBirth}]`, myInfo.year, myInfo.month, myInfo.day, myInfo.hour, true);
 
-  // 상대들
-  const partnerTexts = partners.map((p, i) => {
-    const birth = `${p.year}.${String(p.month).padStart(2,'0')}.${String(p.day).padStart(2,'0')}`;
-    const label = `상대${String.fromCharCode(65+i)} - "${p.nickname}" (${birth})`;
-    const hasHour = p.hour !== null && p.hour !== undefined;
-    const pData = buildPersonText(label, p.year, p.month, p.day, p.hour, false);
-    const tenGodDist = getPartnerTenGodDist(myData.r.dayTG, pData.r, hasHour);
-    const branchRel = getBranchRelation(myData.dayDZ, pData.dayDZ);
-    const wonjin = getWonjin(myData.dayDZ, pData.dayDZ);
-    const wonjinNote = wonjin ? ' / 배우자궁 원진(怨嗔): 있음 (애증·미묘한 불편함)' : '';
-    return `${pData.text}\n내 일간 기준 상대 십성 분포:\n${tenGodDist}\n배우자궁 관계 (내 일지↔상대 일지): ${branchRel}${wonjinNote}`;
-  });
-
-  // ── 점수는 JS가 확정한다 (GPT는 계산하지 않음) ──
   const annualBranches = getAnnualBranches(2026, 10);
   const meForScore = { r: myData.r, dayDZ: myData.dayDZ, hasHour: myInfo.hour !== null && myInfo.hour !== undefined };
   const partnersForScore = partners.map(p => {
@@ -1245,141 +1308,136 @@ function buildPromptMessages(myInfo, partners) {
     const r = calcSaju(p.year, p.month, p.day, hasHour ? p.hour : 12);
     return { r, dayDZ: r.dayDZ, hasHour };
   });
+
   const _SS = (typeof SajuScore !== 'undefined') ? SajuScore
             : (typeof window !== 'undefined' ? window.SajuScore : null);
-  if (!_SS) {
-    throw new Error('saju-score.js가 로드되지 않았어요. prompt-engine.js보다 먼저 <script>로 불러와야 합니다.');
-  }
+  if (!_SS) throw new Error('saju-score.js가 로드되지 않았어요. prompt-engine.js보다 먼저 <script>로 불러와야 합니다.');
   const computedScores = _SS.scoreAll(meForScore, partnersForScore, annualBranches);
 
-  // 프롬프트에 확정 점수 주입
-  partners.forEach((p, i) => {
+  const partnerBlocks = partners.map((p, i) => {
+    const birth = `${p.year}.${String(p.month).padStart(2,'0')}.${String(p.day).padStart(2,'0')}`;
+    const label = `[상대A - "${p.nickname}" (${birth})]`;
+    const hasHour = p.hour !== null && p.hour !== undefined;
+    const pData = buildPersonText(label, p.year, p.month, p.day, p.hour, false);
+    const tenGodDist = getPartnerTenGodDist(myData.r.dayTG, pData.r, hasHour);
+    const branchRel = getBranchRelation(myData.dayDZ, pData.dayDZ);
+    const wonjin = getWonjin(myData.dayDZ, pData.dayDZ);
+    const wonjinNote = wonjin ? ' / 배우자궁 원진(怨嗔): 있음 (애증·미묘한 불편함)' : '';
     const s = computedScores[i];
-    partnerTexts[i] += `\n[확정 점수 - ${p.nickname}] ❤️${s.heart} / 🚀${s.growth} / 🏠${s.stability} / 🪞${s.perspective} / ⏳${s.timing} / 총점 ${s.total}`;
+    return `${pData.text}\n내 일간 기준 상대 십성 분포:\n${tenGodDist}\n배우자궁 관계 (내 일지↔상대 일지): ${branchRel}${wonjinNote}\n[확정 점수 - ${p.nickname}] ❤️${s.heart} / 🚀${s.growth} / 🏠${s.stability} / 🪞${s.perspective} / ⏳${s.timing} / 총점 ${s.total}`;
   });
 
-  const userMessage = `
-[공통 향후 10년 연주]
-${annualFlow}
-
-${myData.text}
-
-${partnerTexts.join('\n\n')}
-`.trim();
-
-  const messages = [
-    { role: 'system',    content: SYSTEM_PROMPT },
-    { role: 'user',      content: FEW_SHOT_USER },
-    { role: 'assistant', content: FEW_SHOT_ASSISTANT },
-    { role: 'user',      content: FEW_SHOT_USER2 },
-    { role: 'assistant', content: FEW_SHOT_ASSISTANT2 },
-    { role: 'user',      content: userMessage },
-  ];
-
-  return { messages, computedScores };
+  const headerText = `[공통 향후 10년 연주]\n${annualFlow}\n\n${myData.text}`;
+  return { annualFlow, headerText, partnerBlocks, computedScores };
 }
 
-// 연간 연주의 지지 인덱스만 뽑기 (점수 엔진용)
-function getAnnualBranches(startYear = 2026, count = 10) {
-  const out = [];
-  for (let i = 0; i < count; i++) {
-    const y = startYear + i;
-    out.push(((y - 4) % 12 + 12) % 12);
-  }
-  return out;
-}
-
-// ─────────────────────────────────────────────
-// API 호출 (analyze.js serverless function 경유)
-// ─────────────────────────────────────────────
-async function analyzeCompatibility(myInfo, partners) {
-  const { messages, computedScores } = buildPromptMessages(myInfo, partners);
-
+// ── 공용 호출 헬퍼 ──────────────────────────────────────
+async function callAnalyze(messages, maxTokens, temperature) {
   const res = await fetch('/api/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gpt-4o',
-      max_tokens: Math.min(16000, 1500 + partners.length * 1800),
-      temperature: 0.7,
-      messages,
-    }),
+    body: JSON.stringify({ model: 'gpt-4o', max_tokens: maxTokens, temperature: temperature ?? 0.7, messages }),
   });
-
-  // 1) HTTP 상태부터 확인
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    console.error('[analyze] HTTP', res.status, errText);
-    throw new Error(`분석 API 오류 (${res.status})`);
-  }
-
-  // 2) 응답 본문을 먼저 통째로 받아서 비어있는지 검사
+  if (!res.ok) throw new Error(`분석 API 오류 (${res.status}) ${await res.text().catch(()=> '')}`);
   const bodyText = await res.text();
-  if (!bodyText || !bodyText.trim()) {
-    console.error('[analyze] 빈 응답 본문');
-    throw new Error('분석 결과가 비어서 왔어요. 잠시 후 다시 시도해줘.');
+  if (!bodyText || !bodyText.trim()) throw new Error('분석 결과가 비어서 왔어요.');
+  const json = JSON.parse(bodyText);
+  const raw = (json.content?.[0]?.text || json.choices?.[0]?.message?.content ||
+               json.message?.content || json.text || '').replace(/```json|```/g, '').trim();
+  if (!raw) throw new Error('분석 내용이 비어서 왔어요.');
+  return JSON.parse(raw);
+}
+
+// ── 워커: 상대 1명 ──────────────────────────────────────
+async function runWorker(headerText, partnerBlock, nickname) {
+  const messages = [{ role: 'system', content: SYSTEM_PROMPT + WORKER_SCHEMA_OVERRIDE }];
+  WORKER_FEW_SHOTS.forEach(fs => {
+    messages.push({ role: 'user', content: fs.user });
+    messages.push({ role: 'assistant', content: fs.assistant });
+  });
+  messages.push({ role: 'user', content: `${headerText}\n\n${partnerBlock}` });
+
+  const out = await callAnalyze(messages, 2600, 0.75);
+  // 모델이 실수로 results 배열로 감싸는 경우 흡수
+  const item = Array.isArray(out?.results) ? out.results[0] : out;
+  if (!item || !item.sections) throw new Error(`[${nickname}] 섹션 누락`);
+  item.name = nickname;                       // 이름은 원본으로 강제
+  return item;
+}
+
+// ── 총평: 점수/아키타입만 보고 짧게 ─────────────────────
+const SUMMARY_SYSTEM_PROMPT = `
+너는 사주 기반 연애 상담사야. 아래에 여러 남자의 궁합 점수와 한 줄 요약이 주어진다.
+이걸 종합해서 사용자에게 건네는 총평(ranking_comment)을 4~5문장으로 써.
+
+규칙:
+- 친한 언니 말투의 반말('~해', '~야'). 단정형으로 써라.
+  "~할 수 있어", "~일 수 있어", "가능성이 높아" 같은 유보형 어미 금지.
+- 점수 숫자를 문장에 쓰지 마라. "1위", "제일 낮은" 처럼 순위·정도로만 표현한다.
+- 1위가 곧 추천이 아닐 수 있다. 감정이 제일 높은 사람과 안정이 제일 높은 사람이
+  다르면, 그 대비를 정면으로 짚어줘. 그게 이 리포트에서 제일 재밌는 지점이다.
+- 마지막은 사용자가 지금 뭘 하면 되는지로 끝내라. 두루뭉술한 격려로 끝내지 마라.
+- 반드시 JSON만 출력: {"ranking_comment": "..."}
+`.trim();
+
+async function runSummary(results, computedScores, partners) {
+  const lines = partners.map((p, i) => {
+    const s = computedScores[i];
+    const r = results.find(x => x.name === p.nickname);
+    return `${p.nickname} | 총점 ${s.total} | 감정 ${s.heart} 성장 ${s.growth} 안정 ${s.stability} 관점 ${s.perspective} 속도 ${s.timing} | ${r ? r.archetype : ''}`;
+  }).sort((a, b) => Number(b.split('총점 ')[1].slice(0,3)) - Number(a.split('총점 ')[1].slice(0,3)));
+
+  const out = await callAnalyze([
+    { role: 'system', content: SUMMARY_SYSTEM_PROMPT },
+    { role: 'user', content: lines.join('\n') },
+  ], 700, 0.7);
+  return out?.ranking_comment || null;
+}
+
+// ── 메인 ────────────────────────────────────────────────
+async function analyzeCompatibility(myInfo, partners) {
+  const { annualFlow, headerText, partnerBlocks, computedScores } = buildContext(myInfo, partners);
+
+  // 남자별 병렬 생성. 실패한 건만 1회 재시도.
+  async function withRetry(i) {
+    try {
+      return await runWorker(headerText, partnerBlocks[i], partners[i].nickname);
+    } catch (e) {
+      console.warn(`[worker] ${partners[i].nickname} 1차 실패 → 재시도`, e && e.message);
+      return await runWorker(headerText, partnerBlocks[i], partners[i].nickname);
+    }
   }
 
-  let json;
-  try {
-    json = JSON.parse(bodyText);
-  } catch (e) {
-    console.error('[analyze] 응답이 JSON이 아님:', bodyText.slice(0, 500));
-    throw new Error('분석 응답 형식이 올바르지 않아요.');
+  const settled = await Promise.allSettled(partners.map((_, i) => withRetry(i)));
+  const failed = settled.map((r, i) => r.status === 'rejected' ? partners[i].nickname : null).filter(Boolean);
+  if (failed.length) {
+    console.error('[worker] 최종 실패:', failed);
+    throw new Error(`리포트 생성 실패 (${failed.join(', ')})`);
   }
 
-  // 3) 모델 텍스트 추출 (여러 형식 대응)
-  const raw = (
-    json.content?.[0]?.text ||
-    json.choices?.[0]?.message?.content ||
-    json.message?.content ||
-    json.text ||
-    ''
-  ).replace(/```json|```/g, '').trim();
+  const results = settled.map((r, i) => {
+    const item = r.value;
+    const s = computedScores[i];
+    item.scores = { heart: s.heart, growth: s.growth, stability: s.stability,
+                    perspective: s.perspective, timing: s.timing, total: s.total };
+    return item;
+  }).sort((a, b) => b.scores.total - a.scores.total);
 
-  if (!raw) {
-    console.error('[analyze] 모델 텍스트 비어있음. 전체 응답:', JSON.stringify(json).slice(0, 800));
-    throw new Error('분석 내용이 비어서 왔어요. 다시 시도해줘.');
+  // 총평은 2명 이상일 때만. 실패해도 리포트는 살린다.
+  let ranking_comment = null;
+  if (partners.length > 1) {
+    try { ranking_comment = await runSummary(results, computedScores, partners); }
+    catch (e) { console.warn('[summary] 실패 — 총평 없이 진행', e && e.message); }
   }
 
-  // 4) 최종 JSON 파싱
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (e) {
-    console.error('[analyze] 모델 JSON 파싱 실패. raw:', raw.slice(0, 800));
-    throw new Error('분석 결과를 읽는 데 실패했어요. 다시 시도해줘.');
-  }
-
-  // 5) JS가 확정한 점수를 병합 (GPT는 점수를 만들지 않는다)
-  if (parsed && Array.isArray(parsed.results)) {
-    const used = new Set();
-    parsed.results.forEach((item, idx) => {
-      // 1순위: 닉네임 매칭
-      let k = partners.findIndex((p, i) => !used.has(i) && p.nickname === item.name);
-      // 2순위: 인덱스 폴백 (개수가 같을 때만)
-      if (k < 0 && parsed.results.length === partners.length && !used.has(idx)) k = idx;
-      if (k < 0) k = partners.findIndex((p, i) => !used.has(i));
-      if (k < 0) return;
-      used.add(k);
-      const s = computedScores[k];
-      item.name = partners[k].nickname;          // 이름도 원본으로 강제 복원
-      item.scores = {
-        heart: s.heart, growth: s.growth, stability: s.stability,
-        perspective: s.perspective, timing: s.timing, total: s.total,
-      };
-    });
-    // 총점 내림차순 정렬 (랭킹 확정)
-    parsed.results.sort((a, b) => (b.scores?.total ?? 0) - (a.scores?.total ?? 0));
-  }
-  return parsed;
+  return { annual_flow: annualFlow, results, ranking_comment };
 }
 
 // export (브라우저 환경에선 window에 붙이기)
 if (typeof window !== 'undefined') {
-  window.buildPromptMessages = buildPromptMessages;
   window.analyzeCompatibility = analyzeCompatibility;
   window.getAnnualFlow = getAnnualFlow;
   window.calcSaju = calcSaju;
   window.buildPersonText = buildPersonText;
+  window.buildContext = buildContext;   // 디버깅용: 점수/프롬프트 확인
 }
