@@ -434,24 +434,40 @@ let excludedSessions = new Set();
 async function fetchExcluded() {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/excluded_sessions?select=session_id,excluded_at,reason&order=excluded_at.desc`,
+      `${SUPABASE_URL}/rest/v1/excluded_sessions?select=*`,
       { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
     );
-    if (!res.ok) return [];
+    if (!res.ok) {
+      // 조용히 실패하면 "제외했는데 숫자가 그대로"인 상태를 못 알아챈다. 반드시 표시.
+      const t = await res.text();
+      console.error('[excluded] 조회 실패', res.status, t);
+      const el = document.getElementById('excl-count');
+      if (el) { el.textContent = '⚠️ 제외목록 조회 실패'; el.style.color = '#f06a6a'; }
+      return [];
+    }
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (e) { console.warn('[excluded] fetch 실패', e); return []; }
 }
 
 async function addExcluded(ids, reason) {
-  const rows = ids.map(id => ({ session_id: id, reason: reason || null }));
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/excluded_sessions`, {
-    method: 'POST',
-    headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
-               'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
-    body: JSON.stringify(rows)
-  });
-  if (!res.ok) throw new Error(await res.text());
+  const H = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`,
+              'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' };
+  const post = rows => fetch(`${SUPABASE_URL}/rest/v1/excluded_sessions`,
+    { method: 'POST', headers: H, body: JSON.stringify(rows) });
+
+  let res = await post(ids.map(id => ({ session_id: id, reason: reason || null })));
+  if (!res.ok) {
+    const t = await res.text();
+    // reason 컬럼이 없는 스키마면 session_id만으로 재시도 (PGRST204)
+    if (t.includes('PGRST204') || t.includes("'reason'")) {
+      console.warn('[excluded] reason 컬럼 없음 → session_id만 저장');
+      res = await post(ids.map(id => ({ session_id: id })));
+      if (!res.ok) throw new Error(await res.text());
+      return;
+    }
+    throw new Error(t);
+  }
 }
 
 async function removeExcluded(id) {
@@ -548,7 +564,8 @@ function renderExcludedPanel(rows) {
   document.getElementById('excl-list').innerHTML = rows.length
     ? rows.map(r => {
         const t = r.excluded_at ? new Date(r.excluded_at).toLocaleDateString('ko-KR') : '';
-        return `<div class="row"><span>${r.session_id.slice(0,8)}… <span style="color:#555">${t} ${r.reason||''}</span></span>` +
+        const reason = r.reason || '';
+        return `<div class="row"><span>${r.session_id.slice(0,8)}… <span style="color:#555">${t} ${reason}</span></span>` +
                `<button class="btn-xs" onclick="restoreExcluded('${r.session_id}')">복구</button></div>`;
       }).join('')
     : '<div style="color:#555">없음</div>';
