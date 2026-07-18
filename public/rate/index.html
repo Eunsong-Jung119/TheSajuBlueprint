@@ -12,6 +12,76 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- ═══════════════════════════════════════════════════════════
+     JS 에러 수집
+     index.html의 <head> 안, 다른 스크립트보다 **가장 먼저** 넣을 것.
+     (뒤에 두면 앞쪽 스크립트에서 난 에러를 못 잡음)
+     ═══════════════════════════════════════════════════════════ -->
+     <script>
+      (function () {
+        var TRACK_URL = '/api/track-rate';
+        var sent = {};          // 같은 에러 반복 전송 방지
+        var count = 0;          // 세션당 상한 (무한루프 시 로그 폭주 차단)
+        var MAX = 5;
+      
+        function sessionId() {
+          try {
+            var k = 'ryex_sid';   // index.html의 getSessionId()와 동일 키
+            var v = localStorage.getItem(k) || sessionStorage.getItem(k);
+            return v || null;
+          } catch (e) { return null; }
+        }
+      
+        function report(payload) {
+          var key = (payload.message || '') + '|' + (payload.line || '');
+          if (sent[key] || count >= MAX) return;
+          sent[key] = true; count++;
+      
+          var body = JSON.stringify({
+            event_name: 'js_error',
+            session_id: sessionId(),
+            metadata: {
+              message: payload.message || '',
+              source:  payload.source  || '',
+              line:    payload.line    || null,
+              stack:   payload.stack   || '',
+              page:    location.pathname + location.search,
+              referrer: document.referrer || null   // 서버가 이 값을 보존함
+            }
+          });
+      
+          // 에러 직후 이탈해도 전송되도록 sendBeacon 우선
+          try {
+            if (navigator.sendBeacon) { navigator.sendBeacon(TRACK_URL, body); return; }
+          } catch (e) {}
+          try {
+            fetch(TRACK_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: body,
+              keepalive: true
+            });
+          } catch (e) {}
+        }
+      
+        window.addEventListener('error', function (e) {
+          report({
+            message: e.message,
+            source: (e.filename || '').split('/').pop(),
+            line: e.lineno,
+            stack: e.error && e.error.stack ? String(e.error.stack) : ''
+          });
+        });
+      
+        window.addEventListener('unhandledrejection', function (e) {
+          var r = e.reason;
+          report({
+            message: String((r && r.message) || r || 'unhandledrejection'),
+            stack: (r && r.stack) ? String(r.stack) : ''
+          });
+        });
+      })();
+      </script>
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 <script src="/rate/prompt-engine.js"></script>
 <script src="/rate/render-deep-report.js"></script>
@@ -514,6 +584,19 @@ function trackEvent(eventName, extra){
   }catch(e){}
 }
 
+// try/catch로 잡힌 에러는 window.onerror가 못 잡는다. 핵심 경로에서 직접 보고한다.
+function reportError(where, e, extra){
+  try{
+    trackEvent('js_error',{
+      where: where,
+      message: String((e && e.message) || e || '').slice(0,500),
+      stack: String((e && e.stack) || '').slice(0,1000),
+      page: location.pathname + location.search,
+      ...(extra||{})
+    });
+  }catch(_){}
+}
+
 // 이메일 도메인 직접입력 토글
 function onDomainChange(){
   const val=document.getElementById('email-domain').value;
@@ -636,7 +719,7 @@ async function openPaywall(){
     window._rankPaymentId=response.paymentId;
     localStorage.setItem('ryex_rank_pid',response.paymentId);
     if(formData)runAnalysis(formData);
-  }catch(e){console.error('[PortOne]',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
+  }catch(e){console.error('[PortOne]',e);reportError('openPaywall',e);alert('결제 중 오류가 발생했어요. 다시 시도해주세요.');}
 }
 
 const loadingSteps=[['만세력 추출하는 중...','사주팔자 분석하는 중'],['오행 균형 분석 중...','목화토금수 체크 중'],['충·합·형 확인 중...','케미 분석하는 중'],['최종 랭킹 정리 중...','거의 다 됐어요!']];
@@ -668,12 +751,12 @@ async function runAnalysis(data){
       shareUrl=rid?`https://sajublueprint.com/r/${rid}`:(saveJson.shareUrl||null);
       // 이메일 발송
       if(emailToSend&&shareUrl){
-        fetch('/api/send-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailToSend,shareUrl,result})}).catch(e=>console.error('[send-rating-report]',e));
+        fetch('/api/send-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailToSend,shareUrl,result})}).catch(e=>{console.error('[send-rating-report]',e);reportError('send-rating-report',e);});
       }
-    }catch(e){console.error('[save]',e);}
+    }catch(e){console.error('[save]',e);reportError('save-rating-report',e,{paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid'))});}
     if(shareUrl)localStorage.setItem('ryex_last_share',shareUrl);
     showResult(result,shareUrl);trackEvent('result_shown',{guy_count:partners.length});
-  }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);console.error(e);alert('분석 중 오류가 발생했어요. 다시 시도해주세요!');}
+  }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);console.error(e);reportError('runAnalysis',e,{guy_count:(data&&data.guys&&data.guys.length)||0,paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid'))});alert('분석 중 오류가 발생했어요. 다시 시도해주세요!');}
 }
 
 const rankClass=['r1','r2','r3','r4','r5'],rankEmoji=['🥇','🥈','🥉','4위','5위'],barColors=['#E8547A','#6B9EE8','#27AE8A','#E8A054','#9B78E8'];
