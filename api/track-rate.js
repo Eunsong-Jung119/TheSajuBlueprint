@@ -11,11 +11,57 @@
 //  - add: js_error 는 실패해도 200 반환 (에러 로깅이 에러를 부르는 루프 차단)
 
 const { createClient } = require('@supabase/supabase-js');
+const { sendAlert } = require('./alert-admin');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
+
+// ── 운영자 즉시 알림이 필요한 이벤트 ────────────────────
+//  결제 후 사고는 유저가 알려주기 전에 내가 먼저 알아야 한다.
+const ALERT_EVENTS = {
+  payment_unverified:    '🔴 유령 결제 (포트원에 거래 없음)',
+  report_recovery_shown: '🟠 미완료 결제 발견 (결제됐는데 리포트 없음)',
+};
+
+// 같은 종류가 10분 내 5건 넘게 오면 알림을 멈춘다 (장애 시 폭주 방지)
+async function _tooMany(eventName) {
+  try {
+    const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count } = await supabase
+      .from('rate_logs')
+      .select('id', { count: 'exact', head: true })
+      .eq('event_name', eventName)
+      .gte('created_at', since);
+    return (count || 0) > 5;
+  } catch (e) { return false; }
+}
+
+async function maybeAlert(name, meta, sessionId) {
+  const isPaidError = name === 'js_error' && (meta.paid === true || meta.paid === 'true');
+  const title = ALERT_EVENTS[name] || (isPaidError ? '🔴 결제 후 오류 발생' : null);
+  if (!title) return;
+  if (await _tooMany(name)) {
+    console.warn('[alert] 최근 10분 내 다발 — 알림 생략:', name);
+    return;
+  }
+  const kst = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+  const lines = [
+    `시각: ${kst}`,
+    `세션: ${sessionId || '(없음)'}`,
+    meta.payment_id ? `결제ID: ${meta.payment_id}` : null,
+    meta.where ? `위치: ${meta.where}` : null,
+    meta.message ? `메시지: ${String(meta.message).slice(0, 300)}` : null,
+    meta.status ? `포트원 상태: ${meta.status}` : null,
+    meta.reason ? `사유: ${meta.reason}` : null,
+    meta.guy_count ? `상대 수: ${meta.guy_count}` : null,
+    '',
+    '대시보드: https://sajublueprint.com/rate-dashboard.html',
+  ].filter(Boolean);
+  // 로깅 응답을 막지 않도록 await 하지 않는다
+  sendAlert(title, lines).catch(e => console.error('[alert] 발송 실패', e && e.message));
+}
 
 const MAX_STR = 500;      // 개별 문자열 필드 상한
 const clip = (v, n = MAX_STR) =>
@@ -102,6 +148,9 @@ module.exports = async function handler(req, res) {
       session_id: session_id || null,
       metadata: meta,
     });
+
+  // 결제 후 사고면 운영자에게 즉시 푸시 (응답을 지연시키지 않음)
+  maybeAlert(name, meta, session_id).catch(() => {});
 
   if (error) {
     console.error('[track-rate] supabase error:', error.message, '| event:', name);
