@@ -32,39 +32,72 @@
           } catch (e) { return null; }
         }
       
-        function report(payload) {
-          var key = (payload.message || '') + '|' + (payload.line || '');
-          if (sent[key] || count >= MAX) return;
-          sent[key] = true; count++;
-      
-          var body = JSON.stringify({
-            event_name: 'js_error',
-            session_id: sessionId(),
-            metadata: {
-              message: payload.message || '',
-              source:  payload.source  || '',
-              line:    payload.line    || null,
-              stack:   payload.stack   || '',
-              page:    location.pathname + location.search,
-              referrer: document.referrer || null   // 서버가 이 값을 보존함
-            }
-          });
-      
-          // 에러 직후 이탈해도 전송되도록 sendBeacon 우선
-          try {
-            if (navigator.sendBeacon) { navigator.sendBeacon(TRACK_URL, body); return; }
-          } catch (e) {}
-          try {
-            fetch(TRACK_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: body,
-              keepalive: true
-            });
-          } catch (e) {}
-        }
-      
-        window.addEventListener('error', function (e) {
+        // ── 우리 코드의 에러만 남긴다 ──
+  // 인스타/카카오 인앱 브라우저는 우리 페이지에 자기 스크립트를 인라인 주입하는데,
+  // 그 에러가 우리 도메인 소스로 잡혀서 도메인 필터로는 못 거른다. 패턴으로 차단.
+  var IGNORE_MSG = [
+    'window.webkit.messageHandlers',   // iOS 인앱 브라우저 브리지
+    'webkit.messageHandlers',
+    'Script error.',                   // 크로스오리진 스크립트 (내용 확인 불가)
+    'ResizeObserver loop',             // 브라우저 자체 노이즈
+    'Non-Error promise rejection',
+    'Java exception was raised',       // 안드로이드 웹뷰
+    'Object Not Found Matching Id'     // 아웃룩/링크 프리뷰 봇
+  ];
+  var IGNORE_STACK = [
+    'sendDataToNative',                // 인앱 브라우저 주입 함수
+    'sendPageHideMessage',
+    'chrome-extension://',
+    'moz-extension://',
+    'safari-extension://',
+    'gtm.js', 'fbevents.js', 'connect.facebook.net', 'googletagmanager'
+  ];
+
+  function isOurs(payload) {
+    var msg = String(payload.message || '');
+    var stk = String(payload.stack || '') + ' ' + String(payload.source || '');
+    for (var i = 0; i < IGNORE_MSG.length; i++)
+      if (msg.indexOf(IGNORE_MSG[i]) >= 0) return false;
+    for (var j = 0; j < IGNORE_STACK.length; j++)
+      if (stk.indexOf(IGNORE_STACK[j]) >= 0) return false;
+    return true;
+  }
+
+  function report(payload) {
+    if (payload.via !== 'manual' && !isOurs(payload)) return;   // 남의 코드 에러는 버림
+
+    var key = (payload.message || '') + '|' + (payload.line || '');
+    if (sent[key] || count >= MAX) return;
+    sent[key] = true; count++;
+
+    var body = JSON.stringify({
+      event_name: 'js_error',
+      session_id: sessionId(),
+      metadata: {
+        via:     payload.via || 'onerror',
+        message: payload.message || '',
+        source:  payload.source  || '',
+        line:    payload.line    || null,
+        stack:   payload.stack   || '',
+        page:    location.pathname + location.search,
+        referrer: document.referrer || null
+      }
+    });
+
+    try {
+      if (navigator.sendBeacon) { navigator.sendBeacon(TRACK_URL, body); return; }
+    } catch (e) {}
+    try {
+      fetch(TRACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body,
+        keepalive: true
+      });
+    } catch (e) {}
+  }
+
+  window.addEventListener('error', function (e) {
           report({
             message: e.message,
             source: (e.filename || '').split('/').pop(),
@@ -731,6 +764,7 @@ function trackEvent(eventName, extra){
 function reportError(where, e, extra){
   try{
     trackEvent('js_error',{
+      via: 'manual',
       where: where,
       message: String((e && e.message) || e || '').slice(0,500),
       stack: String((e && e.stack) || '').slice(0,1000),
@@ -1337,10 +1371,14 @@ const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isInt
 document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
 
 window.addEventListener('DOMContentLoaded',async()=>{
-  setTimeout(showRecoveryBanner, 1200);   // 리다이렉트 복귀 처리가 끝난 뒤 확인
   addGuy();
   trackEvent('page_view',{is_iab:!!window._isIAB});
   const params=new URLSearchParams(window.location.search);
+  // 기존 리포트(?report) · 심층 리포트(?upsell) · 결제 복귀(paymentId) 화면에서는
+  // '미완료 결제 복구' 배너를 띄우지 않는다.
+  // (이미 완성된 리포트를 보러 온 사람에게 "아직 안 만들어졌어요"가 뜨면 혼란스러움)
+  const _viewingExisting = params.get('report')||params.get('upsell')||params.get('paymentId');
+  if(!_viewingExisting){ setTimeout(showRecoveryBanner, 1200); }   // 리다이렉트 복귀 처리가 끝난 뒤 확인
 
   const reportId=params.get('report');
   if(reportId){
