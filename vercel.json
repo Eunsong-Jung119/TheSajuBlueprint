@@ -20,6 +20,7 @@
     { "source": "/compatibility", "destination": "/compatibility.html" },
     { "source": "/shortresult",   "destination": "/shortresult.html" },
     { "source": "/bazi-chart",    "destination": "/bazi-chart.html" },
+    { "source": "/saju-chart",    "destination": "/SajuChart/index.html" },
     { "source": "/rate",          "destination": "/rate/index.html" },
     { "source": "/rate/terms",    "destination": "/rate/terms.html" },
     { "source": "/rate/privacy",  "destination": "/rate/privacy.html" },

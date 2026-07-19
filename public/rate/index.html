@@ -898,7 +898,7 @@ async function runAnalysis(data){
       if(emailToSend&&shareUrl){
         fetch('/api/send-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailToSend,shareUrl,result})}).catch(e=>{console.error('[send-rating-report]',e);reportError('send-rating-report',e);});
       }
-    }catch(e){console.error('[save]',e);reportError('save-rating-report',e,{paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid'))});_saveFailed=true;}
+    }catch(e){console.error('[save]',e);reportError('save-rating-report',e,{paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||null),payment_id:(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||null)});_saveFailed=true;}
     if(shareUrl)localStorage.setItem('ryex_last_share',shareUrl);
     showResult(result,shareUrl);trackEvent('result_shown',{guy_count:partners.length});
     // 저장에 실패하면 공유 링크·이메일이 없다. 리포트 자체는 보이므로 잠깐 뒤에 안내.
@@ -909,7 +909,7 @@ async function runAnalysis(data){
           where:'리포트 저장(공유링크·메일 발송 실패)'});
       }, 1500);
     }
-  }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);console.error(e);reportError('runAnalysis',e,{guy_count:(data&&data.guys&&data.guys.length)||0,paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid'))});showErrorModal({paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')),paymentId:(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||''),where:'분석 생성'});}
+  }catch(e){analysisRunning=false;clearInterval(iv);document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);console.error(e);reportError('runAnalysis',e,{guy_count:(data&&data.guys&&data.guys.length)||0,paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||null),payment_id:(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||null)});showErrorModal({paid:!!(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')),paymentId:(window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||''),where:'분석 생성'});}
 }
 
 const rankClass=['r1','r2','r3','r4','r5'],rankEmoji=['🥇','🥈','🥉','4위','5위'],barColors=['#E8547A','#6B9EE8','#27AE8A','#E8A054','#9B78E8'];
