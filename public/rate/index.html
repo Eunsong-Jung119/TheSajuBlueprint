@@ -284,6 +284,18 @@ select{cursor:pointer;}
 .sample-section-text{position:relative;line-height:1.75;}
 #iab-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(26,10,18,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px;}
 @media(max-width:380px){.hero h1{font-size:24px;}}
+
+/* ── 반응형 가독성 (2026 수정) ── */
+#landing-view, #landing-view *{word-break:keep-all;overflow-wrap:break-word;}
+.hero h1{font-size:clamp(23px,6.6vw,30px)!important;line-height:1.42!important;}
+.hero-sub{font-size:clamp(14px,4vw,16px)!important;}
+.section-label{font-size:clamp(11px,3vw,12px)!important;}
+.field-label{font-size:clamp(12.5px,3.5vw,14px)!important;}
+#my-card input,#my-card select,#guys-container input,#guys-container select,#email-domain-input,#email-local{font-size:16px!important;height:44px!important;}
+.cta-btn{font-size:clamp(16px,4.7vw,18px)!important;}
+.add-btn{font-size:clamp(14px,4vw,15.5px)!important;}
+.cta-hint{font-size:clamp(12px,3.3vw,13px)!important;}
+.card-title{font-size:clamp(14px,4vw,15px)!important;}
 </style>
 </head>
 <body>
@@ -333,91 +345,92 @@ select{cursor:pointer;}
   </div>
 
   <!-- 문제 증폭 -->
-  <div class="fade-up" style="background:#fff;border:2px solid rgba(232,84,122,0.28);border-radius:16px;padding:26px 22px;margin-bottom:24px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:22px;font-weight:800;color:#1A0A12;margin-bottom:18px;line-height:1.4;">혹시, 매번<br>이런 적 없나요?</div>
-    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:20px;">
-      <div style="font-size:16px;font-weight:600;line-height:1.6;color:#2D1420;">☑️ 분명 다른 사람인데, 끝나고 보면 <b style="color:#C23A60;">또 비슷한 유형</b>이었다</div>
-      <div style="font-size:16px;font-weight:600;line-height:1.6;color:#2D1420;">☑️ "이번엔 다르겠지" 했는데 <b style="color:#C23A60;">똑같은 이유로</b> 지쳤다</div>
-      <div style="font-size:16px;font-weight:600;line-height:1.6;color:#2D1420;">☑️ 헤어지고 한참 뒤에야 "<b style="color:#C23A60;">그때 그 신호</b>"가 보였다</div>
-      <div style="font-size:16px;font-weight:600;line-height:1.6;color:#2D1420;">☑️ 지금 썸타는 사람도… 솔직히 <b style="color:#C23A60;">또 그런 사람일까 봐</b> 불안하다</div>
+  <div class="fade-up" style="background:#FFFFFF;border:1px solid rgba(232,84,122,0.10);border-radius:24px;padding:clamp(26px,7vw,34px) clamp(22px,6vw,28px);margin-bottom:24px;">
+    <div style="font-family:'Pretendard',sans-serif;font-weight:800;color:#1A1A1A;font-size:clamp(16px,5.4vw,24px);line-height:1.3;letter-spacing:-0.03em;white-space:nowrap;margin-bottom:clamp(22px,6vw,28px);">혹시, 매번 반복되지 않았나요?</div>
+    <div style="display:flex;flex-direction:column;gap:clamp(16px,4.6vw,20px);">
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:clamp(15px,4.2vw,17px);font-weight:500;line-height:1.6;color:#3D3A38;"><span style="color:#CBB2BC;flex-shrink:0;font-weight:400;">✓</span><span>분명 다른 사람인데, 끝나고 보면 <span style="color:#E8547A;">또 비슷한 유형</span>이었다</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:clamp(15px,4.2vw,17px);font-weight:500;line-height:1.6;color:#3D3A38;"><span style="color:#CBB2BC;flex-shrink:0;font-weight:400;">✓</span><span>"이번엔 다르겠지" 했는데 <span style="color:#E8547A;">똑같은 이유로</span> 지쳤다</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:clamp(15px,4.2vw,17px);font-weight:500;line-height:1.6;color:#3D3A38;"><span style="color:#CBB2BC;flex-shrink:0;font-weight:400;">✓</span><span>헤어지고 한참 뒤에야 "<span style="color:#E8547A;">그때 그 신호</span>"가 보였다</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;font-size:clamp(15px,4.2vw,17px);font-weight:500;line-height:1.6;color:#3D3A38;"><span style="color:#CBB2BC;flex-shrink:0;font-weight:400;">✓</span><span>지금 썸타는 사람도… 솔직히 <span style="color:#E8547A;">또 그런 사람일까 봐</span> 불안하다</span></div>
     </div>
-    <div style="font-size:15px;line-height:1.9;color:#7A5060;border-top:1px solid rgba(232,84,122,0.12);padding-top:18px;">
-      문제는 사람 보는 눈이 아니에요.<br><b style="font-size:16px;color:#2D1420;">끌리는 순간엔, 그 사람의 기질이 안 보인다는 거예요.</b><br><br>
+    <div style="height:1px;background:#E8E3DF;margin:clamp(22px,6vw,28px) 0 clamp(20px,5.5vw,24px);"></div>
+    <div style="font-size:clamp(14.5px,4vw,16px);line-height:1.85;color:#9B9490;">
+      문제는 사람 보는 눈이 아니에요.<br><span style="color:#1A1A1A;font-weight:700;">끌리는 순간엔, 그 사람의 기질이 안 보인다는 거예요.</span><br><br>
       콩깍지가 씌면 판단이 흐려지고, 정신 차렸을 땐 이미 몇 달, 길게는 몇 년이 지나 있죠.<br>
-      <b style="font-size:17px;color:#C23A60;">그 시간, 다시 돌아오지 않아요.</b>
+      <span style="color:#E8547A;font-weight:600;">그 시간, 다시 돌아오지 않아요.</span>
     </div>
   </div>
 
   <!-- 전환점 -->
-  <div class="fade-up" style="background:linear-gradient(135deg,#1A0A12,#2D1420);border-radius:16px;padding:24px 20px;margin-bottom:28px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:12px;">끌림은 못 속여도, 기질은 미리 보여요.</div>
-    <div style="font-size:13px;line-height:1.85;color:rgba(255,255,255,0.8);">
-      사주는 점이 아니라, 그 사람이 <b style="color:#fff;">타고난 기질과 관계 패턴</b>을 읽는 도구예요.<br>
-      감정에 휩쓸리기 전에, "이 사람은 원래 어떤 사람인지" <b style="color:#fff;">만나기 전에도, 깊어지기 전에도</b> 미리 확인할 수 있다는 뜻이죠.<br><br>
-      그것도 한 명이 아니라, <b style="color:#FFD580;">지금 내 주변 남자들을 한 번에 비교해서.</b>
+  <div class="fade-up" style="background:#1C1714;border-radius:24px;padding:clamp(28px,7.5vw,36px) clamp(24px,6.5vw,30px);margin-bottom:28px;">
+    <div style="font-family:'Pretendard',sans-serif;font-weight:800;color:#F5F2EF;font-size:clamp(21px,6.2vw,26px);line-height:1.4;letter-spacing:-0.02em;margin-bottom:clamp(18px,5vw,22px);">끌림은 못 속여도, 기질은 미리 보여요.</div>
+    <div style="font-size:clamp(15px,4.2vw,17px);line-height:1.85;color:#98918B;">
+      사주는 점이 아니라, 그 사람이 <span style="color:#F5F2EF;font-weight:600;">타고난 기질과 관계 패턴</span>을 읽는 도구예요.<br><br>
+      감정에 휩쓸리기 전에, <span style="color:#F5F2EF;font-weight:600;">"이 사람은 원래 어떤 사람인지"</span> <span style="color:#F5F2EF;font-weight:600;">만나기 전에도, 깊어지기 전에도</span> 미리 확인할 수 있다는 뜻이죠.<br><br>
+      그것도 한 명이 아니라, <span style="color:#D9A662;font-weight:600;">지금 내 주변 남자들을 한 번에 비교해서.</span>
     </div>
   </div>
 
   <!-- 솔루션 소개 -->
   <div class="fade-up" style="text-align:center;margin-bottom:28px;">
-    <div style="font-size:11px;font-weight:600;color:#B08090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">📊 사주 기반 썸남 랭킹 리포트</div>
-    <p style="font-size:14px;line-height:1.8;color:#2D1420;margin:0 0 18px;">궁금한 남자들의 생년월일만 넣으면 (최대 5명),<br>나와의 궁합을 <b>5가지 항목으로 점수화</b>해서 <b>랭킹</b>으로 보여줍니다.<br>누가 진짜 내 사람이고, 누가 또 '그 실수'인지 — 한눈에.</p>
-    <button onclick="scrollToForm()" style="padding:15px 28px;background:#E8547A;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 22px rgba(232,84,122,0.35);font-family:'Pretendard',sans-serif;">🔮 내 남자들 랭킹 보기</button>
+    <div style="font-size:clamp(11px,3vw,12px);font-weight:600;color:#B08090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">📊 사주 기반 썸남 랭킹 리포트</div>
+    <p style="font-size:clamp(14px,4vw,16px);line-height:1.8;color:#2D1420;margin:0 0 18px;">궁금한 남자들의 생년월일만 넣으면 (최대 5명),<br>나와의 궁합을 <b>5가지 항목으로 점수화</b>해서 <b>랭킹</b>으로 보여줍니다.<br>누가 진짜 내 사람이고, 누가 또 '그 실수'인지 — 한눈에.</p>
+    <button onclick="scrollToForm()" style="padding:15px 28px;background:#E8547A;color:#fff;border:none;border-radius:14px;font-size:clamp(14.5px,4.1vw,16.5px);font-weight:700;cursor:pointer;box-shadow:0 6px 22px rgba(232,84,122,0.35);font-family:'Pretendard',sans-serif;">🔮 내 남자들 랭킹 보기</button>
   </div>
 
   <!-- 정보 보호 -->
   <div class="fade-up" style="background:#FDF5F7;border:1px dashed rgba(232,84,122,0.28);border-radius:14px;padding:16px 18px;margin-bottom:28px;display:flex;flex-direction:column;gap:8px;">
-    <div style="font-size:13px;font-weight:700;color:#1A0A12;display:flex;align-items:center;gap:6px;">🔒 입력한 정보, 안전하게 보호돼요</div>
-    <div style="font-size:12px;color:#7A5060;line-height:1.7;">생년월일은 분석에만 쓰이고, 그 사람에게는 어떤 알림도 가지 않아요. 조용히, 나만 확인할 수 있어요.</div>
+    <div style="font-size:clamp(13px,3.7vw,15px);font-weight:700;color:#1A0A12;display:flex;align-items:center;gap:6px;">🔒 입력한 정보, 안전하게 보호돼요</div>
+    <div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.7;">생년월일은 분석에만 쓰이고, 그 사람에게는 어떤 알림도 가지 않아요. 조용히, 나만 확인할 수 있어요.</div>
   </div>
 
   <!-- 리포트 구성 (include) -->
   <div class="fade-up" style="background:#fff;border:1px solid rgba(232,84,122,0.12);border-radius:16px;padding:20px;margin-bottom:28px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:#1A0A12;margin-bottom:4px;">리포트엔 이런 내용이 들어있어요</div>
-    <div style="font-size:12px;color:#7A5060;margin-bottom:16px;">5가지 항목 × 입력한 남자 수만큼 분석</div>
-    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">❤️</div><div><div style="font-size:13px;font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">그는 나를 얼마나 좋아하게 될까?<br>우리는 지독하게 얽히는 관계일까?</div><div style="font-size:12px;color:#7A5060;line-height:1.6;">감정의 깊이 · 끌림의 원인 · 관계가 깊어지는 방식</div></div></div>
-    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">🚀</div><div><div style="font-size:13px;font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">서로에게 도움이 되는 관계일까,<br>힘들게 하는 관계일까?</div><div style="font-size:12px;color:#7A5060;line-height:1.6;">성장의 방향 · 서로에게 주는 자극의 종류</div></div></div>
-    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">🏠</div><div><div style="font-size:13px;font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">싸우면 어떤 패턴이 반복될까?<br>결혼하면 어떤 부부가 될까?</div><div style="font-size:12px;color:#7A5060;line-height:1.6;">관계 안정성 · 갈등 패턴 · 장기 지속 가능성</div></div></div>
-    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">🪞</div><div><div style="font-size:13px;font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">인생의 주요 선택에서<br>관점이 비슷할까, 차이가 있을까?</div><div style="font-size:12px;color:#7A5060;line-height:1.6;">세계관 · 돈·여행·선택에서의 가치관 차이</div></div></div>
-    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">⏳</div><div><div style="font-size:13px;font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">향후 10년간 관계가 더 가까워질<br>년도와 불안정해질 시기는 언제?</div><div style="font-size:12px;color:#7A5060;line-height:1.6;">2026~2035 연도별 관계 흐름 예측</div></div></div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(15.5px,4.5vw,17.5px);font-weight:700;color:#1A0A12;margin-bottom:4px;">리포트엔 이런 내용이 들어있어요</div>
+    <div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;margin-bottom:16px;">5가지 항목 × 입력한 남자 수만큼 분석</div>
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:clamp(18px,5.4vw,22px);flex-shrink:0;margin-top:1px;">❤️</div><div><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">그는 나를 얼마나 좋아하게 될까?<br>우리는 지독하게 얽히는 관계일까?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.6;">감정의 깊이 · 끌림의 원인 · 관계가 깊어지는 방식</div></div></div>
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:clamp(18px,5.4vw,22px);flex-shrink:0;margin-top:1px;">🚀</div><div><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">서로에게 도움이 되는 관계일까,<br>힘들게 하는 관계일까?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.6;">성장의 방향 · 서로에게 주는 자극의 종류</div></div></div>
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:clamp(18px,5.4vw,22px);flex-shrink:0;margin-top:1px;">🏠</div><div><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">싸우면 어떤 패턴이 반복될까?<br>결혼하면 어떤 부부가 될까?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.6;">관계 안정성 · 갈등 패턴 · 장기 지속 가능성</div></div></div>
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(232,84,122,0.12);"><div style="font-size:clamp(18px,5.4vw,22px);flex-shrink:0;margin-top:1px;">🪞</div><div><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">인생의 주요 선택에서<br>관점이 비슷할까, 차이가 있을까?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.6;">세계관 · 돈·여행·선택에서의 가치관 차이</div></div></div>
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;"><div style="font-size:clamp(18px,5.4vw,22px);flex-shrink:0;margin-top:1px;">⏳</div><div><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#1A0A12;margin-bottom:3px;line-height:1.5;">향후 10년간 관계가 더 가까워질<br>년도와 불안정해질 시기는 언제?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.6;">2026~2035 연도별 관계 흐름 예측</div></div></div>
   </div>
 
   <!-- 후기 -->
   <div class="fade-up" style="margin-bottom:28px;">
     <div class="section-label">리포트 받아본 분들 반응</div>
-    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#ffecd2,#fcb69f);">h</div><div style="font-size:12px;font-weight:600;color:#1a1a1a;">han****</div><div style="font-size:10px;color:#999;margin-left:auto;">26.05.14</div></div><div style="color:#FFB800;font-size:11px;margin-bottom:6px;">★★★★★</div><div style="font-size:13px;line-height:1.7;color:#2a2a2a;">썸남이랑 구남친 비교하려고 했는데 결과 보고 나서 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">생각 정리가 됐어요.</em> 확실히 사주는 통계인가바여 ㅎㅎ</div></div>
-    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#f093fb,#f5576c);">d</div><div style="font-size:12px;font-weight:600;color:#1a1a1a;">dlw****</div><div style="font-size:10px;color:#999;margin-left:auto;">26.05.21</div></div><div style="color:#FFB800;font-size:11px;margin-bottom:6px;">★★★★★</div><div style="font-size:13px;line-height:1.7;color:#2a2a2a;">역대 전남친 생년월일 쫙 넣어봤는데 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">똥차 순서대로 정리해줘서 소름 ㄷㄷ</em> 친구들도 맞다 했어요</div></div>
-    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#a8edea,#fed6e3);">s</div><div style="font-size:12px;font-weight:600;color:#1a1a1a;">sam****</div><div style="font-size:10px;color:#999;margin-left:auto;">26.05.18</div></div><div style="color:#FFB800;font-size:11px;margin-bottom:6px;">★★★★★</div><div style="font-size:13px;line-height:1.7;color:#2a2a2a;">전 남친 두 명 넣었는데 점수 차이가 꽤 나서 신기했어요ㅋㅋ 분석 내용도 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">왜 그 사람한테 끌렸는지까지 나와서</em> 재밌게 읽었습니다</div></div>
-    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#d4fc79,#96e6a1);">h</div><div style="font-size:12px;font-weight:600;color:#1a1a1a;">hye****</div><div style="font-size:10px;color:#999;margin-left:auto;">26.05.10</div></div><div style="color:#FFB800;font-size:11px;margin-bottom:6px;">★★★★★</div><div style="font-size:13px;line-height:1.7;color:#2a2a2a;"><em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">지인이랑 같이 각자 썸남 넣어보면서 봤는데</em> 얘기할 거리가 너무 많아졌어요ㅋㅋㅋ</div></div>
-    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#89f7fe,#66a6ff);">l</div><div style="font-size:12px;font-weight:600;color:#1a1a1a;">lee****</div><div style="font-size:10px;color:#999;margin-left:auto;">26.05.07</div></div><div style="color:#FFB800;font-size:11px;margin-bottom:6px;">★★★★★</div><div style="font-size:13px;line-height:1.7;color:#2a2a2a;">로테이션이랑 소개팅 열심히 돌리는 중인데 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">연락하는 남자들 다 넣어봤어요</em> ㅋㅋㅋㅋ 먼가 맞는 느낌?! 재밌어요</div></div>
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(12px,3.4vw,13.5px);color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#ffecd2,#fcb69f);">h</div><div style="font-size:clamp(12px,3.4vw,13.5px);font-weight:600;color:#1a1a1a;">han****</div><div style="font-size:clamp(10px,2.8vw,11px);color:#999;margin-left:auto;">26.05.14</div></div><div style="color:#FFB800;font-size:clamp(11px,3vw,12px);margin-bottom:6px;">★★★★★</div><div style="font-size:clamp(13px,3.7vw,15px);line-height:1.7;color:#2a2a2a;">썸남이랑 구남친 비교하려고 했는데 결과 보고 나서 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">생각 정리가 됐어요.</em> 확실히 사주는 통계인가바여 ㅎㅎ</div></div>
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(12px,3.4vw,13.5px);color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#f093fb,#f5576c);">d</div><div style="font-size:clamp(12px,3.4vw,13.5px);font-weight:600;color:#1a1a1a;">dlw****</div><div style="font-size:clamp(10px,2.8vw,11px);color:#999;margin-left:auto;">26.05.21</div></div><div style="color:#FFB800;font-size:clamp(11px,3vw,12px);margin-bottom:6px;">★★★★★</div><div style="font-size:clamp(13px,3.7vw,15px);line-height:1.7;color:#2a2a2a;">역대 전남친 생년월일 쫙 넣어봤는데 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">똥차 순서대로 정리해줘서 소름 ㄷㄷ</em> 친구들도 맞다 했어요</div></div>
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(12px,3.4vw,13.5px);color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#a8edea,#fed6e3);">s</div><div style="font-size:clamp(12px,3.4vw,13.5px);font-weight:600;color:#1a1a1a;">sam****</div><div style="font-size:clamp(10px,2.8vw,11px);color:#999;margin-left:auto;">26.05.18</div></div><div style="color:#FFB800;font-size:clamp(11px,3vw,12px);margin-bottom:6px;">★★★★★</div><div style="font-size:clamp(13px,3.7vw,15px);line-height:1.7;color:#2a2a2a;">전 남친 두 명 넣었는데 점수 차이가 꽤 나서 신기했어요ㅋㅋ 분석 내용도 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">왜 그 사람한테 끌렸는지까지 나와서</em> 재밌게 읽었습니다</div></div>
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(12px,3.4vw,13.5px);color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#d4fc79,#96e6a1);">h</div><div style="font-size:clamp(12px,3.4vw,13.5px);font-weight:600;color:#1a1a1a;">hye****</div><div style="font-size:clamp(10px,2.8vw,11px);color:#999;margin-left:auto;">26.05.10</div></div><div style="color:#FFB800;font-size:clamp(11px,3vw,12px);margin-bottom:6px;">★★★★★</div><div style="font-size:clamp(13px,3.7vw,15px);line-height:1.7;color:#2a2a2a;"><em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">지인이랑 같이 각자 썸남 넣어보면서 봤는데</em> 얘기할 거리가 너무 많아졌어요ㅋㅋㅋ</div></div>
+    <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(12px,3.4vw,13.5px);color:#fff;font-weight:700;flex-shrink:0;background:linear-gradient(135deg,#89f7fe,#66a6ff);">l</div><div style="font-size:clamp(12px,3.4vw,13.5px);font-weight:600;color:#1a1a1a;">lee****</div><div style="font-size:clamp(10px,2.8vw,11px);color:#999;margin-left:auto;">26.05.07</div></div><div style="color:#FFB800;font-size:clamp(11px,3vw,12px);margin-bottom:6px;">★★★★★</div><div style="font-size:clamp(13px,3.7vw,15px);line-height:1.7;color:#2a2a2a;">로테이션이랑 소개팅 열심히 돌리는 중인데 <em style="font-style:normal;background:linear-gradient(transparent 60%,rgba(232,84,122,0.2) 60%);font-weight:600;">연락하는 남자들 다 넣어봤어요</em> ㅋㅋㅋㅋ 먼가 맞는 느낌?! 재밌어요</div></div>
   </div>
 
   <!-- 실제 리포트 예시 (샘플) -->
   <div class="fade-up" style="margin-bottom:8px;">
-    <div style="font-size:11px;font-weight:600;color:#B08090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;text-align:center;">실제 리포트 예시</div>
-    <div style="font-size:12px;color:#C23A60;font-weight:600;margin-bottom:10px;text-align:center;">💀 이 분석, 좋은 말만 하지 않아요</div>
+    <div style="font-size:clamp(11px,3vw,12px);font-weight:600;color:#B08090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;text-align:center;">실제 리포트 예시</div>
+    <div style="font-size:clamp(12px,3.4vw,13.5px);color:#C23A60;font-weight:600;margin-bottom:10px;text-align:center;">💀 이 분석, 좋은 말만 하지 않아요</div>
     <div style="background:#fff;border:1px solid rgba(232,84,122,0.28);border-radius:16px;overflow:hidden;margin-bottom:28px;box-shadow:0 4px 24px rgba(232,84,122,0.08);">
       <div style="background:linear-gradient(135deg,#1A0A12,#2D1420);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
-        <div><div style="font-size:10px;color:rgba(255,255,255,0.5);margin-bottom:4px;">🚨 4위</div><div style="font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:#fff;">전남친</div><div style="font-size:11px;color:#f07090;margin-top:2px;">🔥 격렬하게 타올랐지만, 결국 나를 자르던 관계</div></div>
-        <div style="text-align:right;"><div style="font-family:'Nanum Myeongjo',serif;font-size:36px;font-weight:800;color:#E8547A;line-height:1;">66<span style="font-size:13px;color:rgba(255,255,255,0.4);font-weight:400;">/100</span></div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">총점</div></div>
+        <div><div style="font-size:clamp(10px,2.8vw,11px);color:rgba(255,255,255,0.5);margin-bottom:4px;">🚨 4위</div><div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(16.5px,5vw,20px);font-weight:700;color:#fff;">전남친</div><div style="font-size:clamp(11px,3vw,12px);color:#f07090;margin-top:2px;">🔥 격렬하게 타올랐지만, 결국 나를 자르던 관계</div></div>
+        <div style="text-align:right;"><div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(30px,9.5vw,38px);font-weight:800;color:#E8547A;line-height:1;">66<span style="font-size:clamp(13px,3.7vw,15px);color:rgba(255,255,255,0.4);font-weight:400;">/100</span></div><div style="font-size:clamp(10px,2.8vw,11px);color:rgba(255,255,255,0.4);margin-top:2px;">총점</div></div>
       </div>
       <div style="padding:18px;">
         <div style="margin-bottom:16px;">
-          <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#1A0A12;margin-bottom:7px;"><span>❤️</span> 감정의 깊이<span style="margin-left:auto;font-size:11px;font-weight:700;color:#E8547A;">85점</span></div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:clamp(12px,3.4vw,13.5px);font-weight:700;color:#1A0A12;margin-bottom:7px;"><span>❤️</span> 감정의 깊이<span style="margin-left:auto;font-size:clamp(11px,3vw,12px);font-weight:700;color:#E8547A;">85점</span></div>
           <div style="height:5px;background:#F9E4EA;border-radius:3px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;border-radius:3px;background:#E8547A;width:85%;"></div></div>
-          <div style="font-size:12px;color:#7A5060;line-height:1.75;">갑목인 너와 경금인 그는 천간 갑경충(甲庚冲)에 금극목까지 겹쳐서, 처음부터 강렬한 자극이 있었어.<span style="filter:blur(4px);user-select:none;"> 특히 배우자궁이 충(沖)이라, 감정이 뜨겁게 붙었다가도 한순간에 차갑게 식는 패턴이 반복됐을 가능성이 높아.</span></div>
-          <div style="font-size:11px;color:#C23A60;font-weight:600;margin-top:8px;padding:6px 10px;background:#F9E4EA;border-radius:6px;">💡 강하게 끌리지만, 그만큼 서로를 베는 관계.</div>
+          <div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.75;">갑목인 너와 경금인 그는 천간 갑경충(甲庚冲)에 금극목까지 겹쳐서, 처음부터 강렬한 자극이 있었어.<span style="filter:blur(4px);user-select:none;"> 특히 배우자궁이 충(沖)이라, 감정이 뜨겁게 붙었다가도 한순간에 차갑게 식는 패턴이 반복됐을 가능성이 높아.</span></div>
+          <div style="font-size:clamp(11px,3vw,12px);color:#C23A60;font-weight:600;margin-top:8px;padding:6px 10px;background:#F9E4EA;border-radius:6px;">💡 강하게 끌리지만, 그만큼 서로를 베는 관계.</div>
         </div>
         <div style="position:relative;margin:0 -18px -18px;padding:18px;">
           <div style="filter:blur(6px);pointer-events:none;user-select:none;">
             <div style="padding:16px;background:linear-gradient(135deg,#1A0A12,#2D1420);border-radius:10px;">
-              <div style="font-size:12px;font-weight:700;color:#FFD580;margin-bottom:8px;">🔥 총평 (치트키)</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.75;">전남친은 경금(庚金)이고, 너한테는 편관(偏官) — 그중에서도 제일 센 칠살(七殺)이야. 4위인 데는 이유가 있어 — 굳이 그리워할 필요 없는 관계야.</div>
+              <div style="font-size:clamp(12px,3.4vw,13.5px);font-weight:700;color:#FFD580;margin-bottom:8px;">🔥 총평 (치트키)</div>
+              <div style="font-size:clamp(12px,3.4vw,13.5px);color:rgba(255,255,255,0.8);line-height:1.75;">전남친은 경금(庚金)이고, 너한테는 편관(偏官) — 그중에서도 제일 센 칠살(七殺)이야. 4위인 데는 이유가 있어 — 굳이 그리워할 필요 없는 관계야.</div>
             </div>
           </div>
           <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 30%,rgba(255,255,255,0.95) 65%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:24px;gap:8px;">
-            <button onclick="scrollToForm()" style="background:#E8547A;color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:24px;box-shadow:0 4px 16px rgba(232,84,122,0.4);cursor:pointer;border:none;font-family:'Pretendard',sans-serif;">🔮 결제 후 전체 공개</button>
-            <div style="font-size:11px;color:#7A5060;">총평 · 치트키 + 전체 상세 분석</div>
+            <button onclick="scrollToForm()" style="background:#E8547A;color:#fff;font-size:clamp(13px,3.7vw,15px);font-weight:700;padding:10px 22px;border-radius:24px;box-shadow:0 4px 16px rgba(232,84,122,0.4);cursor:pointer;border:none;font-family:'Pretendard',sans-serif;">🔮 결제 후 전체 공개</button>
+            <div style="font-size:clamp(11px,3vw,12px);color:#7A5060;">총평 · 치트키 + 전체 상세 분석</div>
           </div>
         </div>
       </div>
@@ -425,53 +438,50 @@ select{cursor:pointer;}
   </div>
 
   <!-- 차별점 (비교표) -->
-  <div class="fade-up" style="background:#fff;border:1px solid rgba(232,84,122,0.12);border-radius:16px;padding:20px;margin-bottom:28px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:#1A0A12;margin-bottom:16px;">왜 이 리포트여야 할까요?</div>
-    <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;border-radius:12px;overflow:hidden;border:1px solid rgba(232,84,122,0.12);">
-      <div style="padding:10px 8px;background:#FDF5F7;"></div>
-      <div style="padding:10px 8px;font-size:12px;font-weight:700;color:#7A5060;background:#FDF5F7;text-align:center;">무료 궁합앱</div>
-      <div style="padding:10px 8px;font-size:12px;font-weight:800;color:#fff;background:#E8547A;text-align:center;">이 리포트</div>
-      <div style="padding:12px 8px;font-size:12px;color:#2D1420;line-height:1.5;border-top:1px solid rgba(232,84,122,0.12);">여러 명 비교</div><div style="padding:12px 8px;font-size:12px;color:#B08090;text-align:center;border-top:1px solid rgba(232,84,122,0.12);">1:1만</div><div style="padding:12px 8px;font-size:12px;font-weight:700;color:#C23A60;text-align:center;background:#FFF0F4;border-top:1px solid rgba(232,84,122,0.12);">최대 5명 랭킹</div>
-      <div style="padding:12px 8px;font-size:12px;color:#2D1420;line-height:1.5;border-top:1px solid rgba(232,84,122,0.12);">냉정한 약점</div><div style="padding:12px 8px;font-size:12px;color:#B08090;text-align:center;border-top:1px solid rgba(232,84,122,0.12);">좋은 말 위주</div><div style="padding:12px 8px;font-size:12px;font-weight:700;color:#C23A60;text-align:center;background:#FFF0F4;border-top:1px solid rgba(232,84,122,0.12);">가감없이</div>
-      <div style="padding:12px 8px;font-size:12px;color:#2D1420;line-height:1.5;border-top:1px solid rgba(232,84,122,0.12);">근거·이유 설명</div><div style="padding:12px 8px;font-size:12px;color:#B08090;text-align:center;border-top:1px solid rgba(232,84,122,0.12);">두루뭉술</div><div style="padding:12px 8px;font-size:12px;font-weight:700;color:#C23A60;text-align:center;background:#FFF0F4;border-top:1px solid rgba(232,84,122,0.12);">사주 근거</div>
-      <div style="padding:12px 8px;font-size:12px;color:#2D1420;line-height:1.5;border-top:1px solid rgba(232,84,122,0.12);">10년 관계 흐름</div><div style="padding:12px 8px;font-size:12px;color:#B08090;text-align:center;border-top:1px solid rgba(232,84,122,0.12);">✕</div><div style="padding:12px 8px;font-size:12px;font-weight:700;color:#C23A60;text-align:center;background:#FFF0F4;border-top:1px solid rgba(232,84,122,0.12);">2026~2035</div>
+  <div class="fade-up" style="background:#fff;border:1px solid rgba(232,84,122,0.12);border-radius:16px;padding:clamp(18px,5vw,22px);margin-bottom:28px;">
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(15.5px,4.5vw,17.5px);font-weight:700;color:#1A0A12;margin-bottom:16px;">왜 이 리포트여야 할까요?</div>
+    <div style="display:grid;grid-template-columns:0.92fr 1fr 1.08fr;border-radius:12px;overflow:hidden;border:1px solid rgba(232,84,122,0.12);">
+      <div style="background:#FBEEF1;"></div>
+      <div style="display:flex;align-items:center;justify-content:center;padding:11px 8px;font-size:clamp(12.5px,3.6vw,14px);font-weight:700;color:#8A6472;background:#FBEEF1;text-align:center;">GPT/Gemini</div>
+      <div style="display:flex;align-items:center;justify-content:center;padding:11px 8px;font-size:clamp(12.5px,3.6vw,14px);font-weight:800;color:#fff;background:#C6506F;text-align:center;">이 리포트</div>
+      <div style="display:flex;align-items:center;padding:13px 10px;font-size:clamp(13px,3.7vw,14.5px);font-weight:600;color:#2D1420;border-top:1px solid rgba(232,84,122,0.12);line-height:1.4;">명리 근거</div><div style="display:flex;align-items:center;justify-content:center;padding:13px 8px;font-size:clamp(12px,3.4vw,13.5px);color:#A98F99;text-align:center;border-top:1px solid rgba(232,84,122,0.12);line-height:1.55;">일간, 오행 등 일반론적 개념 위주</div><div style="display:flex;align-items:center;justify-content:center;padding:13px 8px;font-size:clamp(12px,3.4vw,13.5px);font-weight:700;color:#C23A60;text-align:center;background:#FCEFF2;border-top:1px solid rgba(232,84,122,0.12);line-height:1.55;">일간, 오행, 십성, 십이운성, 신살 등 다양하게 활용</div><div style="display:flex;align-items:center;padding:13px 10px;font-size:clamp(13px,3.7vw,14.5px);font-weight:600;color:#2D1420;border-top:1px solid rgba(232,84,122,0.12);line-height:1.4;">분석 톤</div><div style="display:flex;align-items:center;justify-content:center;padding:13px 8px;font-size:clamp(12px,3.4vw,13.5px);color:#A98F99;text-align:center;border-top:1px solid rgba(232,84,122,0.12);line-height:1.55;">좋은 말만</div><div style="display:flex;align-items:center;justify-content:center;padding:13px 8px;font-size:clamp(12px,3.4vw,13.5px);font-weight:700;color:#C23A60;text-align:center;background:#FCEFF2;border-top:1px solid rgba(232,84,122,0.12);line-height:1.55;">냉정한 팩트체크</div><div style="display:flex;align-items:center;padding:13px 10px;font-size:clamp(13px,3.7vw,14.5px);font-weight:600;color:#2D1420;border-top:1px solid rgba(232,84,122,0.12);line-height:1.4;">1:N 랭킹 로직</div><div style="display:flex;align-items:center;justify-content:center;padding:13px 8px;font-size:clamp(12px,3.4vw,13.5px);color:#A98F99;text-align:center;border-top:1px solid rgba(232,84,122,0.12);line-height:1.55;">근거 미비, 할루시네이션 존재</div><div style="display:flex;align-items:center;justify-content:center;padding:13px 8px;font-size:clamp(12px,3.4vw,13.5px);font-weight:700;color:#C23A60;text-align:center;background:#FCEFF2;border-top:1px solid rgba(232,84,122,0.12);line-height:1.55;">자체 점수 계산 로직 활용</div>
     </div>
   </div>
 
   <!-- 추천 -->
   <div class="fade-up" style="background:linear-gradient(135deg,#1A0A12,#2D1420);border-radius:16px;padding:22px 20px;margin-bottom:28px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:14px;">이런 고민이 있는 분들께 추천드려요</div>
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;">지금 썸타는 사람이 '또 그 유형'일까 봐 불안한 분</div></div>
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;">왜 나는 항상 비슷한 유형의 남자한테 끌리는지 알고 싶은 분</div></div>
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;">헤어진 뒤에도 미련이 남아있어서 정리가 필요한 분</div></div>
-    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;">좋아하는 사람이 생겼는데 잘 될 수 있을지 확인하고 싶은 분</div></div>
-    <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;">친구랑 같이 각자 썸남 분석하면서 얘기 나눠보고 싶은 분</div></div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(15.5px,4.5vw,17.5px);font-weight:700;color:#fff;margin-bottom:14px;">이런 고민이 있는 분들께 추천드려요</div>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.8vw,11px);color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:clamp(13px,3.7vw,15px);color:rgba(255,255,255,0.85);line-height:1.6;">지금 썸타는 사람이 '또 그 유형'일까 봐 불안한 분</div></div>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.8vw,11px);color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:clamp(13px,3.7vw,15px);color:rgba(255,255,255,0.85);line-height:1.6;">왜 나는 항상 비슷한 유형의 남자한테 끌리는지 알고 싶은 분</div></div>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.8vw,11px);color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:clamp(13px,3.7vw,15px);color:rgba(255,255,255,0.85);line-height:1.6;">헤어진 뒤에도 미련이 남아있어서 정리가 필요한 분</div></div>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.8vw,11px);color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:clamp(13px,3.7vw,15px);color:rgba(255,255,255,0.85);line-height:1.6;">좋아하는 사람이 생겼는데 잘 될 수 있을지 확인하고 싶은 분</div></div>
+    <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(232,84,122,0.3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,2.8vw,11px);color:#E8547A;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div><div style="font-size:clamp(13px,3.7vw,15px);color:rgba(255,255,255,0.85);line-height:1.6;">친구랑 같이 각자 썸남 분석하면서 얘기 나눠보고 싶은 분</div></div>
   </div>
 
   <!-- 오퍼 (가격/할인/타이머) -->
   <div class="fade-up" style="background:linear-gradient(135deg,#FFF0F4,#FDE0E8);border:1.5px solid rgba(232,84,122,0.28);border-radius:16px;padding:20px;margin-bottom:28px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
-    <div style="display:inline-flex;align-items:center;gap:5px;background:#E8547A;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">🎉 40% 이벤트 특가 진행중</div>
-    <div style="font-size:13px;color:#B08090;text-decoration:line-through;">정가 9,900원</div>
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:34px;font-weight:800;color:#C23A60;line-height:1;">5,900원</div>
-    <div style="font-size:12px;color:#7A5060;">☕ 커피 한 잔 값으로, 몇 달치 시간 낭비를 아껴요.</div>
-    <div style="font-size:13px;font-weight:700;color:#1A0A12;">⏱ 할인 마감까지 <span id="timer-display-offer">09:59:59</span></div>
-    <button onclick="scrollToForm()" style="width:100%;padding:15px;background:#E8547A;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(232,84,122,0.35);margin-top:6px;font-family:'Pretendard',sans-serif;">🔮 지금 시작하기</button>
+    <div style="display:inline-flex;align-items:center;gap:5px;background:#E8547A;color:#fff;font-size:clamp(11px,3vw,12px);font-weight:700;padding:3px 10px;border-radius:20px;">🎉 40% 이벤트 특가 진행중</div>
+    <div style="font-size:clamp(13px,3.7vw,15px);color:#B08090;text-decoration:line-through;">정가 9,900원</div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(29px,9vw,36px);font-weight:800;color:#C23A60;line-height:1;">5,900원</div>
+    <div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;">☕ 커피 한 잔 값으로, 몇 달치 시간 낭비를 아껴요.</div>
+    <div style="font-size:clamp(13px,3.7vw,15px);font-weight:700;color:#1A0A12;">⏱ 할인 마감까지 <span id="timer-display-offer">09:59:59</span></div>
+    <button onclick="scrollToForm()" style="width:100%;padding:15px;background:#E8547A;color:#fff;border:none;border-radius:10px;font-size:clamp(14.5px,4.1vw,16.5px);font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(232,84,122,0.35);margin-top:6px;font-family:'Pretendard',sans-serif;">🔮 지금 시작하기</button>
   </div>
 
   <!-- FAQ -->
   <div class="fade-up" style="background:#fff;border:1px solid rgba(232,84,122,0.12);border-radius:16px;padding:20px;margin-bottom:28px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:16px;font-weight:700;color:#1A0A12;margin-bottom:14px;">자주 묻는 질문</div>
-    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:13px;font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>시간을 모르면 어떻게 해요?</div><div style="font-size:12px;color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">태어난 시간은 선택사항이에요. 몰라도 분석에 큰 영향은 없어요.</div></div>
-    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:13px;font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>아직 안 사귄 썸남도 분석돼요?</div><div style="font-size:12px;color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">네. 생년월일만 알면 돼요. 오히려 깊어지기 전에 보는 게 이 리포트를 가장 잘 쓰는 방법이에요.</div></div>
-    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:13px;font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>결과는 어디서 확인해요?</div><div style="font-size:12px;color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">결제 완료 즉시 이 페이지에서 바로 확인할 수 있어요. 입력한 이메일로도 결과 링크가 발송돼요.</div></div>
-    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:13px;font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>몇 명까지 넣을 수 있어요?</div><div style="font-size:12px;color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">최대 5명까지 한 번에 비교 분석할 수 있어요.</div></div>
-    <div style="padding:12px 0;"><div style="font-size:13px;font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>40% 특가는 언제까지예요?</div><div style="font-size:12px;color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">이벤트 기간 한정으로 진행중이에요. 타이머가 끝나면 정가로 돌아가요.</div></div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(15.5px,4.5vw,17.5px);font-weight:700;color:#1A0A12;margin-bottom:14px;">자주 묻는 질문</div>
+    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>시간을 모르면 어떻게 해요?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">태어난 시간은 선택사항이에요. 몰라도 분석에 큰 영향은 없어요.</div></div>
+    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>아직 안 사귄 썸남도 분석돼요?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">네. 생년월일만 알면 돼요. 오히려 깊어지기 전에 보는 게 이 리포트를 가장 잘 쓰는 방법이에요.</div></div>
+    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>결과는 어디서 확인해요?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">결제 완료 즉시 이 페이지에서 바로 확인할 수 있어요. 입력한 이메일로도 결과 링크가 발송돼요.</div></div>
+    <div style="border-bottom:1px solid rgba(232,84,122,0.12);padding:12px 0;"><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>몇 명까지 넣을 수 있어요?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">최대 5명까지 한 번에 비교 분석할 수 있어요.</div></div>
+    <div style="padding:12px 0;"><div style="font-size:clamp(13px,3.7vw,15px);font-weight:600;color:#2D1420;display:flex;gap:8px;"><span style="color:#E8547A;font-weight:700;">Q</span>40% 특가는 언제까지예요?</div><div style="font-size:clamp(12px,3.4vw,13.5px);color:#7A5060;line-height:1.7;padding-left:20px;margin-top:6px;">이벤트 기간 한정으로 진행중이에요. 타이머가 끝나면 정가로 돌아가요.</div></div>
   </div>
 
   <!-- bottom-cta 헤딩 -->
   <div class="fade-up" style="text-align:center;margin-bottom:16px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:#1A0A12;margin-bottom:4px;">똑같은 실수, 이번엔 반복하지 마세요.</div>
-    <div style="font-size:13px;color:#7A5060;">생년월일만 입력하면 즉시 결과 확인</div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:clamp(16.5px,5vw,20px);font-weight:700;color:#1A0A12;margin-bottom:4px;">똑같은 실수, 이번엔 반복하지 마세요.</div>
+    <div style="font-size:clamp(13px,3.7vw,15px);color:#7A5060;">생년월일만 입력하면 즉시 결과 확인</div>
   </div>
 
   <!-- FORM (실제 작동) -->
@@ -516,7 +526,7 @@ select{cursor:pointer;}
 
   <div class="divider"><hr><span>이 남자들 평가해줘</span><hr></div>
   <div id="guys-container"></div>
-  <button class="add-btn" onclick="addGuy()" id="add-guy-btn">+ 남자 추가하기 <span style="font-size:12px;opacity:.6;">(최대 5명)</span></button>
+  <button class="add-btn" onclick="addGuy()" id="add-guy-btn">+ 남자 추가하기 <span style="font-size:clamp(12px,3.4vw,13.5px);opacity:.6;">(최대 5명)</span></button>
 
   <div class="fade-up">
     <button class="cta-btn" onclick="onSubmit()">🔮 사주기반 랭킹분석 <span class="price-tag">5,900원</span></button>
@@ -524,16 +534,17 @@ select{cursor:pointer;}
   </div>
 
   <!-- 업셀: 속마음 심층 분석 (별도 상품) -->
-  <div class="fade-up" style="background:#fff;border:1px dashed rgba(232,84,122,0.28);border-radius:14px;padding:18px 18px;margin:28px 0 20px;">
-    <div style="font-family:'Nanum Myeongjo',serif;font-size:22px;font-weight:700;color:#1A0A12;margin-bottom:6px;">🔍 속마음이 궁금한 남자가 있나요?</div>
-    <div style="font-size:14px;color:#7A5060;line-height:1.8;margin-bottom:14px;">특히 마음에 걸리는 딱 한 사람을 골라 "속마음 심층 분석 리포트"를 받아볼 수 있어요. <b style="color:#C23A60;">랭킹 리포트 결제와는 별도로 구매하는 상품</b>이에요.</div>
-    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px;">
-      <div style="font-size:12px;color:#2D1420;">💘 그는 어떤 여자에게 무너질까</div>
-      <div style="font-size:12px;color:#2D1420;">🎭 그의 '진짜' 연애 스타일</div>
-      <div style="font-size:12px;color:#2D1420;">💔 우리가 이별한다면, 그 이유는</div>
-      <div style="font-size:12px;color:#2D1420;">🔥 그는 바람끼가 있을까</div>
+  <div class="fade-up" style="background:#fff;border:1px solid rgba(232,84,122,0.18);border-radius:22px;padding:clamp(26px,7vw,32px) clamp(22px,6vw,26px);margin:28px 0 20px;">
+    <div style="font-family:'Pretendard',sans-serif;font-size:clamp(18px,5.4vw,23px);font-weight:800;color:#1A1A1A;letter-spacing:-0.02em;line-height:1.35;margin-bottom:10px;">🔍 속마음이 궁금한 남자가 있나요?</div>
+    <div style="font-size:clamp(13.5px,3.9vw,15px);color:#7A5060;line-height:1.7;margin-bottom:clamp(16px,4.5vw,20px);">마음에 걸리는 한 명을 골라, 속마음까지 깊이 들여다볼 수 있어요.</div>
+    <div style="display:flex;flex-direction:column;gap:clamp(10px,2.8vw,12px);margin-bottom:clamp(18px,5vw,22px);">
+      <div style="font-size:clamp(13px,3.7vw,14.5px);color:#3D3A38;line-height:1.5;">💘 그는 어떤 여자에게 무너질까</div>
+      <div style="font-size:clamp(13px,3.7vw,14.5px);color:#3D3A38;line-height:1.5;">💁 그의 '진짜' 연애 스타일</div>
+      <div style="font-size:clamp(13px,3.7vw,14.5px);color:#3D3A38;line-height:1.5;">💔 우리가 이별한다면, 그 이유는</div>
+      <div style="font-size:clamp(13px,3.7vw,14.5px);color:#3D3A38;line-height:1.5;">🔥 그는 바람끼가 있을까</div>
     </div>
-    <button onclick="upsellStartStandalone()" style="width:100%;padding:17px;background:#8C3A5C;color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(140,58,92,0.4);font-family:'Pretendard',sans-serif;">그의 속마음 파헤치기 5,900원</button>
+    <button onclick="upsellStartStandalone()" style="width:100%;padding:17px;background:#D96C85;color:#fff;border:none;border-radius:16px;font-size:clamp(15.5px,4.5vw,17.5px);font-weight:700;cursor:pointer;box-shadow:0 6px 22px rgba(217,108,133,0.4);font-family:'Pretendard',sans-serif;">그의 속마음 파헤치기 5,900원</button>
+    <div style="font-size:clamp(11px,3vw,12px);color:#B08090;margin-top:12px;line-height:1.6;">* 랭킹 리포트 결제와는 별도로 구매하는 상품이에요.</div>
   </div>
 
   <div class="disclaimer" style="margin-top:24px;">
@@ -1062,7 +1073,7 @@ function _bindSwipe(){
   const coach=document.getElementById('ups-coach');
   let coachGone=false;
   let _maxCard=0;
-  const onScroll=()=>{const i=Math.round(t.scrollLeft/t.clientWidth);const cnt=document.getElementById('ups-counter');if(cnt)cnt.textContent=(i+1)+' / '+d.length;if(i>_maxCard){_maxCard=i;trackEvent('upsell_teaser_swipe',{card_index:i,upsell_type:(_ups&&_ups.type)||'conquest'});}d.forEach((x,idx)=>x.style.background=idx===i?DK_TXT:DK_DOT);if(f){const last=i>=d.length-1;f.style.opacity=last?'1':'0';f.style.pointerEvents=last?'auto':'none';}if(coach&&!coachGone&&t.scrollLeft>10){coachGone=true;coach.style.opacity='0';setTimeout(()=>coach.remove(),400);}};  t.addEventListener('scroll',onScroll,{passive:true});
+  const onScroll=()=>{const i=Math.round(t.scrollLeft/t.clientWidth);const cnt=document.getElementById('ups-counter');if(cnt)cnt.textContent=(i+1)+' / '+d.length;if(i>_maxCard){_maxCard=i;trackEvent('upsell_teaser_swipe',{card_index:i,upsell_type:(_ups&&_ups.type)||'conquest'});}d.forEach((x,idx)=>x.style.background=idx===i?DK_TXT:DK_DOT);if(f){const last=i>=d.length-1;f.style.opacity=last?'1':'0';f.style.pointerEvents=last?'auto':'none';}if(coach&&!coachGone&&t.scrollLeft>10){coachGone=true;coach.style.opacity='0';setTimeout(()=>coach.remove(),400);}var _pv=document.getElementById('ups-prev'),_nx=document.getElementById('ups-next');if(_pv)_pv.style.visibility=(i<=0?'hidden':'visible');if(_nx)_nx.style.visibility=(i>=d.length-1?'hidden':'visible');};  t.addEventListener('scroll',onScroll,{passive:true});onScroll();
   const p=document.getElementById('ups-prev'),nx=document.getElementById('ups-next');
   if(p)p.onclick=()=>t.scrollBy({left:-t.clientWidth,behavior:'smooth'});
   if(nx)nx.onclick=()=>t.scrollBy({left:t.clientWidth,behavior:'smooth'});
@@ -1213,12 +1224,13 @@ function _reportSlide(rc,payHTML,big){
 function renderManTeaser(){
   const tName=(_ups.target&&_ups.target.name)||'그';
   const standalone=!!(_ups&&_ups.standalone);
-  const SIN='width:100%;box-sizing:border-box;height:44px;padding:0 12px;font-size:14px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:10px;outline:none;font-family:inherit;';
+  const SIN='width:100%;box-sizing:border-box;height:48px;padding:0 13px;font-size:16px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:11px;outline:none;font-family:inherit;';
   const MO=[1,2,3,4,5,6,7,8,9,10,11,12].map(m=>`<option value="${m}">${m}월</option>`).join('');
   const emailPre=(localStorage.getItem('ryex_email')||'').replace(/["'<>]/g,'');
   const RED='#e1566a', TITLE='#f4f4f6', BODY='#a8a8b2', GOLD='#f4b740';
   const SEC='flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-sizing:border-box;padding:0 34px;display:flex;flex-direction:column;justify-content:center;';
   const SECV=SEC+'overflow-y:auto;';
+  const S6='flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:clamp(30px,8vw,52px) clamp(22px,6vw,30px) clamp(46px,12vw,68px);text-align:center;';
   const H='font-size:38px;line-height:1.2;font-weight:800;letter-spacing:-1px;color:'+TITLE+';word-break:keep-all;margin:0 0 22px;';
   const DIV='width:38px;height:3px;background:'+RED+';border-radius:2px;margin:0 0 28px;';
   const P='font-size:16.5px;line-height:1.78;color:'+BODY+';margin:0 0 20px;word-break:keep-all;text-wrap:pretty;';
@@ -1267,25 +1279,23 @@ function renderManTeaser(){
     `</section>`;
 
   // 6. 결제 CTA (+ 이메일 입력칸 유지)
-  const s6=`<section style="${SECV}text-align:center;">`+
-    `<div style="font-size:11px;letter-spacing:3px;color:${RED};font-weight:700;margin-bottom:18px;">그남자 심층분석 리포트</div>`+
-    `<h2 style="font-size:35px;line-height:1.22;font-weight:800;letter-spacing:-1px;color:${TITLE};word-break:keep-all;margin:0 0 22px;">지금, 그 사람<br>사주 <span style="color:${RED}">몰래</span><br>확인하기</h2>`+
-    `<div style="display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:12px;"><span style="font-size:15px;color:#55555f;text-decoration:line-through;">9,900원</span><span style="font-size:34px;font-weight:800;color:${TITLE};">5,900원</span></div>`+
-    `<div style="margin-bottom:22px;"><span style="display:inline-block;font-size:12px;font-weight:700;color:${RED};border:1px solid rgba(225,86,106,0.4);border-radius:20px;padding:6px 16px;">40% OFF · 오늘만 이 가격</span></div>`+
+  const s6=`<section style="${S6}">`+
+    `<div style="font-size:11px;letter-spacing:3px;color:${RED};font-weight:700;margin-bottom:clamp(14px,4vw,18px);">그남자 심층분석 리포트</div>`+
+    `<h2 style="font-size:clamp(24px,7vw,31px);line-height:1.3;font-weight:800;letter-spacing:-0.5px;color:${TITLE};word-break:keep-all;margin:0 0 clamp(22px,6vw,28px);">지금 그 사람 사주<br><span style="color:${RED}">몰래</span> 확인하기</h2>`+
     (standalone?(
-      `<div style="text-align:left;margin-bottom:14px;">`+
-        `<div style="font-size:12px;color:#c9b6f0;font-weight:700;margin-bottom:8px;">🙋 내 생년월일</div>`+
-        `<div style="display:flex;gap:8px;margin-bottom:8px;">`+
+      `<div style="text-align:left;margin-bottom:clamp(16px,4.6vw,20px);">`+
+        `<div style="font-size:13px;color:#c9b6f0;font-weight:700;margin-bottom:8px;">🙋 내 생년월일</div>`+
+        `<div style="display:flex;gap:9px;margin-bottom:10px;">`+
           `<input id="ups-me-year" inputmode="numeric" maxlength="4" placeholder="1998" style="${SIN}flex:1.2;">`+
           `<select id="ups-me-month" style="${SIN}flex:1;"><option value="">월</option>${MO}</select>`+
           `<input id="ups-me-day" inputmode="numeric" maxlength="2" placeholder="15" style="${SIN}flex:.8;">`+
         `</div>`+
         `<select id="ups-me-hour" style="${SIN}">${HOUR_OPTS}</select>`+
       `</div>`+
-      `<div style="text-align:left;margin-bottom:14px;">`+
-        `<div style="font-size:12px;color:#c9b6f0;font-weight:700;margin-bottom:8px;">🔮 그 사람 정보</div>`+
+      `<div style="text-align:left;margin-bottom:clamp(16px,4.6vw,20px);">`+
+        `<div style="font-size:13px;color:#c9b6f0;font-weight:700;margin-bottom:8px;">🔮 그 사람 정보</div>`+
         `<input id="ups-t-name" placeholder="이름/별명 (선택)" style="${SIN}margin-bottom:8px;">`+
-        `<div style="display:flex;gap:8px;margin-bottom:8px;">`+
+        `<div style="display:flex;gap:9px;margin-bottom:10px;">`+
           `<input id="ups-t-year" inputmode="numeric" maxlength="4" placeholder="1995" style="${SIN}flex:1.2;">`+
           `<select id="ups-t-month" style="${SIN}flex:1;"><option value="">월</option>${MO}</select>`+
           `<input id="ups-t-day" inputmode="numeric" maxlength="2" placeholder="20" style="${SIN}flex:.8;">`+
@@ -1293,13 +1303,13 @@ function renderManTeaser(){
         `<select id="ups-t-hour" style="${SIN}">${HOUR_OPTS}</select>`+
       `</div>`
     ):'')+
-    `<div style="text-align:left;margin-bottom:14px;">`+
+    `<div style="text-align:left;margin-bottom:clamp(16px,4.6vw,20px);">`+
       `<label style="display:block;font-size:11px;color:${BODY};margin-bottom:6px;">📩 리포트 받을 이메일</label>`+
       `<input id="ups-email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" value="${emailPre}" placeholder="you@example.com" oninput="var e=document.getElementById('ups-email-err');if(e)e.style.display='none';" style="width:100%;box-sizing:border-box;height:46px;padding:0 14px;font-size:14px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:10px;outline:none;">`+
       `<div id="ups-email-err" style="display:none;font-size:11px;color:#ff6b8a;margin-top:5px;">올바른 이메일을 입력해줘.</div>`+
     `</div>`+
-    `<button onclick="${standalone?'upsellPayStandalone':'upsellPay'}()" style="width:100%;padding:17px;border:none;border-radius:14px;background:${RED};color:#fff;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit;box-shadow:0 6px 22px rgba(225,86,106,0.4);">그의 속마음 파헤치기 →</button>`+
-    `<div style="font-size:12px;color:#6b6b78;margin-top:16px;word-break:keep-all;">결제 즉시 4개 챕터 · 4000자 전체 공개</div></section>`;
+    `<button onclick="${standalone?'upsellPayStandalone':'upsellPay'}()" style="width:100%;padding:17px;border:none;border-radius:14px;background:${RED};color:#fff;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit;box-shadow:0 6px 22px rgba(225,86,106,0.4);margin-top:clamp(6px,2vw,10px);">그의 속마음 파헤치기 · 5,900원 →</button>`+
+    `<div style="font-size:12px;color:#6b6b78;margin-top:16px;word-break:keep-all;">9,900원 → 5,900원 · 결제 즉시 4개 챕터 전체 공개</div></section>`;
 
   const slides=s1+s2+s3+s4+s5+s6;
   const total=6;
