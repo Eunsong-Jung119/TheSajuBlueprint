@@ -650,12 +650,23 @@ async function fetchUpsellReports() {
 
 function buildSessionSourceMap(logs) {
   const map = {};
-  // 0차: 공유 링크(?report=/?upsell=)는 최우선 확정. 같은 세션에 광고 utm이 섞여도 공유가 이김.
+  // 세션별 '자기 분석 시작' 최초 시각 — 이 시점 이후의 ?report= 뷰는 '자기 결과 재방문'이므로 공유로 치지 않는다.
+  // (created_at은 모두 동일 포맷/+00라 문자열 비교가 곧 시간 비교)
+  const ownStart = {};
+  logs.forEach(l => {
+    if (l.event_name === 'analysis_requested' || l.event_name === 'paywall_shown' || l.event_name === 'payment_confirmed') {
+      if (!(l.session_id in ownStart) || l.created_at < ownStart[l.session_id]) ownStart[l.session_id] = l.created_at;
+    }
+  });
+  // 0차: 공유 링크(?report=/?upsell=)는 최우선 — 단, '자기 분석 시작 이전'에 본 경우에만 인정.
+  //      (결제 후 자기 결과 ?report=<내 id> 재방문을 공유 유입으로 오인하지 않도록)
   logs.forEach(l => {
     const m = pm(l.metadata);
-    if (m.report || m.upsell) { map[l.session_id] = 'share_link'; return; }  // ← 여기로
     const ref = m.referrer || '';
-    if (ref.includes('report=') || ref.includes('upsell=')) {
+    const isShareView = m.report || m.upsell || ref.includes('report=') || ref.includes('upsell=');
+    if (!isShareView) return;
+    const t0 = ownStart[l.session_id];
+    if (t0 === undefined || l.created_at < t0) {   // 결제/분석 이전의 공유 뷰만 인정
       map[l.session_id] = 'share_link';
     }
   });
@@ -688,9 +699,8 @@ function buildSessionSourceMap(logs) {
 
 function parseSourceFromMeta(m) {
   const ref = m.referrer || '';
-  if (m.report || m.upsell) return 'share_link';
-  // 0) 공유 링크는 최우선 — ?report=/?upsell=는 명백한 공유 유입 신호 (utm보다 우선)
-  if (ref.includes('?report=') || ref.includes('?upsell=') || ref.includes('&report=') || ref.includes('&upsell=')) return 'share_link';
+  // ※ 공유 링크(share_link) 판정은 buildSessionSourceMap의 '자기 분석 이전' 시간 게이트에서만 한다.
+  //    여기서 report/upsell을 share_link로 반환하면 '결제 후 자기 결과 재방문'까지 공유로 오인하므로 제외.
   // 1) 최상위 utm 필드 우선
   let src = m.utm_source, med = m.utm_medium;
   // 2) 최상위에 없으면 referrer URL 안의 utm 파라미터에서 추출 (광고 page_view는 referrer에 utm이 박혀있음)
