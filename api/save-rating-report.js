@@ -25,6 +25,7 @@ module.exports = async function handler(req, res) {
     whop_receipt_id,
     email,
     payment_id,                 // ← 프론트에서 넘겨받음 (PortOne paymentId)
+    coupon_code,                // ← 무료 쿠폰 코드 (있으면 결제 없이 통과)
     fbp, fbc,                   // ← 메타 CAPI 매칭률 향상용 브라우저 쿠키
     my_year, my_month, my_day, my_hour, my_gender,
     partners,
@@ -32,6 +33,22 @@ module.exports = async function handler(req, res) {
   } = req.body;
 
   if (!result) return res.status(400).json({ error: 'No result data' });
+
+  // ── 무료 쿠폰 (있으면 결제 대신 서버가 원자적으로 1회 차감) ──
+  if (coupon_code) {
+    const { data: _rc, error: _rcErr } = await supabase.rpc('redeem_coupon', {
+      p_code: String(coupon_code).toUpperCase(),
+      p_type: 'rate',
+      p_session: session_id || null,
+      p_email: email || null,
+    });
+    const _r = Array.isArray(_rc) ? _rc[0] : _rc;
+    if (_rcErr || !_r || !_r.ok) {
+      console.error('[save-rating-report] coupon reject:', coupon_code, (_r && _r.reason) || (_rcErr && _rcErr.message));
+      return res.status(403).json({ error: 'coupon_' + ((_r && _r.reason) || 'invalid') });
+    }
+    console.log('[save-rating-report] coupon ok:', String(coupon_code).toUpperCase());
+  }
 
   // ── 결제 검증 (payment_id가 넘어온 신규 결제 건만 검사) ──
   // 정책: 명시적 미결제(status_*)만 차단해서 가짜결제 결과노출을 막고,

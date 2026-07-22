@@ -48,7 +48,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
 
   try {
-    const { upsellType, phase, me, target, session_id, email, payment_id, fbp, fbc } = req.body || {};
+    const { upsellType, phase, me, target, session_id, email, payment_id, coupon_code, fbp, fbc } = req.body || {};
     const ph = (phase === 'womanTeaser' || phase === 'manTeaser' || phase === 'full') ? phase : 'full';
     if (!me) return res.status(400).json({ error: 'Missing me' });
 
@@ -70,6 +70,34 @@ export default async function handler(req, res) {
     // ── full: 결제 후 심층 리포트 (GPT 5섹션) ──
     if (!target) return res.status(400).json({ error: 'target required for full' });
     if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: 'OPENAI_API_KEY not configured' });
+
+    // ── 무료 쿠폰 (있으면 결제 대신 서버가 원자적으로 1회 차감) — GPT 호출 전에 검사 ──
+    if (coupon_code) {
+      if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+        return res.status(500).json({ error: 'coupon_backend_unavailable' });
+      }
+      try {
+        const _cr = await fetchT(`${process.env.SUPABASE_URL}/rest/v1/rpc/redeem_coupon`, 8000, {
+          method: 'POST',
+          headers: {
+            'apikey': process.env.SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ p_code: String(coupon_code).toUpperCase(), p_type: 'upsell', p_session: session_id || null, p_email: email || null }),
+        });
+        const _arr = await _cr.json().catch(() => null);
+        const _r = Array.isArray(_arr) ? _arr[0] : _arr;
+        if (!_cr.ok || !_r || !_r.ok) {
+          console.error('[generate-upsell] coupon reject:', coupon_code, (_r && _r.reason));
+          return res.status(403).json({ error: 'coupon_' + ((_r && _r.reason) || 'invalid') });
+        }
+        console.log('[generate-upsell] coupon ok:', String(coupon_code).toUpperCase());
+      } catch (e) {
+        console.error('[generate-upsell] coupon error', e);
+        return res.status(403).json({ error: 'coupon_error' });
+      }
+    }
 
     // ── 결제 검증 (업셀 4,900원) ──
     // 정책은 save-rating-report.js와 동일: 명시적 미결제(status_*)만 차단.
