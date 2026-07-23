@@ -70,13 +70,13 @@ async function generateOneSection(baseMessages, spec) {
   const msgs = baseMessages.map((m) => ({ role: m.role, content: m.content }));
   msgs[msgs.length - 1] = { role: 'user', content: msgs[msgs.length - 1].content + dir };
 
-  const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 55000, {
+  const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 70000, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
     body: JSON.stringify({
       model: 'gpt-4o',
       temperature: 0.85,
-      max_tokens: 3000, // 섹션 1개(≤5 subsection)엔 충분. 짧게 끝나 타임아웃/잘림 회피.
+      max_tokens: 4000, // 섹션 1개(≤5 subsection, body 210~290자)에 여유. 병렬이라 4개 동시.
       response_format: { type: 'json_object' },
       messages: msgs,
     }),
