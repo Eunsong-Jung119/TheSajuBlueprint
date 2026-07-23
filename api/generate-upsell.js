@@ -2,8 +2,15 @@
 // phase별 분기:
 //   manTeaser   → 템플릿 기반 남자카드 2장 (GPT X, calcSaju만). { cards:[{id,lines[],basis}] }
 //   womanTeaser → (구버전 호환) 템플릿 여자카드. { cards:[...] }
-//   full        → 결제 후 GPT 심층 리포트 5섹션. { report:{ target_name, sections:[5] }, reportId }
+//   full        → 결제 후 GPT 심층 리포트 4섹션. { report:{ target_name, sections:[4] }, reportId }
 //                 (+ 결제검증 / 메타CAPI / Supabase 저장 / 이메일)
+//
+// ★변경(full phase): 한 방 생성 → 섹션 4개 병렬 생성 + 섹션별 재시도★
+//   - 모델을 gpt-4o-mini → gpt-4o 로 상향 (프롬프트/퓨샷이 이미 rate 수준이라 모델만 올리면 품질↑)
+//   - 4섹션을 각각 별도 콜로 동시에 생성. 각 콜은 동일한 [사용자][상대] 사주 팩트 + few-shot을
+//     공유하고, 마지막 user 턴에만 "이 섹션 하나만" 지시를 덧붙여 출력만 좁힘 → 인물 일관성 유지.
+//   - 섹션당 max_tokens 3000 → 각 콜이 짧아서 타임아웃/잘림 회피. 4개 동시라 wall-clock은 최장 1개 수준.
+//   - 섹션별 3회 백오프 재시도. 한 섹션이라도 최종 실패하면 엉성한 리포트 대신 502(에러 모달 경로).
 //
 // 필요 env: full phase에서만 OPENAI_API_KEY
 //          결제검증/CAPI용: PORTONE_API_SECRET, META_PIXEL_ID, META_CAPI_TOKEN
@@ -16,14 +23,24 @@ import deepEngine from '../lib/deep-report-engine.js';
 import sajuEngine from '../lib/saju-engine.js';
 import templates from '../lib/upsell-templates.js';
 import paymentLib from '../lib/payment.js';
-export const config = { maxDuration: 120 };
+// ★ 섹션 병렬 + 재시도로 각 콜은 짧지만, 재시도 누적 여유를 위해 300s (Vercel Pro 기준).
+//   Pro가 아니면 180으로 낮춰. 정상 경로 wall-clock은 30~50s 수준이라 실제로는 더 빨라짐.
+export const config = { maxDuration: 300 };
 
 const { buildDeepPromptMessages } = deepEngine;
 const { calcSaju } = sajuEngine;
 const { buildWomanCards, buildManCards } = templates;
 const { verifyPortone, sendMetaPurchase } = paymentLib;
 
-// fetch에 타임아웃 (하나가 멈춰도 함수 전체가 60초까지 매달리지 않게)
+// 심층 리포트 4섹션 스펙 (제목은 DEEP_SYSTEM_PROMPT의 섹션 제목과 정확히 일치해야 함)
+const SECTION_SPECS = [
+  { id: 1, title: '그는 어떤 여자에게 무너질까', count: 3 },
+  { id: 2, title: "그의 '진짜' 연애 스타일", count: 5 },
+  { id: 3, title: '우리가 이별한다면 그 이유는', count: 5 },
+  { id: 4, title: '그는 바람끼가 있을까', count: 3 },
+];
+
+// fetch에 타임아웃 (하나가 멈춰도 함수 전체가 매달리지 않게)
 async function fetchT(url, ms, opts) {
   const ac = new AbortController();
   const t = setTimeout(() => ac.abort(), ms);
@@ -35,6 +52,73 @@ function pillarsFrom(p) {
   const h = (p.hour !== '' && p.hour != null) ? +p.hour : 12;
   const s = calcSaju(+p.year, +p.month, +p.day, h, 0, false, null);
   return { dayTG: s.dayTG, dayDZ: s.dayDZ, monthDZ: s.monthDZ };
+}
+
+// ── 섹션 1개 생성 (공유 컨텍스트 + "이 섹션만" 지시) ──
+async function generateOneSection(baseMessages, spec) {
+  // baseMessages = [system, fewshot_user, fewshot_assistant, userMessage]
+  // 마지막 user 턴에 "이 섹션 하나만" 지시를 덧붙여 출력만 좁힘 (앞의 모든 규칙은 그대로 적용)
+  const dir =
+    '\n\n━━━━━━━━━━━━━━━━━━━━\n' +
+    '★이번 요청 출력 형식 (위의 모든 지시보다 우선)★\n' +
+    `이번엔 **섹션 ${spec.id} "${spec.title}" 하나만** 작성해. 이 섹션의 subsection ${spec.count}개를 전부, ` +
+    '앞의 규칙(각 body 정확히 4문장·공백 제외 130~170자·근거 다양화·checkpoint 필수)을 그대로 지켜서 써.\n' +
+    `섹션 ${spec.id} 외의 다른 섹션(1~4 중 나머지)은 **절대 출력하지 마.**\n` +
+    '아래 JSON 스키마 그대로만 응답(다른 텍스트 없이):\n' +
+    `{"sections":[{"id":${spec.id},"title":"${spec.title}","subsections":[{"subtitle":"...","body":"...","checkpoint":"→ ..."}],"evidence":"..."}]}`;
+
+  const msgs = baseMessages.map((m) => ({ role: m.role, content: m.content }));
+  msgs[msgs.length - 1] = { role: 'user', content: msgs[msgs.length - 1].content + dir };
+
+  const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 55000, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      temperature: 0.85,
+      max_tokens: 3000, // 섹션 1개(≤5 subsection)엔 충분. 짧게 끝나 타임아웃/잘림 회피.
+      response_format: { type: 'json_object' },
+      messages: msgs,
+    }),
+  });
+  if (!gptRes.ok) {
+    const t = await gptRes.text().catch(() => '');
+    throw new Error(`OpenAI ${gptRes.status} ${t.slice(0, 140)}`);
+  }
+  const gptJson = await gptRes.json();
+  const raw = (gptJson?.choices?.[0]?.message?.content || '').replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(raw); // 파싱 실패 시 throw → 재시도
+
+  // 모델이 {sections:[...]} 로 감싸거나, 바로 섹션 객체를 주는 경우 모두 흡수
+  let sec = Array.isArray(parsed.sections)
+    ? (parsed.sections.find((s) => Number(s.id) === spec.id) || parsed.sections[0])
+    : (parsed && Array.isArray(parsed.subsections) ? parsed : null);
+
+  if (!sec || !Array.isArray(sec.subsections) || sec.subsections.length < spec.count) {
+    throw new Error(`섹션 ${spec.id} 형식 미달 (subsection ${sec && sec.subsections ? sec.subsections.length : 0}/${spec.count})`);
+  }
+  return {
+    id: spec.id,
+    title: sec.title || spec.title,
+    subsections: sec.subsections.slice(0, spec.count), // 초과 생성 시 정규화
+    evidence: sec.evidence || '',
+  };
+}
+
+// ── 섹션 1개 생성 + 3회 백오프 재시도 ──
+async function generateSectionWithRetry(baseMessages, spec) {
+  const _sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) await _sleep(attempt === 1 ? 500 : 1500);
+      return await generateOneSection(baseMessages, spec);
+    } catch (e) {
+      lastErr = e;
+      console.warn(`[generate-upsell] 섹션 ${spec.id} ${attempt + 1}차 실패`, e && e.message);
+    }
+  }
+  throw lastErr || new Error(`섹션 ${spec.id} 실패`);
 }
 
 export default async function handler(req, res) {
@@ -67,7 +151,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ phase: ph, cards });
     }
 
-    // ── full: 결제 후 심층 리포트 (GPT 5섹션) ──
+    // ── full: 결제 후 심층 리포트 (GPT 4섹션 병렬) ──
     if (!target) return res.status(400).json({ error: 'target required for full' });
     if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: 'OPENAI_API_KEY not configured' });
 
@@ -99,7 +183,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // ── 결제 검증 (업셀 4,900원) ──
+    // ── 결제 검증 (업셀 5,900원) ──
     // 정책은 save-rating-report.js와 동일: 명시적 미결제(status_*)만 차단.
     let _verified = null;
     if (payment_id) {
@@ -115,39 +199,22 @@ export default async function handler(req, res) {
     }
 
     // me: { year, month, day, hour, gender } / target: { name, year, month, day, hour }
-    const messages = buildDeepPromptMessages(me, target, new Date());
+    // 공유 컨텍스트(사주 팩트 + few-shot)를 1번 만들어, 4섹션 콜이 전부 이걸 공유 → 인물 일관성 고정
+    const baseMessages = buildDeepPromptMessages(me, target, new Date());
 
-    const gptRes = await fetchT('https://api.openai.com/v1/chat/completions', 95000, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        temperature: 0.85,
-        max_tokens: 8500, // 5섹션 + 3~4문장 body 여유 (maxDuration 120s / GPT 95s 예산 내)
-        response_format: { type: 'json_object' },
-        messages,
-      }),
-    });
-    if (!gptRes.ok) {
-      const t = await gptRes.text().catch(() => '');
-      console.error('[generate-upsell] OpenAI error', gptRes.status, t);
-      return res.status(502).json({ error: 'GPT request failed', status: gptRes.status });
+    // ── 4섹션 병렬 생성 (섹션별 3회 재시도) ──
+    const settled = await Promise.allSettled(SECTION_SPECS.map((spec) => generateSectionWithRetry(baseMessages, spec)));
+    const failedTitles = settled.map((r, i) => (r.status === 'rejected' ? SECTION_SPECS[i].title : null)).filter(Boolean);
+    if (failedTitles.length) {
+      // 한 섹션이라도 최종 실패하면 엉성한 리포트 대신 통째로 실패 (프론트 에러 모달 → 문의/환불)
+      const why = settled.map((r) => (r.status === 'rejected' && r.reason && r.reason.message)).filter(Boolean)[0] || '';
+      console.error('[generate-upsell] 섹션 최종 실패:', failedTitles, '::', why);
+      return res.status(502).json({ error: 'section_generation_failed', failed: failedTitles });
     }
-
-    const gptJson = await gptRes.json();
-    let raw = (gptJson?.choices?.[0]?.message?.content || '').replace(/```json|```/g, '').trim();
-    let parsed;
-    try { parsed = JSON.parse(raw); }
-    catch (e) { console.error('[generate-upsell] parse fail', raw.slice(0, 400)); return res.status(502).json({ error: 'Malformed GPT output' }); }
-
-    const sections = Array.isArray(parsed.sections) ? parsed.sections : [];
-    if (sections.length < 4) {
-      console.error('[generate-upsell] expected 4 sections, got', sections.length, raw.slice(0, 400));
-      return res.status(502).json({ error: 'Incomplete report' });
-    }
+    const sections = settled.map((r) => r.value).sort((a, b) => a.id - b.id);
 
     const report = {
-      target_name: parsed.target_name || (target && target.name) || '그',
+      target_name: (target && target.name) || '그',
       sections,
     };
 
@@ -171,13 +238,13 @@ export default async function handler(req, res) {
             upsell_type: upsellType || 'conquest',
             target_name: report.target_name,
             me, target,
-            report,             // 5섹션 전체 JSON
+            report,             // 4섹션 전체 JSON
           }),
         });
       } catch (e) { console.error('[generate-upsell] supabase fail', e); }
     }
 
-    // ── 이메일 발송 (5섹션 구조) ──
+    // ── 이메일 발송 (섹션 구조) ──
     if (email && process.env.RESEND_API_KEY) {
       try {
         const tName = report.target_name;
@@ -194,7 +261,7 @@ export default async function handler(req, res) {
               </div>`
             ).join('<hr style="border:none;border-top:1px solid #ece3d3;margin:8px 0;">');
           }
-          // 섹션 5: timeline 구조
+          // 섹션 5: timeline 구조 (현재 미사용, 구조 호환 유지)
           if (Array.isArray(sec.timeline)) {
             if (sec.approach) innerHtml += `<div style="font-size:13px;color:#3a322a;margin-bottom:10px;">${esc(sec.approach)}</div>`;
             const rows = sec.timeline.map(t =>
@@ -234,7 +301,7 @@ export default async function handler(req, res) {
       } catch (e) { console.error('[generate-upsell] resend fail', e); }
     }
 
-    // ── 검증 통과 시에만 메타 CAPI Purchase 전송 (업셀 4,900원) ──
+    // ── 검증 통과 시에만 메타 CAPI Purchase 전송 (업셀 5,900원) ──
     if (_verified) {
       const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim();
       await sendMetaPurchase({
