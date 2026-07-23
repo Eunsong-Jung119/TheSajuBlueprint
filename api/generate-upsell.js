@@ -62,7 +62,8 @@ async function generateOneSection(baseMessages, spec) {
     '\n\n━━━━━━━━━━━━━━━━━━━━\n' +
     '★이번 요청 출력 형식 (위의 모든 지시보다 우선)★\n' +
     `이번엔 **섹션 ${spec.id} "${spec.title}" 하나만** 작성해. 이 섹션의 subsection ${spec.count}개를 전부, ` +
-    '앞의 규칙(각 body 정확히 4문장·공백 제외 130~170자·근거 다양화·checkpoint 필수)을 그대로 지켜서 써.\n' +
+    '앞의 규칙(각 body 5~6문장·공백 제외 210~290자·분량은 장면 밀도로 채우기·단정형(유보형 금지)·근거 다양화·checkpoint 필수)을 그대로 지켜서 써.\n' +
+    '★특히 이 섹션의 subsection 전부를 첫 subsection과 같은 밀도(길이·장면 수)로 써라. 뒤 subsection이 짧아지면 실패다.★\n' +
     `섹션 ${spec.id} 외의 다른 섹션(1~4 중 나머지)은 **절대 출력하지 마.**\n` +
     '아래 JSON 스키마 그대로만 응답(다른 텍스트 없이):\n' +
     `{"sections":[{"id":${spec.id},"title":"${spec.title}","subsections":[{"subtitle":"...","body":"...","checkpoint":"→ ..."}],"evidence":"..."}]}`;
