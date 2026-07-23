@@ -1080,7 +1080,7 @@ function _upsView(){_chrome(false);document.getElementById('result-view').classL
 function _upsBack(){if(_ups&&_ups.standalone){document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.remove('show');document.getElementById('landing-view').style.display='block';_chrome(true);window.scrollTo(0,0);return;}_chrome(false);document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.remove('show');document.getElementById('result-view').classList.add('show');window.scrollTo(0,0);}
 function _upsLoad(txt,sub){_chrome(false);document.getElementById('landing-view').style.display='none';document.getElementById('result-view').classList.remove('show');document.getElementById('upsell-view').style.display='none';document.getElementById('loading-view').classList.add('show');document.getElementById('loading-text').textContent=txt;document.getElementById('loading-sub').textContent=sub||'';window.scrollTo(0,0);}
 
-function _upsShell(inner, fixedHeight){document.getElementById('loading-view').classList.remove('show');const hgt=fixedHeight?'min-height:100vh;min-height:100dvh;height:100dvh;':'min-height:100vh;min-height:100dvh;';document.getElementById('upsell-wrap').innerHTML=`<style>#ups-track::-webkit-scrollbar{display:none}@keyframes upsSwipeHint{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}</style><div style="${hgt}background:${DK};display:flex;flex-direction:column;">${inner}</div>`;_upsView();}
+function _upsShell(inner, fixedHeight){document.getElementById('loading-view').classList.remove('show');const hgt=fixedHeight?'min-height:100vh;min-height:100dvh;height:100dvh;':'min-height:100vh;min-height:100dvh;';document.getElementById('upsell-wrap').innerHTML=`<style>#ups-track::-webkit-scrollbar{display:none}@keyframes upsSwipeHint{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}</style><div style="${hgt}background:${DK};display:flex;flex-direction:column;overflow:hidden;">${inner}</div>`;_upsView();}
 // 다크 풀스크린 스와이프 + 화살표 (cards: [{lines[],basis}])
 function _renderSwipe(cards,eyebrows,accentLast,footerHTML){
   const n=cards.length;
@@ -1098,7 +1098,7 @@ function _renderSwipe(cards,eyebrows,accentLast,footerHTML){
   const dots=cards.map((_,i)=>`<span class="ups-dot" style="width:7px;height:7px;border-radius:50%;background:${i===0?DK_TXT:DK_DOT};transition:all .2s;"></span>`).join('');
   const arr='position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid #2a2a32;background:rgba(255,255,255,0.05);color:#f2f2f4;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;';
   const arrows=n>1?`<button id="ups-prev" aria-label="이전" style="${arr}left:6px;">‹</button><button id="ups-next" aria-label="다음" style="${arr}right:6px;">›</button>`:'';
-  return `<div style="flex:1;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
+  return `<div style="flex:1;min-height:0;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
     `<div style="height:44px;flex:0 0 auto;"></div>`+
     arrows+
     `<div id="ups-track" style="flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;">${slides}</div>`+
@@ -1366,7 +1366,7 @@ function renderManTeaser(){
   const coach=`<div id="ups-coach" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;background:rgba(13,13,17,0.82);border:1px solid #2a2a32;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:8px;pointer-events:none;transition:opacity .4s;backdrop-filter:blur(2px);">`+
     `<span style="font-size:18px;animation:upsSwipeHint 1.2s ease-in-out infinite;">👈</span>`+
     `<span style="font-size:13px;color:#f2f2f4;white-space:nowrap;">옆으로 넘겨보세요</span></div>`;
-  const inner=`<div style="flex:1;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
+  const inner=`<div style="flex:1;min-height:0;display:flex;flex-direction:column;width:100%;max-width:480px;margin:0 auto;position:relative;">`+
     `<div style="flex:0 0 auto;min-height:44px;padding-top:calc(env(safe-area-inset-top) + 8px);display:flex;align-items:center;justify-content:space-between;padding-left:8px;padding-right:16px;"><a onclick="_upsBack()" style="font-size:13px;color:#8a8a94;text-decoration:none;cursor:pointer;padding:8px;">${standalone?'← 뒤로':'← 결과로'}</a><span id="ups-counter" style="font-size:13px;color:#8a8a94;font-family:monospace;">1 / ${total}</span></div>`+
     `<button id="ups-prev" aria-label="이전" style="${arr}left:6px;">‹</button><button id="ups-next" aria-label="다음" style="${arr}right:6px;">›</button>`+
     coach+
