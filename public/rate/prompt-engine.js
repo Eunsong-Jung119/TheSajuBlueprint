@@ -1416,7 +1416,7 @@ async function runWorker(headerText, partnerBlock, nickname) {
   });
   messages.push({ role: 'user', content: `${headerText}\n\n${partnerBlock}` });
 
-  const out = await callAnalyze(messages, 2600, 0.75);
+  const out = await callAnalyze(messages, 3200, 0.75);
   // 모델이 실수로 results 배열로 감싸는 경우 흡수
   const item = Array.isArray(out?.results) ? out.results[0] : out;
   if (!item || !item.sections) throw new Error(`[${nickname}] 섹션 누락`);
@@ -1456,24 +1456,33 @@ async function runSummary(results, computedScores, partners) {
 // ── 메인 ────────────────────────────────────────────────
 async function analyzeCompatibility(myInfo, partners) {
   const { annualFlow, headerText, partnerBlocks, computedScores } = buildContext(myInfo, partners);
-
-  // 남자별 병렬 생성. 실패한 건만 1회 재시도.
+ 
+  const _sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+ 
+  // 남자별 병렬 생성. 실패한 건만 백오프로 최대 3회 재시도.
   async function withRetry(i) {
-    try {
-      return await runWorker(headerText, partnerBlocks[i], partners[i].nickname);
-    } catch (e) {
-      console.warn(`[worker] ${partners[i].nickname} 1차 실패 → 재시도`, e && e.message);
-      return await runWorker(headerText, partnerBlocks[i], partners[i].nickname);
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt > 0) await _sleep(attempt === 1 ? 500 : 1500);
+        return await runWorker(headerText, partnerBlocks[i], partners[i].nickname);
+      } catch (e) {
+        lastErr = e;
+        console.warn(`[worker] ${partners[i].nickname} ${attempt + 1}차 실패`, e && e.message);
+      }
     }
+    throw lastErr || new Error('unknown');
   }
-
+ 
   const settled = await Promise.allSettled(partners.map((_, i) => withRetry(i)));
-  const failed = settled.map((r, i) => r.status === 'rejected' ? partners[i].nickname : null).filter(Boolean);
+  const failed = settled.map((r, i) => (r.status === 'rejected' ? partners[i].nickname : null)).filter(Boolean);
   if (failed.length) {
+    // 실제 실패 원인(첫 번째 reason)을 메시지에 실어 로그로 남긴다.
+    const why = settled.map((r) => r.reason && r.reason.message).filter(Boolean)[0] || '';
     console.error('[worker] 최종 실패:', failed);
-    throw new Error(`리포트 생성 실패 (${failed.join(', ')})`);
+    throw new Error(`리포트 생성 실패 (${failed.join(', ')})${why ? ' :: ' + why : ''}`);
   }
-
+ 
   const results = settled.map((r, i) => {
     const item = r.value;
     const s = computedScores[i];
@@ -1481,14 +1490,14 @@ async function analyzeCompatibility(myInfo, partners) {
                     perspective: s.perspective, timing: s.timing, total: s.total };
     return item;
   }).sort((a, b) => b.scores.total - a.scores.total);
-
+ 
   // 총평은 2명 이상일 때만. 실패해도 리포트는 살린다.
   let ranking_comment = null;
   if (partners.length > 1) {
     try { ranking_comment = await runSummary(results, computedScores, partners); }
     catch (e) { console.warn('[summary] 실패 — 총평 없이 진행', e && e.message); }
   }
-
+ 
   return { annual_flow: annualFlow, results, ranking_comment };
 }
 

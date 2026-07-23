@@ -528,6 +528,14 @@ select{cursor:pointer;}
   <div id="guys-container"></div>
   <button class="add-btn" onclick="addGuy()" id="add-guy-btn">+ 남자 추가하기 <span style="font-size:clamp(12px,3.4vw,13.5px);opacity:.6;">(최대 5명)</span></button>
 
+  <div class="fade-up" style="margin-bottom:10px;">
+    <div style="display:flex;gap:8px;">
+      <input type="text" id="coupon-code" placeholder="쿠폰 코드 (선택)" autocapitalize="characters" autocomplete="off" style="flex:1;height:44px;padding:0 13px;font-size:16px;color:var(--text);background:var(--surface-2);border:1px solid var(--border-strong);border-radius:10px;outline:none;font-family:'Pretendard',sans-serif;">
+      <button type="button" onclick="applyRateCoupon()" style="flex:0 0 auto;padding:0 18px;height:44px;border:1px solid var(--pink);background:#fff;color:var(--pink);border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Pretendard',sans-serif;">적용</button>
+    </div>
+    <div id="coupon-msg" style="font-size:12px;margin-top:6px;min-height:16px;"></div>
+  </div>
+
   <div class="fade-up">
     <button class="cta-btn" onclick="onSubmit()">🔮 사주기반 랭킹분석 <span class="price-tag">5,900원</span></button>
     <p class="cta-hint">결제 후 즉시 결과 확인 · 이메일 발송 · <s style="opacity:.6">9,900원</s> → 5,900원</p>
@@ -597,6 +605,7 @@ function openInBrowser(){const url=window.location.href,isIOS=/iPhone|iPad|iPod/
 })();
 
 let guyCount=0,guyIds=[],formData=null,analysisRunning=false,_userEmail=null;
+let _rateCoupon=null,_upsCoupon=null;
 
 // ⚠️ 결제 안전장치: 런칭 전까지 LIVE_MODE=false 유지 → 무조건 테스트 결제(실결제 절대 발생 X).
 //    런칭 준비 끝나면 LIVE_MODE=true 로 바꿔. 그때부터 운영 도메인=실결제 / ?test=1=테스트.
@@ -876,6 +885,35 @@ function applySentenceBlur() {
   });
 }
 
+// ── 쿠폰 (무료 코드 · 서버 검증) ──
+async function validateCoupon(code, type){
+  try{
+    const res=await fetch('/api/validate-coupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:(code||'').trim().toUpperCase(),type:type,session_id:getSessionId()})});
+    if(!res.ok) return {valid:false,reason:'server'};
+    return await res.json();
+  }catch(e){ return {valid:false,reason:'network'}; }
+}
+function _couponReason(r){ const x=r&&r.reason; if(x==='used_up')return '이미 사용된 쿠폰이에요'; if(x==='expired')return '기간이 만료된 쿠폰이에요'; if(x==='wrong_type')return '이 상품에는 쓸 수 없는 쿠폰이에요'; return '사용할 수 없는 쿠폰이에요'; }
+function _setRateCta(free){ const btn=document.querySelector('.cta-btn'); if(!btn)return; btn.innerHTML = free ? '🎁 무료로 분석받기' : ('🔮 사주기반 랭킹분석 <span class="price-tag">5,900원</span>'); }
+async function applyRateCoupon(){
+  const el=document.getElementById('coupon-code'), msg=document.getElementById('coupon-msg');
+  const code=(el?el.value:'').trim().toUpperCase();
+  if(!code){ _rateCoupon=null; if(msg)msg.textContent=''; _setRateCta(false); return; }
+  if(msg){msg.style.color='var(--text-muted)'; msg.textContent='확인 중...';}
+  const r=await validateCoupon(code,'rate');
+  if(r&&r.valid){ _rateCoupon=code; if(el)el.value=code; if(msg){msg.style.color='#1D9A6C';msg.textContent='✓ 무료 쿠폰 적용됨 · 결제 없이 바로 분석돼요';} _setRateCta(true); }
+  else { _rateCoupon=null; _setRateCta(false); if(msg){msg.style.color='var(--pink)';msg.textContent='✗ '+_couponReason(r);} }
+}
+async function applyUpsCoupon(){
+  const el=document.getElementById('ups-coupon'), msg=document.getElementById('ups-coupon-msg');
+  const code=(el?el.value:'').trim().toUpperCase();
+  if(!code){ _upsCoupon=null; if(msg)msg.textContent=''; return; }
+  if(msg){msg.style.color='#9a9aa6'; msg.textContent='확인 중...';}
+  const r=await validateCoupon(code,'upsell');
+  if(r&&r.valid){ _upsCoupon=code; if(msg){msg.style.color='#4ade80';msg.textContent='✓ 무료 쿠폰 적용됨 · 결제 없이 바로 생성돼요';} }
+  else { _upsCoupon=null; if(msg){msg.style.color='#ff6b8a';msg.textContent='✗ '+_couponReason(r);} }
+}
+
 function onSubmit(){
   const data=collectForm();
   if(!data){alert('내 생년월일과 남자 정보 최소 1명은 입력해주세요!');return;}
@@ -899,6 +937,7 @@ function onSubmit(){
   formData=data;
   trackEvent('analysis_requested',{guy_count:data.guys.length});
   localStorage.setItem('ryex_form',JSON.stringify(data));
+  if(_rateCoupon){ window._rateCouponActive=_rateCoupon; trackEvent('rate_coupon_free',{code:_rateCoupon}); runAnalysis(formData); return; }
   openPaywall();
 }
 
@@ -947,7 +986,7 @@ async function runAnalysis(data){
     try{
       const _fbR=getFbIds();
       const _rankPid=window._rankPaymentId||localStorage.getItem('ryex_rank_pid')||null;
-      const saveRes=await fetch('/api/save-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:getSessionId(),whop_receipt_id:null,email:emailToSend,payment_id:_rankPid,fbp:_fbR.fbp,fbc:_fbR.fbc,my_year:myInfo.year,my_month:myInfo.month,my_day:myInfo.day,my_hour:myInfo.hour,my_gender:myInfo.gender,partners,result})});
+      const saveRes=await fetch('/api/save-rating-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:getSessionId(),whop_receipt_id:null,email:emailToSend,payment_id:_rankPid,coupon_code:(window._rateCouponActive||null),fbp:_fbR.fbp,fbc:_fbR.fbc,my_year:myInfo.year,my_month:myInfo.month,my_day:myInfo.day,my_hour:myInfo.hour,my_gender:myInfo.gender,partners,result})});
       const saveJson=await saveRes.json();
       // 공유 URL을 한국판 경로로 강제 (영문 포맷으로 새는 것 방지)
       let rid=saveJson.shareId||saveJson.id||saveJson.report_id||null;
@@ -1224,6 +1263,7 @@ function _reportSlide(rc,payHTML,big){
 function renderManTeaser(){
   const tName=(_ups.target&&_ups.target.name)||'그';
   const standalone=!!(_ups&&_ups.standalone);
+  _upsCoupon=null;
   const SIN='width:100%;box-sizing:border-box;height:48px;padding:0 13px;font-size:16px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:11px;outline:none;font-family:inherit;';
   const MO=[1,2,3,4,5,6,7,8,9,10,11,12].map(m=>`<option value="${m}">${m}월</option>`).join('');
   const emailPre=(localStorage.getItem('ryex_email')||'').replace(/["'<>]/g,'');
@@ -1304,6 +1344,14 @@ function renderManTeaser(){
       `</div>`
     ):'')+
     `<div style="text-align:left;margin-bottom:clamp(16px,4.6vw,20px);">`+
+      `<label style="display:block;font-size:11px;color:${BODY};margin-bottom:6px;">🎟️ 쿠폰 코드 (선택)</label>`+
+      `<div style="display:flex;gap:8px;">`+
+        `<input id="ups-coupon" type="text" autocapitalize="characters" autocomplete="off" placeholder="쿠폰 코드" style="flex:1;box-sizing:border-box;height:46px;padding:0 13px;font-size:16px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:11px;outline:none;font-family:inherit;">`+
+        `<button type="button" onclick="applyUpsCoupon()" style="flex:0 0 auto;padding:0 16px;height:46px;border:1px solid ${RED};background:transparent;color:${RED};border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;">적용</button>`+
+      `</div>`+
+      `<div id="ups-coupon-msg" style="font-size:11px;margin-top:5px;min-height:14px;"></div>`+
+    `</div>`+
+    `<div style="text-align:left;margin-bottom:clamp(16px,4.6vw,20px);">`+
       `<label style="display:block;font-size:11px;color:${BODY};margin-bottom:6px;">📩 리포트 받을 이메일</label>`+
       `<input id="ups-email" type="email" inputmode="email" autocapitalize="none" autocomplete="email" value="${emailPre}" placeholder="you@example.com" oninput="var e=document.getElementById('ups-email-err');if(e)e.style.display='none';" style="width:100%;box-sizing:border-box;height:46px;padding:0 14px;font-size:14px;color:#f2f2f4;background:#0d0d11;border:1px solid #3a3340;border-radius:10px;outline:none;">`+
       `<div id="ups-email-err" style="display:none;font-size:11px;color:#ff6b8a;margin-top:5px;">올바른 이메일을 입력해줘.</div>`+
@@ -1361,6 +1409,7 @@ async function upsellPay(){
   _userEmail=em; localStorage.setItem('ryex_email',em);
   localStorage.setItem('ryex_upsell',JSON.stringify({type:_ups.type,me:_ups.me,target:_ups.target,ts:Date.now()}));
   trackEvent('upsell_paywall_shown',{upsell_type:_ups.type});
+  if(_upsCoupon){ _ups.coupon_code=_upsCoupon; _ups.payment_id=null; try{const _i=JSON.parse(localStorage.getItem('ryex_upsell')||'{}');_i.coupon_code=_upsCoupon;localStorage.setItem('ryex_upsell',JSON.stringify(_i));}catch(e){} trackEvent('upsell_coupon_free',{code:_upsCoupon}); upsellFull(); return; }
   try{
     const response=await PortOne.requestPayment({
       storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
@@ -1390,7 +1439,7 @@ async function upsellFull(){
   try{
     const email=_userEmail||localStorage.getItem('ryex_email')||null;
     const _fb=getFbIds();
-    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,phase:'full',me:intent.me,target:intent.target,session_id:getSessionId(),email,payment_id:intent.payment_id||null,fbp:_fb.fbp,fbc:_fb.fbc})});
+    const res=await fetch('/api/generate-upsell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upsellType:intent.type,phase:'full',me:intent.me,target:intent.target,session_id:getSessionId(),email,payment_id:intent.payment_id||null,coupon_code:intent.coupon_code||null,fbp:_fb.fbp,fbc:_fb.fbc})});
     if(!res.ok)throw new Error('full '+res.status);
     const data=await res.json();
     renderFull(intent,data);
