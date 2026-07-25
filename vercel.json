@@ -10,42 +10,8 @@
     { "source": "/", "has": [{ "type": "host", "value": "fatelab.co" }],     "destination": "/rate/index.html" },
     { "source": "/", "has": [{ "type": "host", "value": "www.fatelab.co" }], "destination": "/rate/index.html" },
     { "source": "/r/:id",         "destination": "/api/r/:id" },
-    { "source": "/",              "destination": "/index.html" },
-    { "source": "/order",         "destination": "/order.html" },
-    { "source": "/checkout",      "destination": "/checkout.html" },
-    { "source": "/generating",    "destination": "/generating.html" },
-    { "source": "/result",        "destination": "/result.html" },
-    { "source": "/success",       "destination": "/success.html" },
-    { "source": "/terms",         "destination": "/terms.html" },
-    { "source": "/privacy",       "destination": "/privacy.html" },
-    { "source": "/refund",        "destination": "/refund.html" },
-    { "source": "/compatibility", "destination": "/compatibility.html" },
-    { "source": "/shortresult",   "destination": "/shortresult.html" },
-    { "source": "/bazi-chart",    "destination": "/bazi-chart.html" },
-    { "source": "/saju-chart",    "destination": "/SajuChart/index.html" },
-    { "source": "/rate",          "destination": "/rate/index.html" },
-    { "source": "/rate/terms",    "destination": "/rate/terms.html" },
-    { "source": "/rate/privacy",  "destination": "/rate/privacy.html" },
-    { "source": "/rate/dashboard","destination": "/rate/rate-dashboard.html" },
-    { "source": "/dashboard",     "destination": "/dashboard.html" },
-    { "source": "/rate-en-form",  "destination": "/rate-en-form.html" },
-    { "source": "/demo",          "destination": "/demo.html" }
-  ]
-}
-EOFcat > vercel.json << 'EOF'
-{
-  "version": 2,
-  "headers": [
-    {
-      "source": "/.well-known/apple-developer-merchantid-domain-association",
-      "headers": [{ "key": "Content-Type", "value": "text/plain" }]
-    }
-  ],
-  "rewrites": [
-    { "source": "/", "has": [{ "type": "host", "value": "fatelab.co" }],     "destination": "/rate/index.html" },
-    { "source": "/", "has": [{ "type": "host", "value": "www.fatelab.co" }], "destination": "/rate/index.html" },
-    { "source": "/r/:id",         "destination": "/api/r/:id" },
-    { "source": "/",              "destination": "/index.html" },
+    { "source": "/",              "destination": "/home.html" },
+    { "source": "/index.html",    "destination": "/home.html" },
     { "source": "/order",         "destination": "/order.html" },
     { "source": "/checkout",      "destination": "/checkout.html" },
     { "source": "/generating",    "destination": "/generating.html" },
