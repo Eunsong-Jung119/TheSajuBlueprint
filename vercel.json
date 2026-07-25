@@ -7,10 +7,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/", "has": [{ "type": "host", "value": "fatelab.co" }],     "destination": "/rate/index.html" },
-    { "source": "/", "has": [{ "type": "host", "value": "www.fatelab.co" }], "destination": "/rate/index.html" },
     { "source": "/r/:id",         "destination": "/api/r/:id" },
-    { "source": "/",              "destination": "/home.html" },
+    { "source": "/",              "destination": "/rate/index.html" },
+    { "source": "/home",          "destination": "/home.html" },
     { "source": "/index.html",    "destination": "/home.html" },
     { "source": "/order",         "destination": "/order.html" },
     { "source": "/checkout",      "destination": "/checkout.html" },
