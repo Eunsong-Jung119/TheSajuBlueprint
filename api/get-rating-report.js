@@ -7,7 +7,7 @@ const supabase = createClient(
 
 module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+    res.setHeader('Access-Control-Allow-Origin', ['https://sajublueprint.com','https://www.sajublueprint.com','https://fatelab.co','https://www.fatelab.co'].includes(req.headers.origin) ? req.headers.origin : 'https://fatelab.co');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
 
   if (req.method !== 'GET') return res.status(405).end();
 
-  res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+  res.setHeader('Access-Control-Allow-Origin', ['https://sajublueprint.com','https://www.sajublueprint.com','https://fatelab.co','https://www.fatelab.co'].includes(req.headers.origin) ? req.headers.origin : 'https://fatelab.co');
 
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Missing id' });

@@ -7,7 +7,7 @@
 <meta name="description" content="썸남이든 전 남친이든 다 넣어봐. 누가 진짜 네 인연인지 사주로 분석해줄게.">
 <meta property="og:title" content="사주로 분석하는 썸남 랭킹🔮">
 <meta property="og:description" content="썸남? 전남친? 다 넣어봐. 누가 진짜 네 인연인지 사주로 분석해줄게.">
-<meta property="og:image" content="https://sajublueprint.com/rate/og-image.png">
+<meta property="og:image" content="https://fatelab.co/rate/og-image.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -610,7 +610,7 @@ let _rateCoupon=null,_upsCoupon=null;
 // ⚠️ 결제 안전장치: 런칭 전까지 LIVE_MODE=false 유지 → 무조건 테스트 결제(실결제 절대 발생 X).
 //    런칭 준비 끝나면 LIVE_MODE=true 로 바꿔. 그때부터 운영 도메인=실결제 / ?test=1=테스트.
 const LIVE_MODE = true;
-const IS_TEST_PAY = !LIVE_MODE || location.search.includes('test=1') || location.hostname !== 'sajublueprint.com';
+const IS_TEST_PAY = !LIVE_MODE || location.search.includes('test=1') || !['sajublueprint.com','www.sajublueprint.com','fatelab.co','www.fatelab.co'].includes(location.hostname);
 const PAY_CHANNEL_KEY = IS_TEST_PAY
   ? 'channel-key-42310ca7-0d20-42d1-90d7-4abaed5778ba'   // 테스트 (INIpayTest, V2)
   : 'channel-key-633ce4cf-a5a7-4b28-94f9-2f5d5c49dbfc';  // 실결제 (MOI1435306)
@@ -953,11 +953,11 @@ async function openPaywall(){
       currency:'KRW',
       payMethod:'CARD',
       customer:{
-        email:_userEmail||'guest@sajublueprint.com',
+        email:_userEmail||'guest@fatelab.co',
         phoneNumber:'01000000000',
         fullName:'구매자'
       },
-      redirectUrl:'https://sajublueprint.com/rate'
+      redirectUrl:location.origin+'/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
     trackEvent('payment_confirmed',{payment_id:response.paymentId,amount:PRICE_RANK,...getFbIds()});
@@ -995,7 +995,7 @@ async function runAnalysis(data){
         rid=m?m[1]:null;
       }
       // 공유는 /r/{id} (봇에 개인화 OG 썸네일, 사람은 /rate?report= 로 리다이렉트)
-      shareUrl=rid?`https://sajublueprint.com/r/${rid}`:(saveJson.shareUrl||null);
+      shareUrl=rid?`${location.origin}/r/${rid}`:(saveJson.shareUrl||null);
       // 여기까지 왔으면 결제→생성→저장이 완결됐다. 복구 대상에서 제외 표시.
       if(shareUrl&&_rankPid){ try{ localStorage.setItem('ryex_done_'+_rankPid,'1'); }catch(e){} }
       // 이메일 발송
@@ -1417,8 +1417,8 @@ async function upsellPay(){
       paymentId:'upsell_'+Date.now(),
       orderName:UPSELL_ORDER[_ups.type]||'심층 분석',
       totalAmount:PRICE_UPSELL,currency:'KRW',payMethod:'CARD',
-      customer:{email:_userEmail||localStorage.getItem('ryex_email')||'guest@sajublueprint.com',phoneNumber:'01000000000',fullName:'구매자'},
-      redirectUrl:'https://sajublueprint.com/rate'
+      customer:{email:_userEmail||localStorage.getItem('ryex_email')||'guest@fatelab.co',phoneNumber:'01000000000',fullName:'구매자'},
+      redirectUrl:location.origin+'/rate'
     });
     if(response.code){if(response.code!=='FAILURE_TYPE_PG')alert('결제 실패: '+response.message);return;}
     trackEvent('upsell_payment_confirmed',{upsell_type:_ups.type,payment_id:response.paymentId,amount:PRICE_UPSELL,...getFbIds()});
@@ -1460,7 +1460,7 @@ function renderFull(intent,data){
   const rid = data.reportId || intent.reportId || null;
   if(rid){ try{ history.replaceState(null,'',`/rate?upsell=${rid}`); }catch(_){ } }
   const reportHTML = (typeof window.renderDeepReport==='function') ? window.renderDeepReport(report) : '';
-  window._upsShareUrl = rid ? `https://sajublueprint.com/rate?upsell=${rid}` : null;
+  window._upsShareUrl = rid ? `${location.origin}/rate?upsell=${rid}` : null;
   const shareBtn = window._upsShareUrl
     ? `<button onclick="shareUpsell()" style="${DK_BTN}background:#c9a96a;color:#1a1410;margin-top:18px;">📤 이 리포트 공유하기</button>`
     : '';
@@ -1523,7 +1523,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
           localStorage.setItem('ryex_form',JSON.stringify(restored));
         }
       }catch(e){console.error('[restore form]',e);}
-      showResult(json.result,`https://sajublueprint.com/r/${reportId}`);
+      showResult(json.result,`${location.origin}/r/${reportId}`);
     }catch(e){
       document.getElementById('loading-view').classList.remove('show');
       document.getElementById('landing-view').style.display='block';

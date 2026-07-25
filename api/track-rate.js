@@ -69,13 +69,13 @@ const clip = (v, n = MAX_STR) =>
 
 module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+    res.setHeader('Access-Control-Allow-Origin', ['https://sajublueprint.com','https://www.sajublueprint.com','https://fatelab.co','https://www.fatelab.co'].includes(req.headers.origin) ? req.headers.origin : 'https://fatelab.co');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
   if (req.method !== 'POST') return res.status(405).end();
-  res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+  res.setHeader('Access-Control-Allow-Origin', ['https://sajublueprint.com','https://www.sajublueprint.com','https://fatelab.co','https://www.fatelab.co'].includes(req.headers.origin) ? req.headers.origin : 'https://fatelab.co');
 
   // navigator.sendBeacon 은 Content-Type 이 text/plain 이라 body가 문자열로 들어온다.
   // 페이지를 떠나는 순간(에러 후 이탈)에도 전송되므로 반드시 파싱해줘야 함.

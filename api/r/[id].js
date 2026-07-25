@@ -6,7 +6,10 @@
 
 export default async function handler(req, res) {
   const id = String(req.query.id || '').replace(/[^A-Za-z0-9_-]/g, '');
-  const site = 'https://sajublueprint.com';
+  // 방문한 도메인 기준으로 링크 생성(옛/새 도메인 모두 지원). Host 스푸핑 방지용 허용목록.
+  const _host = String(req.headers.host || '').toLowerCase();
+  const _ALLOWED = ['sajublueprint.com','www.sajublueprint.com','fatelab.co','www.fatelab.co'];
+  const site = 'https://' + (_ALLOWED.includes(_host) ? _host : 'fatelab.co');
 
   if (!id) {
     res.writeHead(302, { Location: `${site}/rate` });

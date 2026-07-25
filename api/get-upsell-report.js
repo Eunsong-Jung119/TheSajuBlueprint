@@ -4,7 +4,7 @@
 // 배치: /api/get-upsell-report.js
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+  res.setHeader('Access-Control-Allow-Origin', ['https://sajublueprint.com','https://www.sajublueprint.com','https://fatelab.co','https://www.fatelab.co'].includes(req.headers.origin) ? req.headers.origin : 'https://fatelab.co');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).end();
 

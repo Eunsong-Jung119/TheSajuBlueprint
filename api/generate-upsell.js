@@ -32,6 +32,10 @@ const { calcSaju } = sajuEngine;
 const { buildWomanCards, buildManCards } = templates;
 const { verifyPortone, sendMetaPurchase } = paymentLib;
 
+// 허용 오리진(옛 도메인 + 새 도메인). 요청 Origin이 목록에 있으면 그대로 반사, 아니면 새 도메인.
+const ALLOWED_ORIGINS = ['https://sajublueprint.com','https://www.sajublueprint.com','https://fatelab.co','https://www.fatelab.co'];
+function corsOrigin(req){ const o = req && req.headers && req.headers.origin; return ALLOWED_ORIGINS.includes(o) ? o : 'https://fatelab.co'; }
+
 // 심층 리포트 4섹션 스펙 (제목은 DEEP_SYSTEM_PROMPT의 섹션 제목과 정확히 일치해야 함)
 const SECTION_SPECS = [
   { id: 1, title: '그는 어떤 여자에게 무너질까', count: 3 },
@@ -124,13 +128,13 @@ async function generateSectionWithRetry(baseMessages, spec) {
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+    res.setHeader('Access-Control-Allow-Origin', corsOrigin(req));
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     return res.status(200).end();
   }
   if (req.method !== 'POST') return res.status(405).end();
-  res.setHeader('Access-Control-Allow-Origin', 'https://sajublueprint.com');
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin(req));
 
   try {
     const { upsellType, phase, me, target, session_id, email, payment_id, coupon_code, fbp, fbc } = req.body || {};
@@ -279,14 +283,14 @@ export default async function handler(req, res) {
           </div>`;
         }).join('');
 
-        const webUrl = `https://sajublueprint.com/rate?upsell=${reportId}`;
+        const webUrl = `${corsOrigin(req)}/rate?upsell=${reportId}`;
         const html = `<div style="max-width:560px;margin:0 auto;font-family:sans-serif;padding:20px;background:#faf6ef;">
           <div style="font-family:serif;font-size:21px;font-weight:800;color:#1a1410;margin-bottom:4px;">🔮 ${esc(tName)} 심층 분석 리포트</div>
           <div style="font-size:13px;color:#8a8a94;margin-bottom:16px;">사주명리 기반 · The Saju Blueprint</div>
           <a href="${webUrl}" style="display:block;text-align:center;background:#1a1410;color:#f0e6d4;text-decoration:none;font-size:14px;font-weight:700;padding:14px;border-radius:12px;margin-bottom:18px;">🔮 웹에서 전체 리포트 보기</a>
           ${cardHtml}
           <a href="${webUrl}" style="display:block;text-align:center;background:#c9a96a;color:#fff;text-decoration:none;font-size:13px;font-weight:700;padding:12px;border-radius:10px;margin-top:16px;">전체 리포트 다시 보기 →</a>
-          <div style="font-size:11px;color:#aaa;margin-top:20px;text-align:center;">재미로 보는 사주 분석이에요 🙏 · sajublueprint.com</div>
+          <div style="font-size:11px;color:#aaa;margin-top:20px;text-align:center;">재미로 보는 사주 분석이에요 🙏 · fatelab.co</div>
         </div>`;
 
         await fetchT('https://api.resend.com/emails', 8000, {
