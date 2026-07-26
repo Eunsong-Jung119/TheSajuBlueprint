@@ -28,16 +28,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun 
 .track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1);height:100%}
 .step{min-width:100%;padding:22px 24px 20px;flex:0 0 100%}
 .kick{color:var(--peach);font-weight:800;font-size:13px;letter-spacing:.02em;margin-bottom:6px}
-h2{font-size:24px;font-weight:800;color:var(--deep);line-height:1.35;letter-spacing:-.01em}
-.sub{color:var(--ink2);font-size:14px;margin-top:8px}
-.field{margin-top:22px}
-.label{font-size:14px;font-weight:700;color:var(--deep);margin-bottom:8px;display:block}
+h2{font-size:27px;font-weight:800;color:var(--deep);line-height:1.35;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:15px;margin-top:9px}
+.field{margin-top:24px}
+.label{font-size:15px;font-weight:700;color:var(--deep);margin-bottom:8px;display:block}
 .label .opt{color:var(--ink2);font-weight:600;font-size:12px;margin-left:4px}
 .label .req{color:var(--peach);margin-left:3px}
 input[type=text],input[type=email],input[type=date],select{
   width:100%;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16px;color:var(--deep);
   background:#fff;outline:none;transition:border-color .15s;font-family:inherit}
 select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b7a99a' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+input[type=date]{-webkit-appearance:none;appearance:none;min-height:56px;text-align:left;display:block}
+input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+input[type=date]::-webkit-calendar-picker-indicator{margin-left:auto;opacity:.5}
 input:focus,select:focus{border-color:var(--peach)}
 input::placeholder{color:#c9bcae}
 .pills{display:flex;gap:8px;flex-wrap:wrap}
@@ -47,19 +50,32 @@ input::placeholder{color:#c9bcae}
 .row2{display:flex;gap:10px}.row2>*{flex:1}
 .hint{font-size:12px;color:var(--ink2);margin-top:7px}
 .hint.warn{color:#e0703c;font-weight:700}
-.check{display:flex;gap:10px;align-items:flex-start;margin-top:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;cursor:pointer}
-.check input{margin-top:2px;width:18px;height:18px;accent-color:var(--peach);flex:0 0 auto}
-.check span{font-size:13px;color:var(--ink2);line-height:1.55}
+/* 캘린더(출산 가능일 range) */
+.cal{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 12px 12px}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px}
+.calhead button{border:0;background:none;font-size:24px;line-height:1;color:var(--ink2);cursor:pointer;padding:4px 12px;border-radius:8px}
+.calhead .calm{font-size:16px;font-weight:800;color:var(--deep)}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.caldow{font-size:11px;color:var(--ink2);text-align:center;padding:3px 0 6px;font-weight:700}
+.calday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:15px;border-radius:11px;cursor:pointer;color:var(--ink)}
+.calday.mut{visibility:hidden}
+.calday.dis{color:#dcd2c6;cursor:default}
+.calday.inrange{background:var(--peach-soft);border-radius:0}
+.calday.sel{background:var(--peach);color:#fff;font-weight:800}
+.calday.s0{border-radius:11px 0 0 11px}.calday.s1{border-radius:0 11px 11px 0}
+.check{display:flex;gap:12px;align-items:flex-start;margin-top:14px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px 16px;cursor:pointer}
+.check input{margin-top:2px;width:20px;height:20px;accent-color:var(--peach);flex:0 0 auto}
+.check span{font-size:14.5px;color:var(--ink2);line-height:1.6}
 .check span b{color:var(--deep)}
 .check a{color:var(--peach);text-decoration:underline}
 .bottom{position:sticky;bottom:0;background:linear-gradient(0deg,var(--cream) 72%,transparent);padding:14px 24px 22px}
 .next{width:100%;border:0;border-radius:16px;padding:17px;font-size:17px;font-weight:800;color:#fff;
   background:linear-gradient(135deg,#ffb69c,#c9bff0);box-shadow:0 10px 24px rgba(255,150,120,.3);cursor:pointer;transition:opacity .15s}
 .next:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-.recap{background:#fdf7f0;border:1px solid var(--line);border-radius:16px;padding:13px 16px 9px;margin-top:20px}
-.recaph{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:800;color:var(--ink2);margin-bottom:3px}
-.editlink{border:0;background:none;color:var(--peach);font-weight:800;font-size:13px;cursor:pointer;text-decoration:underline}
-.sumrow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #f4ece1;font-size:13.5px}
+.recap{background:#fdf7f0;border:1px solid var(--line);border-radius:16px;padding:16px 18px 12px;margin-top:24px}
+.recaph{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;color:var(--ink2);margin-bottom:5px}
+.editlink{border:0;background:none;color:var(--peach);font-weight:800;font-size:14px;cursor:pointer;text-decoration:underline}
+.sumrow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #f4ece1;font-size:15px}
 .sumrow:last-child{border-bottom:0}
 .sumrow .k{color:var(--ink2);flex:0 0 auto}.sumrow .v{color:var(--deep);font-weight:700;text-align:right}
 .done{text-align:center;padding:60px 30px}.done .emo{font-size:64px}.done h2{margin-top:16px}.done p{color:var(--ink2);font-size:15px;margin-top:12px}
@@ -129,11 +145,8 @@ input::placeholder{color:#c9bcae}
         </div>
         <div class="field">
           <span class="label">출산 가능일 <span class="req">*</span> <span class="opt">(병원 안내 기준 · 3~7일)</span></span>
-          <div class="row2">
-            <input type="date" id="due_start" aria-label="시작일">
-            <input type="date" id="due_end" aria-label="종료일">
-          </div>
-          <div class="hint" id="dueHint">시작일 ~ 종료일을 골라주세요. 이 범위에서 가장 조화로운 날들을 선별해 드려요.</div>
+          <div class="cal" id="cal"></div>
+          <div class="hint" id="dueHint">달력에서 <b>시작일</b>을 누르고 <b>종료일</b>을 누르면 범위가 선택돼요.</div>
         </div>
       </div>
 
@@ -188,10 +201,43 @@ document.querySelectorAll('.pills').forEach(g=>{
     p.onclick=()=>{g.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');data[key]=p.dataset.val;validate();};
   });
 });
-['mom_dob','dad_dob','baby_name','due_start','due_end','c_email'].forEach(id=>{
-  document.getElementById(id).addEventListener('input',()=>{data[id]=document.getElementById(id).value;if(id.startsWith('due'))checkRange();if(id==='c_email')checkEmail();validate();});
+['mom_dob','dad_dob','baby_name','c_email'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{data[id]=document.getElementById(id).value;if(id==='c_email')checkEmail();validate();});
 });
 ['agree_privacy','agree_terms'].forEach(id=>document.getElementById(id).addEventListener('change',e=>{data[id]=e.target.checked;validate();}));
+
+// ===== 출산 가능일 캘린더 (시작~끝 range 선택) =====
+let calY, calM, dStart=null, dEnd=null;
+const _k=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function initCal(){const t=new Date();calY=t.getFullYear();calM=t.getMonth();renderCal();}
+function renderCal(){
+  const el=document.getElementById('cal');if(!el)return;
+  const firstDow=new Date(calY,calM,1).getDay(), days=new Date(calY,calM+1,0).getDate();
+  const today=new Date();today.setHours(0,0,0,0);
+  let h='<div class="calhead"><button type="button" onclick="calNav(-1)">‹</button><span class="calm">'+calY+'년 '+(calM+1)+'월</span><button type="button" onclick="calNav(1)">›</button></div><div class="calgrid">';
+  h+=['일','월','화','수','목','금','토'].map(d=>'<div class="caldow">'+d+'</div>').join('');
+  for(let i=0;i<firstDow;i++) h+='<div class="calday mut"></div>';
+  for(let d=1;d<=days;d++){
+    const cur2=new Date(calY,calM,d), key=_k(cur2);let cls='calday';
+    if(cur2<today) cls+=' dis';
+    else{
+      const isS=dStart&&key===_k(dStart), isE=dEnd&&key===_k(dEnd);
+      if(dStart&&dEnd&&cur2>=dStart&&cur2<=dEnd) cls+=' inrange';
+      if(isS||isE) cls+=' sel';
+      if(isS&&dEnd) cls+=' s0'; if(isE) cls+=' s1';
+    }
+    h+='<div class="'+cls+'"'+(cur2>=today?' onclick="pickDay('+calY+','+calM+','+d+')"':'')+'>'+d+'</div>';
+  }
+  el.innerHTML=h+'</div>';
+}
+function calNav(n){calM+=n;if(calM<0){calM=11;calY--;}if(calM>11){calM=0;calY++;}renderCal();}
+function pickDay(y,m,d){
+  const cur2=new Date(y,m,d);
+  if(!dStart||(dStart&&dEnd)||cur2<dStart){dStart=cur2;dEnd=null;}
+  else{dEnd=cur2;}
+  data.due_start=dStart?_k(dStart):''; data.due_end=dEnd?_k(dEnd):'';
+  renderCal();checkRange();validate();
+}
 
 function checkRange(){
   const s=data.due_start,e=data.due_end,h=document.getElementById('dueHint');
@@ -292,6 +338,7 @@ function showDone(){
   document.querySelector('.bottom').style.display='none';
   document.getElementById('backBtn').style.visibility='hidden';
 }
+initCal();
 render();
 </script>
 </body>
