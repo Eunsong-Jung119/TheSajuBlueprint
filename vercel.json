@@ -8,6 +8,9 @@
   ],
   "rewrites": [
     { "source": "/r/:id",         "destination": "/api/r/:id" },
+    { "source": "/b/:id",         "destination": "/api/birth-report?id=:id" },
+    { "source": "/birth",         "destination": "/birth/index.html" },
+    { "source": "/birth/apply",   "destination": "/birth/apply.html" },
     { "source": "/",              "destination": "/rate/index.html" },
     { "source": "/home",          "destination": "/home.html" },
     { "source": "/index.html",    "destination": "/home.html" },

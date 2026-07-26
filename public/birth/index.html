@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 아기, 어떤 날 만날까요 · 출산택일 + 기질 스케치</title>
+<!--
+  ▶ 결제 연결: 모든 .cta href="/birth/apply" 를 실제 결제 링크로 교체.
+  ▶ ⚠️ 후기(.reviews)는 '예시'입니다. 동의받은 실제 후기로 교체하세요(후기 조작은 표시광고법 위반).
+  ▶ 가격 표기: 허위 할인선(원가 표시) 없이 정가만 노출 — 표시광고법 안전.
+-->
+<style>
+:root{--cream:#fff8f1;--cream2:#fff2e6;--peach:#ffb69c;--peach-soft:#ffe0d2;--lav:#c9bff0;--lav-soft:#ece7fb;
+  --blue:#a9d4f0;--blue-soft:#e2f1fb;--mint:#a9e2c9;--mint-soft:#e0f5ec;--ink:#5a4a44;--ink2:#8a7a72;--deep:#40323b;--gold:#e6a84e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--cream);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;padding:0 22px}
+section{padding:40px 0}
+h1{font-size:30px;line-height:1.38;font-weight:800;color:var(--deep);letter-spacing:-.02em}
+h2{font-size:22px;font-weight:800;color:var(--deep);margin-bottom:10px;letter-spacing:-.01em}
+.kline{color:var(--peach);font-weight:800;font-size:14px;letter-spacing:.02em;margin-bottom:6px}
+p.lead{color:var(--ink2);font-size:16px}
+.hl{color:var(--peach)}
+.cta{display:block;text-decoration:none;text-align:center;font-weight:800;font-size:18px;color:#fff;background:linear-gradient(135deg,#ffb69c,#c9bff0);padding:18px 20px;border-radius:22px;box-shadow:0 12px 26px rgba(255,150,120,.32)}
+.cta small{display:block;font-weight:600;font-size:12px;opacity:.95;margin-top:3px}
+.topbar{background:#fff2e6;color:#a5794f;font-size:13px;text-align:center;padding:9px 16px}
+.topbar b{color:#7a5330}
+.hero{background:radial-gradient(60% 40% at 20% 15%,rgba(201,191,240,.5),transparent 60%),radial-gradient(55% 40% at 85% 20%,rgba(169,212,240,.45),transparent 60%),linear-gradient(180deg,#fff6ec,#fff8f1);text-align:center;padding:32px 0 40px;position:relative;overflow:hidden}
+.hero .badge{display:inline-block;background:#fff;color:var(--peach);font-weight:800;font-size:13px;padding:7px 15px;border-radius:999px;box-shadow:0 4px 14px rgba(255,182,156,.25);margin-bottom:16px}
+.heroimg{width:252px;max-width:64%;margin:2px auto 6px;display:block;background:transparent;
+  -webkit-mask-image:radial-gradient(66% 78% at 50% 46%, #000 38%, rgba(0,0,0,.55) 62%, transparent 80%);
+  mask-image:radial-gradient(66% 78% at 50% 46%, #000 38%, rgba(0,0,0,.55) 62%, transparent 80%)}
+.hero .sub{color:var(--ink2);font-size:16px;margin:14px 0 18px}
+.hero .sub b{color:var(--deep)}
+.pricepill{display:inline-block;background:#fff;border-radius:999px;padding:10px 22px;box-shadow:0 6px 18px rgba(0,0,0,.05);margin-bottom:16px;font-size:15px;color:var(--ink2)}
+.pricepill b{color:var(--deep);font-size:23px}
+.guar{color:#3fae83;font-size:13px;font-weight:700;margin-top:12px}
+.card{background:#fff;border-radius:24px;padding:22px;margin:12px 0;box-shadow:0 8px 24px rgba(160,140,120,.10)}
+.pain li{list-style:none;color:var(--ink2);font-size:15px;padding:9px 0 9px 30px;position:relative}
+.pain li:before{content:"🤍";position:absolute;left:0;top:8px;font-size:15px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:12px 0}
+.step .b{flex:0 0 46px;height:46px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.s1{background:var(--peach-soft)}.s2{background:var(--lav-soft)}.s3{background:var(--mint-soft)}.s4{background:var(--blue-soft)}
+.step b{color:var(--deep);font-size:16px}.step span{color:var(--ink2);font-size:14px}
+/* 차별점 */
+.diffwrap{background:linear-gradient(180deg,#fbf6ff,#fff8f1);border:1px solid #efe6f6;border-radius:24px;padding:20px;margin-top:12px}
+.diffrow{display:flex;gap:12px}
+.diffcol{flex:1;background:#fff;border-radius:18px;padding:16px 15px;box-shadow:0 6px 16px rgba(160,140,120,.08)}
+.diffcol.us{border:2px solid var(--peach)}
+.diffcol .ct{font-size:14px;font-weight:800;color:var(--ink2);margin-bottom:10px;text-align:center}
+.diffcol.us .ct{color:var(--peach)}
+.diffcol ul{list-style:none}
+.diffcol li{font-size:13px;padding:6px 0 6px 22px;position:relative;color:var(--ink2);line-height:1.5}
+.diffcol li.y:before{content:"✓";position:absolute;left:0;color:#3fae83;font-weight:900}
+.diffcol li.n:before{content:"—";position:absolute;left:0;color:#c9b8ad;font-weight:900}
+.diffcol.us li.y:before{content:"✓";color:var(--peach)}
+/* 미리보기 스크롤 */
+.prevscroll{display:flex;gap:14px;overflow-x:auto;padding:6px 22px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.prevscroll::-webkit-scrollbar{height:0}
+.prevscroll img{width:210px;border-radius:18px;flex:0 0 auto;scroll-snap-align:center;box-shadow:0 12px 30px rgba(160,140,120,.18);border:1px solid #f0e6da}
+.peekcap{text-align:center;color:var(--ink2);font-size:13px;margin-top:6px}
+/* 목차 */
+.toc{background:#fff;border-radius:24px;padding:20px 22px;box-shadow:0 8px 24px rgba(160,140,120,.10)}
+.toc li{list-style:none;display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #f4ece1;font-size:15px;color:var(--ink)}
+.toc li:last-child{border-bottom:0}
+.toc .n{flex:0 0 auto;width:30px;height:30px;border-radius:10px;background:var(--lav-soft);color:#6a5cc0;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center}
+.toc li b{color:var(--deep);font-weight:700}
+.toc li span{color:var(--ink2);font-size:13px}
+.feat{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #f0e6da}
+.feat:last-child{border-bottom:0}
+.feat .dot{flex:0 0 26px;height:26px;border-radius:50%;background:var(--peach-soft);display:flex;align-items:center;justify-content:center;font-size:14px}
+.feat b{color:var(--deep);font-size:15.5px}.feat span{color:var(--ink2);font-size:14px}
+.reviews{display:flex;flex-direction:column;gap:12px}
+.rev{background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 6px 18px rgba(160,140,120,.08)}
+.rev .who{font-size:13px;color:var(--ink2);margin-bottom:5px}
+.rev .who .st{color:#ffc24a}
+.rev p{font-size:14.5px;color:var(--ink)}
+.trust{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trust div{background:#fff;border-radius:18px;padding:15px;text-align:center;font-size:13px;color:var(--ink2);box-shadow:0 6px 16px rgba(160,140,120,.08)}
+.trust b{display:block;color:var(--deep);font-size:15px;margin-bottom:3px}
+.faq details{background:#fff;border-radius:18px;padding:15px 18px;margin:10px 0;box-shadow:0 6px 16px rgba(160,140,120,.07)}
+.faq summary{font-weight:800;color:var(--deep);cursor:pointer;list-style:none;font-size:15px}
+.faq summary::-webkit-details-marker{display:none}
+.faq p{color:var(--ink2);font-size:14px;margin-top:8px}
+.disc{background:#fff6ec;border-radius:18px;padding:16px 18px;color:#a5794f;font-size:13px;line-height:1.7}
+.disc b{color:#7a5330}
+.limit{text-align:center;color:var(--gold);font-size:14px;font-weight:800;margin-top:14px}
+.clouds{font-size:34px;letter-spacing:.15em;margin-bottom:6px}
+footer{color:#bcae9f;font-size:12px;text-align:center;padding:26px 22px 44px;line-height:1.7}
+.sticky{position:sticky;bottom:0;background:linear-gradient(0deg,var(--cream) 74%,transparent);padding:12px 22px 16px;max-width:520px;margin:0 auto}
+</style></head><body>
+
+<div class="topbar">☁️ 예정일 전, 우리 아기 <b>가장 좋은 날</b>을 함께 골라요</div>
+
+<div class="hero"><div class="wrap">
+  <div class="badge">사주로 보는 출산 택일 · 기질 스케치</div>
+  <!-- ▶ 아장아장 걸어오는 아기 영상: baby_walk.mp4 파일을 이 폴더에 넣으면 자동 재생돼요.
+       (Kling에서 3~5초·720p·H.264·2MB 이하로 뽑고, 매끄럽게 반복되게 만드는 걸 추천)
+       mp4가 없으면 poster(정적 표지 이미지)가 대신 보입니다. -->
+  <video class="heroimg" autoplay muted loop playsinline poster="assets/poster.jpg">
+    <source src="assets/hero.mp4" type="video/mp4">
+  </video>
+  <h1>우리 아기,<br>어떤 날 <span class="hl">만날까요?</span></h1>
+  <p class="sub">병원이 알려준 출산 가능일 중에서,<br>날짜마다 <b>어떤 결·기질의 아기</b>로 그려지는지<br>하나하나 스케치해 드려요.</p>
+</div></div>
+
+<section><div class="wrap">
+  <div class="kline">이건 좀 달라요</div>
+  <h2>날짜 고르기에서<br>끝나지 않아요</h2>
+  <p class="lead" style="margin-top:6px">‘좋은 날’만 콕 찍어주고 끝이 아니에요. 그 날 태어날 <b style="color:var(--deep)">우리 아기의 기질을 미리</b> 상세히 그려드려요.</p>
+  <div class="diffwrap"><div class="diffrow">
+    <div class="diffcol"><div class="ct">보통의 택일</div><ul>
+      <li class="y">좋은 날짜 추천</li>
+      <li class="n">아이 기질은 알 수 없음</li>
+      <li class="n">강점·재능 설명 없음</li>
+      <li class="n">부모 궁합 없음</li></ul></div>
+    <div class="diffcol us"><div class="ct">우리 아기 스케치북</div><ul>
+      <li class="y">날짜별 최적일 선별</li>
+      <li class="y">날짜별 <b>기질·성격 상세 스케치</b></li>
+      <li class="y">강점·재능·돈복·연운까지</li>
+      <li class="y">엄마·아빠와의 궁합·껌딱지</li></ul></div>
+  </div></div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kline">이런 고민, 하고 계셨나요</div>
+  <h2>날짜는 정해야 하는데…</h2>
+  <div class="card"><ul class="pain">
+    <li>제왕절개·유도분만 날짜를 골라야 하는데, 기준이 없어 막막해요.</li>
+    <li>어른들은 "좋은 날 받아라" 하시는데, 어디서 봐야 할지 모르겠어요.</li>
+    <li>철학관은 부담스럽고, 우리 아기 이야기를 편하게 듣고 싶어요.</li>
+    <li>같은 주에 태어나도 날짜마다 아이 결이 다르다는데, 궁금해요.</li>
+  </ul></div>
+</div></section>
+
+<section style="padding-bottom:20px"><div class="wrap">
+  <div class="kline">실제 리포트 미리보기</div>
+  <h2>이렇게 받아보세요</h2>
+  <p class="lead" style="margin-bottom:6px">오행·만세력 차트부터 기질·돈복·부모궁합·10년 연운까지, 날짜마다 <b style="color:var(--deep)">한 권의 작은 책</b>으로 그려드려요.</p>
+</div>
+  <div class="prevscroll"><img src="assets/prev-1.jpg"><img src="assets/prev-2.jpg"><img src="assets/prev-3.jpg"><img src="assets/prev-4.jpg"><img src="assets/prev-5.jpg"><img src="assets/prev-6.jpg"><img src="assets/prev-7.jpg"><img src="assets/prev-8.jpg"><img src="assets/prev-9.jpg"><img src="assets/prev-10.jpg"></div>
+  <div class="wrap"><p class="peekcap">← 옆으로 넘겨보세요 · 실제 리포트 페이지예요</p></div>
+</section>
+
+<section style="padding-top:16px"><div class="wrap">
+  <div class="kline">리포트 목차</div>
+  <h2>한 아이에 담기는 이야기</h2>
+  <ul class="toc"><li><span class="n">01</span><div><b>우리는 어떤 부모일까</b><br><span>엄마·아빠 사주로 보는 육아 결</span></div></li><li><span class="n">02</span><div><b>왜 이 날들일까 · 비교</b><br><span>오행 균형·신강약으로 고른 이유</span></div></li><li><span class="n">03</span><div><b>이 아이의 첫인상</b><br><span>만세력·오행 차트로 보는 기질</span></div></li><li><span class="n">04</span><div><b>우리 아이 사용설명서</b><br><span>이렇게 대하면 편안해하는 결</span></div></li><li><span class="n">05</span><div><b>꽃피울 분야</b><br><span>타고난 재능·어울리는 길</span></div></li><li><span class="n">06</span><div><b>우리 아이의 돈복</b><br><span>타고난 풍요·재물 신살</span></div></li><li><span class="n">07</span><div><b>부모와의 관계</b><br><span>아빠 껌딱지 vs 엄마 껌딱지</span></div></li><li><span class="n">08</span><div><b>이름 · 작명 가이드</b><br><span>부족한 기운을 채워주는 이름</span></div></li><li><span class="n">09</span><div><b>크게 피어나는 때</b><br><span>향후 10년 연운 그래프</span></div></li><li><span class="n">10</span><div><b>닫는 편지</b><br><span>부모님께 드리는 마음</span></div></li></ul>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kline">이렇게 진행돼요</div>
+  <h2>네 걸음이면 충분해요</h2>
+  <div class="card">
+    <div class="step"><div class="b s1">🗓️</div><div><b>1. 가능한 날짜를 알려주세요</b><br><span>병원에서 안전하다고 한 출산 가능일(최대 7일 이내)을 보내주세요.</span></div></div>
+    <div class="step"><div class="b s2">⚖️</div><div><b>2. 가장 조화로운 세 날짜를 골라드려요</b><br><span>오행 균형·신강약 중화 등을 고려해, 사주가 가장 고르게 짜이는 3일을 선별해요.</span></div></div>
+    <div class="step"><div class="b s3">✍️</div><div><b>3. 날짜별로 아이의 기질을 스케치해요</b><br><span>각 날짜에 태어날 아이의 기질·강점·재능·부모궁합을 상세히 그려드려요.</span></div></div>
+    <div class="step"><div class="b s4">💌</div><div><b>4. 가장 어울리는 날을 함께 골라요</b><br><span>‘더 좋은 날’이 아니라 마음이 가는 결을 편안하게 고르실 수 있게요.</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kline">리포트에 담기는 것</div>
+  <h2>날짜마다 이만큼 담겨요</h2>
+  <div class="card">
+    <div class="feat"><div class="dot">📊</div><div><b>오행·만세력·신강약 차트</b><br><span>실제 사주를 계산해 한 장씩 크게</span></div></div>
+    <div class="feat"><div class="dot">🌱</div><div><b>타고난 기질·유형 스케치</b><br><span>유년→소년→성인까지 결의 흐름</span></div></div>
+    <div class="feat"><div class="dot">🧭</div><div><b>사용설명서 & 꽃피울 분야</b><br><span>이렇게 대하면 편안 · 어울리는 길</span></div></div>
+    <div class="feat"><div class="dot">💰</div><div><b>타고난 돈복 · 재물 신살</b><br><span>천주·금여 등 풍요의 기운</span></div></div>
+    <div class="feat"><div class="dot">💞</div><div><b>부모와의 궁합 · 껌딱지</b><br><span>엄마·아빠 사주와 아기의 어울림</span></div></div>
+    <div class="feat"><div class="dot">🖋️</div><div><b>작명 가이드 & 10년 연운</b><br><span>기운 채우는 이름 · 크게 피어나는 때</span></div></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="kline">먼저 받아보신 분들</div>
+  <h2>따뜻한 후기</h2>
+  <!-- ⚠️ 예시 후기입니다. 동의받은 실제 후기로 교체하세요. -->
+  <div class="reviews">
+    <div class="rev"><div class="who"><span class="st">★★★★★</span> · 곧 엄마가 될 준비 중이에요</div><p>날짜마다 아이 느낌이 이렇게 다른 줄 몰랐어요. 읽으면서 계속 웃었네요. 마음 가는 날로 정했어요 🤍</p></div>
+    <div class="rev"><div class="who"><span class="st">★★★★★</span> · 10월 출산 예정</div><p>출산 날짜만 골라주는 게 아니라, 미리 우리 아기 소개받는 느낌이라 너무 재밌었어요. 남편이랑 같이 몇 번을 읽었어요.</p></div>
+    <div class="rev"><div class="who"><span class="st">★★★★★</span> · 둘째 준비 중</div><p>철학관은 부담됐는데 이건 부드럽고 자세했어요. 강점이랑 살펴줄 점 나눠준 게 특히 좋았어요.</p></div>
+  </div>
+  <p style="text-align:center;color:var(--ink2);font-size:12px;margin-top:10px">※ 예시입니다. 실제 후기로 교체 후 게시하세요.</p>
+</div></section>
+
+<section><div class="wrap faq">
+  <h2 style="margin-bottom:14px">자주 묻는 질문</h2>
+  <details><summary>무엇을 보내면 되나요?</summary><p>병원에서 안전하다고 안내받은 출산 가능 날짜(최대 7일 이내)를 알려주세요. 그 안에서 날짜별로 그려드려요. 시간을 정하셨다면 함께 보내주셔도 좋아요.</p></details>
+  <details><summary>언제 받아볼 수 있나요?</summary><p>결제 후 24시간 안에 PDF로 이메일 드려요. 한 분 한 분 정성껏 작성해요.</p></details>
+  <details><summary>이건 정해진 운명을 말해주는 건가요?</summary><p>아니에요. 사주는 ‘정해진 미래’가 아니라 아기가 <b>타고나는 결·경향</b>을 부드럽게 살펴보는 참고예요. 아이는 사랑과 환경 속에서 얼마든지 달라질 수 있어요.</p></details>
+  <details><summary>날짜는 어떻게 정하나요?</summary><p><b>오행 균형, 신강약의 중화</b> 등을 고려하여 사주가 가장 조화롭게 짜이는 날짜를 골라드려요. 다만 최종 선택은 반드시 <b>주치의와 상의해 안전한 범위</b> 안에서 정해 주세요.</p></details>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap"><div class="disc">
+  <b>꼭 읽어주세요 ☁️</b><br>
+  본 리포트는 사주명리 해석에 근거한 <b>참고 자료</b>이며, 정해진 미래나 의학적 판단을 제공하지 않아요.
+  출산 시기·방법은 반드시 <b>주치의의 의학적 판단</b>을 따라 주세요. 산모와 아기의 안전이 무엇보다 우선입니다.
+</div></div></section>
+
+<div class="sticky"><a class="cta" href="/birth/apply" style="border-radius:22px">49,000원 · 우리 아기 날짜 분석 받기 →</a></div>
+
+<footer>
+  <b style="color:#a89a8a">페이트랩(fatelab)</b> · <a href="/terms" style="color:#bcae9f">이용약관</a> · <a href="/privacy" style="color:#bcae9f">개인정보처리방침</a><br>
+  상호: 에벌리(Everly) · 대표자: 정은송 · 사업자등록번호: 406-02-67708<br>
+  서울특별시 강남구 영동대로 602, 6층 G63호 · 010-2727-5365<br>
+  문의: thesajublueprint@gmail.com
+</footer>
+</body></html>

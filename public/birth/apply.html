@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>우리 아기 스케치 신청 · 정보 입력</title>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<!--
+  ▶ 제출 연결: submitForm() 안의 ENDPOINT 를 실제 백엔드(현재 Resend 전송) 주소로 교체하세요.
+     수집 데이터는 payload 객체로 POST 됩니다. 결과는 이메일로 발송됩니다.
+-->
+<style>
+:root{--cream:#fff8f1;--peach:#ffb69c;--peach-soft:#ffe0d2;--lav:#c9bff0;--lav-soft:#ece7fb;
+  --blue:#a9d4f0;--blue-soft:#e2f1fb;--mint:#a9e2c9;--mint-soft:#e0f5ec;--ink:#5a4a44;--ink2:#8a7a72;--deep:#40323b;--gold:#e6a84e;--line:#efe4d5}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:linear-gradient(180deg,#fff6ec,#fff8f1);color:var(--ink);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.top{position:sticky;top:0;background:rgba(255,248,241,.9);backdrop-filter:blur(8px);padding:14px 20px 10px;z-index:5}
+.toprow{display:flex;align-items:center;justify-content:space-between;height:28px}
+.back{border:0;background:none;font-size:22px;color:var(--ink2);cursor:pointer;width:28px;visibility:hidden}
+.back.show{visibility:visible}
+.stepn{font-size:13px;font-weight:800;color:var(--ink2)}
+.stepn b{color:var(--peach)}
+.pbar{height:6px;background:#f0e6da;border-radius:999px;margin-top:10px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--peach),var(--lav));border-radius:999px;width:25%;transition:width .35s cubic-bezier(.4,0,.2,1)}
+.view{flex:1;overflow:hidden;position:relative}
+.track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1);height:100%}
+.step{min-width:100%;padding:22px 24px 20px;flex:0 0 100%}
+.kick{color:var(--peach);font-weight:800;font-size:13px;letter-spacing:.02em;margin-bottom:6px}
+h2{font-size:24px;font-weight:800;color:var(--deep);line-height:1.35;letter-spacing:-.01em}
+.sub{color:var(--ink2);font-size:14px;margin-top:8px}
+.field{margin-top:22px}
+.label{font-size:14px;font-weight:700;color:var(--deep);margin-bottom:8px;display:block}
+.label .opt{color:var(--ink2);font-weight:600;font-size:12px;margin-left:4px}
+.label .req{color:var(--peach);margin-left:3px}
+input[type=text],input[type=email],input[type=date],select{
+  width:100%;border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-size:16px;color:var(--deep);
+  background:#fff;outline:none;transition:border-color .15s;font-family:inherit}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b7a99a' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+input:focus,select:focus{border-color:var(--peach)}
+input::placeholder{color:#c9bcae}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{flex:1;min-width:90px;text-align:center;border:1.5px solid var(--line);background:#fff;border-radius:14px;
+  padding:14px 10px;font-size:15px;font-weight:700;color:var(--ink2);cursor:pointer;transition:all .15s}
+.pill.on{border-color:var(--peach);background:var(--peach-soft);color:var(--deep)}
+.row2{display:flex;gap:10px}.row2>*{flex:1}
+.hint{font-size:12px;color:var(--ink2);margin-top:7px}
+.hint.warn{color:#e0703c;font-weight:700}
+.check{display:flex;gap:10px;align-items:flex-start;margin-top:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 15px;cursor:pointer}
+.check input{margin-top:2px;width:18px;height:18px;accent-color:var(--peach);flex:0 0 auto}
+.check span{font-size:13px;color:var(--ink2);line-height:1.55}
+.check span b{color:var(--deep)}
+.check a{color:var(--peach);text-decoration:underline}
+.bottom{position:sticky;bottom:0;background:linear-gradient(0deg,var(--cream) 72%,transparent);padding:14px 24px 22px}
+.next{width:100%;border:0;border-radius:16px;padding:17px;font-size:17px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#ffb69c,#c9bff0);box-shadow:0 10px 24px rgba(255,150,120,.3);cursor:pointer;transition:opacity .15s}
+.next:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.recap{background:#fdf7f0;border:1px solid var(--line);border-radius:16px;padding:13px 16px 9px;margin-top:20px}
+.recaph{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:800;color:var(--ink2);margin-bottom:3px}
+.editlink{border:0;background:none;color:var(--peach);font-weight:800;font-size:13px;cursor:pointer;text-decoration:underline}
+.sumrow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #f4ece1;font-size:13.5px}
+.sumrow:last-child{border-bottom:0}
+.sumrow .k{color:var(--ink2);flex:0 0 auto}.sumrow .v{color:var(--deep);font-weight:700;text-align:right}
+.done{text-align:center;padding:60px 30px}.done .emo{font-size:64px}.done h2{margin-top:16px}.done p{color:var(--ink2);font-size:15px;margin-top:12px}
+.priceline{text-align:center;color:var(--ink2);font-size:14px;margin-top:14px}.priceline b{color:var(--deep);font-size:18px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="toprow">
+      <button class="back" id="backBtn" onclick="prev()">‹</button>
+      <div class="stepn"><b id="curN">1</b> / 4</div>
+    </div>
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+  </div>
+
+  <div class="view">
+    <div class="track" id="track">
+
+      <!-- STEP 1: 엄마 -->
+      <div class="step">
+        <div class="kick">STEP 1 · 엄마</div>
+        <h2>엄마의 생년월일을<br>알려주세요</h2>
+        <p class="sub">아기와 부모님의 어울림(궁합)을 함께 봐드려요.</p>
+        <div class="field">
+          <label class="label" for="mom_dob">생년월일 <span class="req">*</span></label>
+          <input type="date" id="mom_dob" min="1955-01-01" max="2012-12-31">
+        </div>
+        <div class="field">
+          <label class="label" for="mom_time">태어난 시간 <span class="opt">(선택)</span></label>
+          <select id="mom_time"></select>
+          <div class="hint">시간을 주시면 더 정밀하게(사주 4기둥) 분석해 드려요.</div>
+        </div>
+      </div>
+
+      <!-- STEP 2: 아빠 -->
+      <div class="step">
+        <div class="kick">STEP 2 · 아빠</div>
+        <h2>아빠의 생년월일을<br>알려주세요</h2>
+        <p class="sub">두 분의 기운이 아기에게 어떻게 이어지는지 함께 봐요.</p>
+        <div class="field">
+          <label class="label" for="dad_dob">생년월일 <span class="req">*</span></label>
+          <input type="date" id="dad_dob" min="1955-01-01" max="2012-12-31">
+        </div>
+        <div class="field">
+          <label class="label" for="dad_time">태어난 시간 <span class="opt">(선택)</span></label>
+          <select id="dad_time"></select>
+          <div class="hint">시간을 주시면 더 정밀하게(사주 4기둥) 분석해 드려요.</div>
+        </div>
+      </div>
+
+      <!-- STEP 3: 아기 -->
+      <div class="step">
+        <div class="kick">STEP 3 · 아기</div>
+        <h2>곧 만날 아기<br>이야기예요</h2>
+        <div class="field">
+          <span class="label">아기 성별 <span class="req">*</span></span>
+          <div class="pills" data-group="baby_sex">
+            <div class="pill" data-val="여아">여아</div>
+            <div class="pill" data-val="남아">남아</div>
+            <div class="pill" data-val="모름">아직 몰라요</div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="baby_name">태명 <span class="opt">(선택)</span></label>
+          <input type="text" id="baby_name" placeholder="예) 튼튼이 · 아직 없으면 비워두세요" maxlength="20">
+        </div>
+        <div class="field">
+          <span class="label">출산 가능일 <span class="req">*</span> <span class="opt">(병원 안내 기준 · 3~7일)</span></span>
+          <div class="row2">
+            <input type="date" id="due_start" aria-label="시작일">
+            <input type="date" id="due_end" aria-label="종료일">
+          </div>
+          <div class="hint" id="dueHint">시작일 ~ 종료일을 골라주세요. 이 범위에서 가장 조화로운 날들을 선별해 드려요.</div>
+        </div>
+      </div>
+
+      <!-- STEP 4: 이메일 & 동의 (+ 요약) -->
+      <div class="step">
+        <div class="kick">STEP 4 · 결과 받기</div>
+        <h2>거의 다 됐어요!<br>이메일만 알려주세요</h2>
+        <p class="sub">결제 후 24시간 안에 이메일로 보내드려요.</p>
+        <div class="recap" id="recap"></div>
+        <div class="field">
+          <label class="label" for="c_email">📩 결과 받을 이메일 <span class="req">*</span></label>
+          <input type="email" id="c_email" placeholder="you@example.com" inputmode="email">
+          <div class="hint" id="emailHint">이 주소로 완성된 리포트를 보내드려요. 오타가 없는지 확인해 주세요.</div>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="agree_privacy">
+          <span><b>[필수]</b> 개인정보 수집·이용 동의. 입력하신 정보는 <b>리포트 작성·발송 목적</b>으로만 사용되며, 발송 완료 후 안전하게 파기됩니다. <a href="#privacy">자세히</a></span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="agree_terms">
+          <span><b>[필수]</b> 서비스 이용약관 동의. 본 리포트는 <b>참고용</b>이며 정해진 미래나 의학적 판단을 제공하지 않아요. <a href="#terms">자세히</a></span>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button class="next" id="nextBtn" onclick="next()" disabled>다음</button>
+  </div>
+</div>
+
+<script>
+const TOTAL=4;
+let cur=0;
+const data={baby_sex:'', mom_time:'모름', dad_time:'모름'};
+
+// 시간 select 채우기 (모름 디폴트 + 12시진)
+const SIJIN=[['자시','23:00~01:00'],['축시','01:00~03:00'],['인시','03:00~05:00'],['묘시','05:00~07:00'],
+  ['진시','07:00~09:00'],['사시','09:00~11:00'],['오시','11:00~13:00'],['미시','13:00~15:00'],
+  ['신시','15:00~17:00'],['유시','17:00~19:00'],['술시','19:00~21:00'],['해시','21:00~23:00']];
+['mom_time','dad_time'].forEach(id=>{
+  const s=document.getElementById(id);
+  s.innerHTML='<option value="모름" selected>모름</option>'+SIJIN.map(x=>`<option value="${x[0]} (${x[1]})">${x[0]} (${x[1]})</option>`).join('');
+  s.addEventListener('change',()=>{data[id]=s.value;});
+});
+
+// 성별 pill
+document.querySelectorAll('.pills').forEach(g=>{
+  const key=g.dataset.group;
+  g.querySelectorAll('.pill').forEach(p=>{
+    p.onclick=()=>{g.querySelectorAll('.pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');data[key]=p.dataset.val;validate();};
+  });
+});
+['mom_dob','dad_dob','baby_name','due_start','due_end','c_email'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{data[id]=document.getElementById(id).value;if(id.startsWith('due'))checkRange();if(id==='c_email')checkEmail();validate();});
+});
+['agree_privacy','agree_terms'].forEach(id=>document.getElementById(id).addEventListener('change',e=>{data[id]=e.target.checked;validate();}));
+
+function checkRange(){
+  const s=data.due_start,e=data.due_end,h=document.getElementById('dueHint');
+  if(!s||!e){h.className='hint';h.textContent='시작일 ~ 종료일을 골라주세요.';return;}
+  const diff=(new Date(e)-new Date(s))/86400000, days=diff+1;
+  if(diff<0){h.className='hint warn';h.textContent='종료일이 시작일보다 빨라요. 다시 선택해 주세요.';}
+  else if(days<3){h.className='hint warn';h.textContent='최소 3일 이상의 기간을 넣어주세요.';}
+  else if(days>7){h.className='hint warn';h.textContent='최대 7일 이하의 기간을 넣어주세요.';}
+  else{h.className='hint';h.textContent=`선택한 범위: ${Math.round(days)}일 · 이 안에서 가장 조화로운 날들을 선별해요.`;}
+}
+function checkEmail(){
+  const h=document.getElementById('emailHint'),v=data.c_email||'';
+  if(v&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){h.className='hint warn';h.textContent='이메일 형식을 확인해 주세요.';}
+  else{h.className='hint';h.textContent='';}
+}
+function emailOk(){return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.c_email||'');}
+function rangeOk(){const s=data.due_start,e=data.due_end;if(!s||!e)return false;const days=(new Date(e)-new Date(s))/86400000+1;return days>=3&&days<=7;}
+
+function validate(){
+  let ok=false;
+  if(cur===0) ok=!!data.mom_dob;
+  else if(cur===1) ok=!!data.dad_dob;
+  else if(cur===2) ok=!!data.baby_sex && rangeOk();
+  else if(cur===3) ok=emailOk() && data.agree_privacy && data.agree_terms;
+  else ok=true;
+  document.getElementById('nextBtn').disabled=!ok;
+}
+function fmtDate(v){if(!v)return '-';const[y,m,d]=v.split('-');return `${y}.${m}.${d}`;}
+function goto(i){cur=i;render();}
+function renderRecap(){
+  const rows=[
+    ['엄마', `${fmtDate(data.mom_dob)} · ${data.mom_time}`],
+    ['아빠', `${fmtDate(data.dad_dob)} · ${data.dad_time}`],
+    ['아기', `${data.baby_sex}${data.baby_name?' · '+data.baby_name:''}`],
+    ['출산 가능일', `${fmtDate(data.due_start)} ~ ${fmtDate(data.due_end)}`],
+  ];
+  document.getElementById('recap').innerHTML=
+    '<div class="recaph">입력하신 정보 <button type="button" class="editlink" onclick="goto(0)">수정</button></div>'
+    + rows.map(r=>`<div class="sumrow"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+}
+function render(){
+  document.getElementById('track').style.transform=`translateX(-${cur*100}%)`;
+  document.getElementById('pfill').style.width=`${Math.min((cur+1)/TOTAL*100,100)}%`;
+  document.getElementById('curN').textContent=Math.min(cur+1,4);
+  document.getElementById('backBtn').classList.toggle('show',cur>0);
+  const nb=document.getElementById('nextBtn');
+  nb.textContent = cur===3 ? '49,000원 · 결제하기 →' : '다음';
+  if(cur===3)renderRecap();
+  validate(); window.scrollTo(0,0);
+}
+function next(){if(document.getElementById('nextBtn').disabled)return; if(cur<TOTAL-1){cur++;render();} else submitForm();}
+function prev(){if(cur>0){cur--;render();}}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('nextBtn').disabled)next();});
+
+// 포트원(KG이니시스 채널) — rate 상품과 동일 설정
+const PRICE = 49000;
+const LIVE_MODE = true;   // 런칭 전 테스트만: false. 운영도메인=실결제 / ?test=1=테스트
+const IS_TEST_PAY = !LIVE_MODE || location.search.includes('test=1') || !['fatelab.co','www.fatelab.co','sajublueprint.com','www.sajublueprint.com'].includes(location.hostname);
+const PAY_CHANNEL_KEY = IS_TEST_PAY
+  ? 'channel-key-42310ca7-0d20-42d1-90d7-4abaed5778ba'   // 테스트(INIpayTest)
+  : 'channel-key-633ce4cf-a5a7-4b28-94f9-2f5d5c49dbfc';  // 실결제(MOI1435306)
+
+async function submitForm(){
+  const btn=document.getElementById('nextBtn'); const orig=btn.textContent;
+  btn.disabled=true; btn.textContent='결제창을 여는 중...';
+  const payload={
+    mom:{birth:data.mom_dob, time:data.mom_time},
+    dad:{birth:data.dad_dob, time:data.dad_time},
+    baby:{sex:data.baby_sex, name:data.baby_name||null, due_from:data.due_start, due_to:data.due_end},
+    contact:{email:data.c_email},
+    consent:{privacy:!!data.agree_privacy, terms:!!data.agree_terms},
+  };
+  try{
+    const pay=await PortOne.requestPayment({
+      storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
+      channelKey:PAY_CHANNEL_KEY,
+      paymentId:'birth_'+Date.now(),
+      orderName:'우리 아기 스케치 리포트',
+      totalAmount:PRICE, currency:'KRW', payMethod:'CARD',
+      customer:{ email:data.c_email||'guest@fatelab.co', fullName:'구매자', phoneNumber:'01000000000' },
+      redirectUrl:location.origin+'/birth/apply'
+    });
+    if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); btn.disabled=false; btn.textContent=orig; return; }
+    btn.textContent='리포트 준비 중...';
+    const r=await fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...payload, paymentId:pay.paymentId}) });
+    if(!r.ok) throw new Error('create_'+r.status);
+    showDone();
+  }catch(e){
+    console.error('[submit]',e);
+    alert('처리 중 문제가 있었어요. 결제가 완료됐다면 입력하신 이메일로 곧 연락드릴게요 🤍');
+    btn.disabled=false; btn.textContent=orig;
+  }
+}
+function showDone(){
+  document.querySelector('.view').innerHTML=`<div class="done"><div class="emo">☁️💛</div>
+    <h2>신청이 접수됐어요</h2>
+    <p>결제가 확인되면 <b>24시간 안에</b><br>입력하신 이메일로 리포트를 보내드릴게요.<br>곧 만날 아기를 정성껏 그려둘게요 🤍</p></div>`;
+  document.querySelector('.bottom').style.display='none';
+  document.getElementById('backBtn').style.visibility='hidden';
+}
+render();
+</script>
+</body>
+</html>
