@@ -28,6 +28,20 @@ async function gptDate(messages) {
   }
 }
 
+// 무료 쿠폰 원자적 차감 (rate의 redeem_coupon RPC 재사용) — 성공 시 {ok:true}
+async function redeemCoupon(code, email, session) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/redeem_coupon`, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_code: String(code).toUpperCase(), p_type: 'both', p_session: session || null, p_email: email || null }),
+  });
+  if (!r.ok) return { ok: false, reason: 'rpc_' + r.status };
+  const data = await r.json().catch(() => null);
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) return { ok: false, reason: 'not_found' };
+  return { ok: !!row.ok, reason: row.reason };
+}
+
 async function saveReport(id, payload) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/birth_reports`, {
     method: 'POST',
@@ -56,14 +70,22 @@ async function tgReview(id, payload) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   try {
-    const { mom, dad, baby, contact, paymentId } = req.body || {};
+    const { mom, dad, baby, contact, paymentId, coupon_code, session_id } = req.body || {};
     if (!mom?.birth || !dad?.birth || !baby?.due_from || !contact?.email) return res.status(400).json({ error: 'missing_fields' });
 
-    // 1) 결제 검증 (포트원 · KG이니시스 채널)
+    // 1) 결제 검증 — 무료 쿠폰이 있으면 서버에서 원자적 1회 차감, 없으면 포트원 결제 검증
+    let couponOk = false;
+    if (coupon_code) {
+      const rc = await redeemCoupon(coupon_code, contact.email, session_id);
+      if (!rc.ok) return res.status(403).json({ error: 'coupon_' + (rc.reason || 'invalid') });
+      couponOk = true;
+    }
     if (paymentId) {
       const v = await verifyPortone(paymentId, PRICE);
       if (!v.ok && String(v.reason).startsWith('status_')) return res.status(402).json({ error: 'payment_' + v.reason });
     }
+    // 쿠폰도 결제도 없으면 무료 발급 차단
+    if (!couponOk && !paymentId) return res.status(402).json({ error: 'payment_required' });
     // 2) 날짜 선별
     const toYMD = (s) => { const [y, m, d] = s.split('-').map(Number); return { y, m, d }; };
     const toHM = (t) => t && t !== '모름' ? { hh: +String(t).slice(0, 2) || 12 } : {};
@@ -73,13 +95,13 @@ export default async function handler(req, res) {
       dueFrom: toYMD(baby.due_from), dueTo: toYMD(baby.due_to),
     });
     // 3) 팩트 + 4) GPT 본문 (날짜별 병렬)
-    const facts = buildFacts(sel);
+    const facts = buildFacts(sel, baby.sex);
     const contents = await Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents))));
     const dates = facts.map((f, i) => ({ ...f, content: contents[i] }));
 
     // 5) 저장
     const id = crypto.randomBytes(4).toString('hex').slice(0, 6);
-    const payload = { orderId: id, contact, baby, parents: sel.parents, overview: buildOverviewContext(facts, sel.parents), dates, price: PRICE, ts: new Date().toISOString() };
+    const payload = { orderId: id, contact, baby, parents: sel.parents, range: sel.all, overview: buildOverviewContext(facts, sel.parents), dates, price: couponOk ? 0 : PRICE, coupon_code: couponOk ? String(coupon_code).toUpperCase() : null, ts: new Date().toISOString() };
     await saveReport(id, payload);
     // 6) 텔레그램 검수 요청
     await tgReview(id, payload);

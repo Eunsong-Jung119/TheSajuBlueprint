@@ -161,13 +161,21 @@ input::placeholder{color:#c9bcae}
           <input type="email" id="c_email" placeholder="you@example.com" inputmode="email">
           <div class="hint" id="emailHint">이 주소로 완성된 리포트를 보내드려요. 오타가 없는지 확인해 주세요.</div>
         </div>
+        <div class="field">
+          <label class="label" for="birth_coupon">쿠폰 코드 <span class="opt">(선택)</span></label>
+          <div class="row2" style="gap:8px;align-items:stretch">
+            <input type="text" id="birth_coupon" placeholder="쿠폰이 있으면 입력하세요" autocapitalize="characters" autocomplete="off" style="flex:1">
+            <button type="button" id="couponBtn" onclick="applyBirthCoupon()" style="flex:0 0 auto;width:76px;border:1.5px solid var(--peach);background:#fff;color:var(--peach);border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit">적용</button>
+          </div>
+          <div class="hint" id="couponHint"></div>
+        </div>
         <label class="check">
           <input type="checkbox" id="agree_privacy">
-          <span><b>[필수]</b> 개인정보 수집·이용 동의. 입력하신 정보는 <b>리포트 작성·발송 목적</b>으로만 사용되며, 발송 완료 후 안전하게 파기됩니다. <a href="#privacy">자세히</a></span>
+          <span><b>[필수]</b> 개인정보 수집·이용 동의. 입력하신 정보는 <b>리포트 작성·발송 목적</b>으로만 사용되며, 리포트 재열람을 위해 보관되고 요청 시 파기됩니다. <a href="/birth/privacy" target="_blank" rel="noopener">자세히</a></span>
         </label>
         <label class="check">
           <input type="checkbox" id="agree_terms">
-          <span><b>[필수]</b> 서비스 이용약관 동의. 본 리포트는 <b>참고용</b>이며 정해진 미래나 의학적 판단을 제공하지 않아요. <a href="#terms">자세히</a></span>
+          <span><b>[필수]</b> 서비스 이용약관 동의. 본 리포트는 <b>참고용</b>이며 정해진 미래나 의학적 판단을 제공하지 않아요. <a href="/birth/terms" target="_blank" rel="noopener">자세히</a></span>
         </label>
       </div>
 
@@ -183,6 +191,11 @@ input::placeholder{color:#c9bcae}
 const TOTAL=4;
 let cur=0;
 const data={baby_sex:'', mom_time:'모름', dad_time:'모름'};
+let _birthCoupon=null;   // 유효 쿠폰 적용 시 코드 저장(있으면 결제 없이 무료 발급)
+function getSessionId(){
+  try{ let s=sessionStorage.getItem('birth_sid'); if(!s){ s='b'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); sessionStorage.setItem('birth_sid',s);} return s; }
+  catch(e){ return 'b'+Date.now().toString(36); }
+}
 
 // 시간 select 채우기 (모름 디폴트 + 12시진)
 const SIJIN=[['자시','23:00~01:00'],['축시','01:00~03:00'],['인시','03:00~05:00'],['묘시','05:00~07:00'],
@@ -284,9 +297,30 @@ function render(){
   document.getElementById('curN').textContent=Math.min(cur+1,4);
   document.getElementById('backBtn').classList.toggle('show',cur>0);
   const nb=document.getElementById('nextBtn');
-  nb.textContent = cur===3 ? '49,000원 · 결제하기 →' : '다음';
+  nb.textContent = cur===3 ? (_birthCoupon ? '무료로 리포트 받기 →' : '49,000원 · 결제하기 →') : '다음';
   if(cur===3)renderRecap();
   validate(); window.scrollTo(0,0);
+}
+
+// ── 쿠폰 (무료 코드 · 서버 검증, rate와 동일 방식) ──
+function _couponReason(r){ const x=r&&r.reason; if(x==='used_up')return '이미 다 사용된 쿠폰이에요'; if(x==='expired')return '기간이 만료된 쿠폰이에요'; if(x==='wrong_type')return '이 상품에는 쓸 수 없는 쿠폰이에요'; return '사용할 수 없는 쿠폰이에요'; }
+async function applyBirthCoupon(){
+  const el=document.getElementById('birth_coupon'), msg=document.getElementById('couponHint'), btn=document.getElementById('couponBtn');
+  const code=(el.value||'').trim().toUpperCase();
+  if(!code){ _birthCoupon=null; msg.className='hint'; msg.style.color=''; msg.textContent=''; _syncPayLabel(); return; }
+  btn.disabled=true; const orig=btn.textContent; btn.textContent='확인중';
+  try{
+    const res=await fetch('/api/validate-coupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,type:'both',session_id:getSessionId()})});
+    const r=await res.json();
+    if(r&&r.valid){ _birthCoupon=code; el.value=code; msg.className='hint'; msg.style.color='#1D9A6C'; msg.textContent='✓ 무료 쿠폰이 적용됐어요 · 결제 없이 바로 신청돼요'; }
+    else{ _birthCoupon=null; msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ '+_couponReason(r); }
+  }catch(e){ _birthCoupon=null; msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ 확인 중 문제가 있었어요. 잠시 후 다시 시도해 주세요.'; }
+  btn.disabled=false; btn.textContent=orig;
+  _syncPayLabel();
+}
+function _syncPayLabel(){
+  const nb=document.getElementById('nextBtn');
+  if(cur===3) nb.textContent = _birthCoupon ? '무료로 리포트 받기 →' : '49,000원 · 결제하기 →';
 }
 function next(){if(document.getElementById('nextBtn').disabled)return; if(cur<TOTAL-1){cur++;render();} else submitForm();}
 function prev(){if(cur>0){cur--;render();}}
@@ -302,28 +336,46 @@ const PAY_CHANNEL_KEY = IS_TEST_PAY
 
 async function submitForm(){
   const btn=document.getElementById('nextBtn'); const orig=btn.textContent;
-  btn.disabled=true; btn.textContent='결제창을 여는 중...';
+  btn.disabled=true;
   const payload={
     mom:{birth:data.mom_dob, time:data.mom_time},
     dad:{birth:data.dad_dob, time:data.dad_time},
     baby:{sex:data.baby_sex, name:data.baby_name||null, due_from:data.due_start, due_to:data.due_end},
     contact:{email:data.c_email},
     consent:{privacy:!!data.agree_privacy, terms:!!data.agree_terms},
+    session_id:getSessionId(),
   };
   try{
-    const pay=await PortOne.requestPayment({
-      storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
-      channelKey:PAY_CHANNEL_KEY,
-      paymentId:'birth_'+Date.now(),
-      orderName:'우리 아기 스케치 리포트',
-      totalAmount:PRICE, currency:'KRW', payMethod:'CARD',
-      customer:{ email:data.c_email||'guest@fatelab.co', fullName:'구매자', phoneNumber:'01000000000' },
-      redirectUrl:location.origin+'/birth/apply'
-    });
-    if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); btn.disabled=false; btn.textContent=orig; return; }
+    let paymentId=null;
+    if(_birthCoupon){
+      // 무료 쿠폰: 결제 건너뛰고 서버에서 쿠폰 차감 후 발급
+      payload.coupon_code=_birthCoupon;
+    }else{
+      btn.textContent='결제창을 여는 중...';
+      const pay=await PortOne.requestPayment({
+        storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
+        channelKey:PAY_CHANNEL_KEY,
+        paymentId:'birth_'+Date.now(),
+        orderName:'우리 아기 스케치 리포트',
+        totalAmount:PRICE, currency:'KRW', payMethod:'CARD',
+        customer:{ email:data.c_email||'guest@fatelab.co', fullName:'구매자', phoneNumber:'01000000000' },
+        redirectUrl:location.origin+'/birth/apply'
+      });
+      if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); btn.disabled=false; btn.textContent=orig; return; }
+      paymentId=pay.paymentId;
+    }
     btn.textContent='리포트 준비 중...';
-    const r=await fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...payload, paymentId:pay.paymentId}) });
-    if(!r.ok) throw new Error('create_'+r.status);
+    const r=await fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...payload, paymentId}) });
+    if(!r.ok){
+      // 쿠폰이 서버 검증에서 막힌 경우 사용자에게 안내하고 결제 흐름으로 되돌림
+      if(payload.coupon_code){
+        let reason=''; try{ reason=(await r.json()).error||''; }catch(e){}
+        _birthCoupon=null;
+        const msg=document.getElementById('couponHint'); if(msg){ msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ 쿠폰을 사용할 수 없어요. 결제로 진행하거나 다른 코드를 입력해 주세요.'; }
+        _syncPayLabel(); btn.disabled=false; btn.textContent='49,000원 · 결제하기 →'; return;
+      }
+      throw new Error('create_'+r.status);
+    }
     showDone();
   }catch(e){
     console.error('[submit]',e);
