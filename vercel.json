@@ -8,6 +8,7 @@
   ],
   "rewrites": [
     { "source": "/r/:id",         "destination": "/api/r/:id" },
+    { "source": "/b/:id",         "destination": "/api/birth-report?id=:id" },
     { "source": "/",              "destination": "/rate/index.html" },
     { "source": "/home",          "destination": "/home.html" },
     { "source": "/index.html",    "destination": "/home.html" },
@@ -19,6 +20,8 @@
     { "source": "/terms",         "destination": "/terms.html" },
     { "source": "/privacy",       "destination": "/privacy.html" },
     { "source": "/refund",        "destination": "/refund.html" },
+    { "source": "/birth",         "destination": "/birth/index.html" },
+    { "source": "/birth/apply",   "destination": "/birth/apply.html" },
     { "source": "/birth/terms",   "destination": "/birth/terms.html" },
     { "source": "/birth/privacy", "destination": "/birth/privacy.html" },
     { "source": "/compatibility", "destination": "/compatibility.html" },

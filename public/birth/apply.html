@@ -364,18 +364,11 @@ async function submitForm(){
       if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); btn.disabled=false; btn.textContent=orig; return; }
       paymentId=pay.paymentId;
     }
-    btn.textContent='리포트 준비 중...';
-    const r=await fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...payload, paymentId}) });
-    if(!r.ok){
-      // 쿠폰이 서버 검증에서 막힌 경우 사용자에게 안내하고 결제 흐름으로 되돌림
-      if(payload.coupon_code){
-        let reason=''; try{ reason=(await r.json()).error||''; }catch(e){}
-        _birthCoupon=null;
-        const msg=document.getElementById('couponHint'); if(msg){ msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ 쿠폰을 사용할 수 없어요. 결제로 진행하거나 다른 코드를 입력해 주세요.'; }
-        _syncPayLabel(); btn.disabled=false; btn.textContent='49,000원 · 결제하기 →'; return;
-      }
-      throw new Error('create_'+r.status);
-    }
+    // 맞춤 리포트 생성은 서버에서 1~2분 걸릴 수 있어요.
+    // 요청만 보내고(keepalive로 탭을 닫아도 서버는 계속 생성) 바로 접수완료 화면으로 전환합니다.
+    fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true, body:JSON.stringify({...payload, paymentId}) })
+      .then(async r=>{ if(!r.ok) console.error('[birth-create]', r.status, await r.text().catch(()=>'')); })
+      .catch(err=>console.error('[birth-create net]', err));
     showDone();
   }catch(e){
     console.error('[submit]',e);
@@ -384,11 +377,14 @@ async function submitForm(){
   }
 }
 function showDone(){
+  const email=(data.c_email||'').trim();
   document.querySelector('.view').innerHTML=`<div class="done"><div class="emo">☁️💛</div>
     <h2>신청이 접수됐어요</h2>
-    <p>결제가 확인되면 <b>24시간 안에</b><br>입력하신 이메일로 리포트를 보내드릴게요.<br>곧 만날 아기를 정성껏 그려둘게요 🤍</p></div>`;
+    <p><b>2시간 이내</b>에 완성된 리포트를<br>${email?`<b>${email}</b> 으로`:'입력하신 이메일로'} 보내드릴게요.<br>곧 만날 아기를 정성껏 그려둘게요 🤍</p>
+    <p style="font-size:13px;color:var(--ink2);margin-top:18px">메일이 안 보이면 스팸함도 확인해 주세요.<br>이 화면은 닫으셔도 괜찮아요.</p></div>`;
   document.querySelector('.bottom').style.display='none';
   document.getElementById('backBtn').style.visibility='hidden';
+  window.scrollTo(0,0);
 }
 initCal();
 render();
