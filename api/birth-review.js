@@ -36,7 +36,7 @@ async function sendEmail(to, id, baby) {
     <p style="font-size:12px;color:#8a7a72">본 리포트는 사주명리 해석에 근거한 참고 자료이며, 정해진 미래나 의학적 판단을 제공하지 않아요. 출산 시기·방법은 반드시 주치의와 상의해 주세요.</p></div>`;
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: process.env.RESEND_FROM || 'fatelab <noreply@fatelab.co>', to, subject: '우리 아기 스케치 리포트가 나왔어요 🍼', html }) });
+    body: JSON.stringify({ from: '페이트랩 <noreply@sajublueprint.com>', to, subject: '우리 아기 스케치 리포트가 나왔어요 🍼', html }) });
   return r.ok;
 }
 
