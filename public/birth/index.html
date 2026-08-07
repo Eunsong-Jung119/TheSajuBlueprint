@@ -205,4 +205,14 @@ footer{color:#bcae9f;font-size:12px;text-align:center;padding:26px 22px 44px;lin
   서울특별시 강남구 영동대로 602, 6층 G63호 · 010-2727-5365<br>
   문의: thesajublueprint@gmail.com
 </footer>
+<script>
+(function(){
+  function sid(){ try{ var s=sessionStorage.getItem('birth_sid'); if(!s){ s='b'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); sessionStorage.setItem('birth_sid',s);} return s; }catch(e){ return 'b'+Date.now().toString(36); } }
+  function capUTM(){ try{ var q=new URLSearchParams(location.search),o={}; ['source','medium','campaign','content','term'].forEach(function(k){var v=q.get('utm_'+k); if(v)o[k]=String(v).slice(0,120);}); if(Object.keys(o).length){ var ref=document.referrer||''; if(ref)o.referrer=ref.slice(0,200); sessionStorage.setItem('birth_utm',JSON.stringify(o)); } }catch(e){} }
+  function getUTM(){ try{ return JSON.parse(sessionStorage.getItem('birth_utm')||'{}'); }catch(e){ return {}; } }
+  function tb(name,extra){ try{ fetch('/api/track-birth',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({event_name:name,session_id:sid(),metadata:Object.assign({page:'landing',is_mobile:/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')},getUTM(),extra||{})})}).catch(function(){}); }catch(e){} }
+  capUTM(); tb('page_view');
+  document.querySelectorAll('a.cta').forEach(function(a){ a.addEventListener('click',function(){ tb('cta_click',{href:a.getAttribute('href')||''}); }); });
+})();
+</script>
 </body></html>

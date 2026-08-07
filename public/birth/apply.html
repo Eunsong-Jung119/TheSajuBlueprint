@@ -196,6 +196,25 @@ function getSessionId(){
   try{ let s=sessionStorage.getItem('birth_sid'); if(!s){ s='b'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); sessionStorage.setItem('birth_sid',s);} return s; }
   catch(e){ return 'b'+Date.now().toString(36); }
 }
+// UTM 유입 추적 — 최초 진입 시 URL의 utm_* 를 저장(결제 리다이렉트 왕복에도 유지), 신청 시 함께 전송
+function captureUTM(){
+  try{
+    const q=new URLSearchParams(location.search), o={};
+    ['source','medium','campaign','content','term'].forEach(k=>{ const v=q.get('utm_'+k); if(v) o[k]=String(v).slice(0,120); });
+    if(Object.keys(o).length){ const ref=document.referrer||''; if(ref) o.referrer=ref.slice(0,200); sessionStorage.setItem('birth_utm', JSON.stringify(o)); }
+  }catch(e){}
+}
+function getUTM(){ try{ return JSON.parse(sessionStorage.getItem('birth_utm')||'{}'); }catch(e){ return {}; } }
+captureUTM();
+// 퍼널 이벤트 로깅 (/api/track-birth → birth_logs)
+function tb(name, extra){
+  try{
+    const body=JSON.stringify({ event_name:name, session_id:getSessionId(), metadata:{ ...getUTM(), page:'apply', is_mobile:/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||''), ...(extra||{}) } });
+    fetch('/api/track-birth',{ method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true, body }).catch(()=>{});
+  }catch(e){}
+}
+const _seenStep=new Set();
+tb('page_view');
 
 // 시간 select 채우기 (모름 디폴트 + 12시진)
 const SIJIN=[['자시','23:00~01:00'],['축시','01:00~03:00'],['인시','03:00~05:00'],['묘시','05:00~07:00'],
@@ -300,6 +319,7 @@ function render(){
   nb.textContent = cur===3 ? (_birthCoupon ? '무료로 리포트 받기 →' : '49,000원 · 결제하기 →') : '다음';
   if(cur===3)renderRecap();
   validate(); window.scrollTo(0,0);
+  if(!_seenStep.has(cur)){ _seenStep.add(cur); tb('apply_step',{step:cur+1}); if(cur===3) tb('reach_email_step'); }
 }
 
 // ── 쿠폰 (무료 코드 · 서버 검증, rate와 동일 방식) ──
@@ -312,8 +332,8 @@ async function applyBirthCoupon(){
   try{
     const res=await fetch('/api/validate-coupon',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,type:'both',session_id:getSessionId()})});
     const r=await res.json();
-    if(r&&r.valid){ _birthCoupon=code; el.value=code; msg.className='hint'; msg.style.color='#1D9A6C'; msg.textContent='✓ 무료 쿠폰이 적용됐어요 · 결제 없이 바로 신청돼요'; }
-    else{ _birthCoupon=null; msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ '+_couponReason(r); }
+    if(r&&r.valid){ _birthCoupon=code; el.value=code; msg.className='hint'; msg.style.color='#1D9A6C'; msg.textContent='✓ 무료 쿠폰이 적용됐어요 · 결제 없이 바로 신청돼요'; tb('coupon_applied',{code,valid:true}); }
+    else{ _birthCoupon=null; msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ '+_couponReason(r); tb('coupon_applied',{code,valid:false,reason:(r&&r.reason)||''}); }
   }catch(e){ _birthCoupon=null; msg.className='hint warn'; msg.style.color=''; msg.textContent='✗ 확인 중 문제가 있었어요. 잠시 후 다시 시도해 주세요.'; }
   btn.disabled=false; btn.textContent=orig;
   _syncPayLabel();
@@ -344,14 +364,17 @@ async function submitForm(){
     contact:{email:data.c_email},
     consent:{privacy:!!data.agree_privacy, terms:!!data.agree_terms},
     session_id:getSessionId(),
+    utm:getUTM(),
   };
   try{
     let paymentId=null;
     if(_birthCoupon){
       // 무료 쿠폰: 결제 건너뛰고 서버에서 쿠폰 차감 후 발급
       payload.coupon_code=_birthCoupon;
+      tb('coupon_submit',{code:_birthCoupon});
     }else{
       btn.textContent='결제창을 여는 중...';
+      tb('paywall_shown');
       const pay=await PortOne.requestPayment({
         storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
         channelKey:PAY_CHANNEL_KEY,
@@ -361,9 +384,11 @@ async function submitForm(){
         customer:{ email:data.c_email||'guest@fatelab.co', fullName:'구매자', phoneNumber:'01000000000' },
         redirectUrl:location.origin+'/birth/apply'
       });
-      if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); btn.disabled=false; btn.textContent=orig; return; }
+      if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); tb('payment_failed',{code:pay.code}); btn.disabled=false; btn.textContent=orig; return; }
       paymentId=pay.paymentId;
+      tb('payment_confirmed',{payment_id:paymentId});
     }
+    tb('apply_submit',{free:!!_birthCoupon});
     // 맞춤 리포트 생성은 서버에서 1~2분 걸릴 수 있어요.
     // 요청만 보내고(keepalive로 탭을 닫아도 서버는 계속 생성) 바로 접수완료 화면으로 전환합니다.
     fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true, body:JSON.stringify({...payload, paymentId}) })

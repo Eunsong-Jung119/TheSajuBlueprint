@@ -42,6 +42,17 @@ async function redeemCoupon(code, email, session) {
   return { ok: !!row.ok, reason: row.reason };
 }
 
+// 퍼널 로그(birth_logs)에 서버 이벤트 기록 — 실패해도 무시
+async function logEvent(name, session, meta) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/birth_logs`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ event_name: name, session_id: session || null, metadata: meta || {} }),
+    });
+  } catch (e) { /* ignore */ }
+}
+
 async function saveReport(id, payload) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/birth_reports`, {
     method: 'POST',
@@ -70,7 +81,7 @@ async function tgReview(id, payload) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   try {
-    const { mom, dad, baby, contact, paymentId, coupon_code, session_id } = req.body || {};
+    const { mom, dad, baby, contact, paymentId, coupon_code, session_id, utm } = req.body || {};
     if (!mom?.birth || !dad?.birth || !baby?.due_from || !contact?.email) return res.status(400).json({ error: 'missing_fields' });
 
     // 1) 결제 검증 — 무료 쿠폰이 있으면 서버에서 원자적 1회 차감, 없으면 포트원 결제 검증
@@ -101,10 +112,15 @@ export default async function handler(req, res) {
 
     // 5) 저장
     const id = crypto.randomBytes(4).toString('hex').slice(0, 6);
-    const payload = { orderId: id, contact, baby, parents: sel.parents, range: sel.all, overview: buildOverviewContext(facts, sel.parents), dates, price: couponOk ? 0 : PRICE, coupon_code: couponOk ? String(coupon_code).toUpperCase() : null, ts: new Date().toISOString() };
+    const utmClean = (utm && typeof utm === 'object' && !Array.isArray(utm))
+      ? Object.fromEntries(Object.entries(utm).slice(0, 10).map(([k, v]) => [String(k).slice(0, 20), String(v).slice(0, 200)]))
+      : null;
+    const payload = { orderId: id, contact, baby, parents: sel.parents, range: sel.all, overview: buildOverviewContext(facts, sel.parents), dates, price: couponOk ? 0 : PRICE, coupon_code: couponOk ? String(coupon_code).toUpperCase() : null, utm: utmClean, ts: new Date().toISOString() };
     await saveReport(id, payload);
     // 6) 텔레그램 검수 요청
     await tgReview(id, payload);
+    // 7) 퍼널 로그 — 실제 리포트 생성 완료(전환)
+    await logEvent('report_created', session_id, { order_id: id, free: !!couponOk, price: couponOk ? 0 : PRICE, utm: utmClean || null });
 
     return res.status(200).json({ ok: true, orderId: id });
   } catch (e) {
