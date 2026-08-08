@@ -22,6 +22,7 @@
     { "source": "/refund",        "destination": "/refund.html" },
     { "source": "/birth",         "destination": "/birth/index.html" },
     { "source": "/birth/apply",   "destination": "/birth/apply.html" },
+    { "source": "/birth/dashboard","destination": "/birth/birth-dashboard.html" },
     { "source": "/birth/terms",   "destination": "/birth/terms.html" },
     { "source": "/birth/privacy", "destination": "/birth/privacy.html" },
     { "source": "/compatibility", "destination": "/compatibility.html" },

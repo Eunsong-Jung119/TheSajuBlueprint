@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birth Dashboard · 페이트랩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Nanum+Myeongjo:wght@700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --peach:#E79A86; --peach-dark:#C87A66; --gold:#C8992F;
+  --deep:#141010; --surface:#1b1512; --surface-2:#221a16; --surface-3:#2c211b;
+  --border:rgba(231,154,134,0.15); --border-bright:rgba(231,154,134,0.38);
+  --text:#F5E9E3; --text-muted:#A88E82; --text-hint:#5c463c;
+  --green:#2ECC71; --yellow:#F1C40F; --blue:#5DADE2;
+  --mono:'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--deep);color:var(--text);font-family:'Pretendard',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(231,154,134,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(231,154,134,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:32px 24px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:16px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:36px;height:36px;background:var(--peach);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-family:'Nanum Myeongjo',serif;font-size:18px;font-weight:700;color:var(--text)}
+.logo-sub{font-size:11px;color:var(--text-muted);font-family:var(--mono);margin-top:1px}
+.live-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);border-radius:20px;font-size:11px;font-family:var(--mono);color:var(--green);margin-left:12px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--mono);cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:all .2s}
+.filter-btn:hover{border-color:var(--peach);color:var(--peach)}
+.filter-btn.active{background:var(--peach);border-color:var(--peach);color:#2a1a12}
+.filter-divider{width:1px;height:24px;background:var(--border)}
+.date-input{padding:7px 12px;border-radius:8px;font-size:12px;font-family:var(--mono);background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);cursor:pointer}
+.date-input:focus{outline:none;border-color:var(--peach)}
+.refresh-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--mono);cursor:pointer;background:var(--surface-2);border:1px solid var(--border-bright);color:var(--peach);transition:all .2s}
+.refresh-btn:hover{background:var(--peach);color:#2a1a12}
+.export-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--mono);cursor:pointer;background:var(--surface-2);border:1px solid rgba(46,204,113,0.4);color:var(--green);transition:all .2s}
+.export-btn:hover{background:var(--green);color:var(--deep)}
+.section-title{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.funnel-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:32px}
+.funnel-step{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:16px 10px;text-align:center;position:relative}
+.funnel-step::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--text-hint);font-size:12px;z-index:2}
+.funnel-step:last-child::after{display:none}
+.funnel-label{font-size:10px;color:var(--text-muted);font-family:var(--mono);margin-bottom:8px;line-height:1.3}
+.funnel-num{font-size:26px;font-weight:700;font-family:var(--mono);color:var(--text);line-height:1}
+.funnel-rate{font-size:10px;font-family:var(--mono);margin-top:6px;padding:2px 7px;border-radius:20px;display:inline-block}
+.funnel-rate.good{background:rgba(46,204,113,0.15);color:var(--green)}
+.funnel-rate.warn{background:rgba(241,196,15,0.15);color:var(--yellow)}
+.funnel-rate.bad{background:rgba(231,154,134,0.18);color:var(--peach)}
+.funnel-rate.base{background:var(--surface-3);color:var(--text-muted)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.kpi{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:18px 16px}
+.kpi-label{font-size:10px;color:var(--text-muted);font-family:var(--mono);letter-spacing:.05em;margin-bottom:8px}
+.kpi-num{font-size:28px;font-weight:700;font-family:var(--mono);color:var(--text);line-height:1}
+.kpi-sub{font-size:10px;color:var(--text-hint);font-family:var(--mono);margin-top:6px}
+.kpi.rev .kpi-num{color:var(--gold)}
+.kpi.paid .kpi-num{color:var(--green)}
+.kpi.free .kpi-num{color:var(--blue)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.card{background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:20px}
+.card-title{font-size:11px;font-family:var(--mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px}
+.source-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.source-row:last-child{border-bottom:none}
+.source-badge{padding:3px 10px;border-radius:6px;font-size:11px;font-family:var(--mono);font-weight:600;min-width:84px;text-align:center;background:rgba(231,154,134,0.18);color:var(--peach)}
+.source-badge.direct{background:var(--surface-3);color:var(--text-muted)}
+.source-bar-wrap{flex:1;max-width:120px;height:4px;background:var(--surface-3);border-radius:2px;overflow:hidden}
+.source-bar{height:100%;border-radius:2px;background:var(--peach);transition:width .8s ease}
+.source-num{font-family:var(--mono);font-size:13px;color:var(--text);min-width:32px;text-align:right}
+.source-cvr{font-family:var(--mono);font-size:11px;color:var(--text-muted);min-width:64px;text-align:right}
+.chart-wrap{height:120px;display:flex;align-items:flex-end;gap:3px}
+.chart-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;border-radius:3px 3px 0 0;background:var(--peach);opacity:.7;min-height:2px}
+.chart-bar:hover{opacity:1}
+.chart-label{font-size:9px;color:var(--text-hint);font-family:var(--mono)}
+.rec-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px}
+.rec-row:last-child{border-bottom:none}
+.rec-time{color:var(--text-muted);font-family:var(--mono);min-width:96px;font-size:11px}
+.rec-baby{color:var(--text);min-width:70px}
+.rec-email{color:var(--text-hint);font-family:var(--mono);font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec-src{font-family:var(--mono);font-size:10px;color:var(--peach)}
+.chip{padding:2px 8px;border-radius:12px;font-size:10px;font-family:var(--mono);white-space:nowrap}
+.chip.sent{background:rgba(46,204,113,0.15);color:var(--green)}
+.chip.pending{background:rgba(241,196,15,0.15);color:var(--yellow)}
+.chip.refund{background:rgba(231,154,134,0.18);color:var(--peach)}
+.chip.failed{background:rgba(231,84,84,0.18);color:#e05a5a}
+.chip.free{background:rgba(93,173,226,0.18);color:var(--blue)}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.stat-label{font-size:12px;color:var(--text-muted)}
+.stat-val{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text)}
+.report-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.report-row:last-child{border-bottom:none}
+.report-time{color:var(--text-muted);font-family:var(--mono);min-width:96px;font-size:11px}
+.report-link{color:var(--peach);text-decoration:none;font-family:var(--mono);font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.report-link:hover{text-decoration:underline}
+.loading{text-align:center;padding:50px;color:var(--text-muted);font-family:var(--mono);font-size:13px}
+.spinner-sm{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--peach);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{color:var(--text-hint);font-size:12px;padding:16px 0}
+@media (max-width:768px){
+  .funnel-grid{grid-template-columns:repeat(2,1fr)}
+  .funnel-step::after{display:none}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🍼</div>
+      <div>
+        <div class="logo-text">Birth Dashboard</div>
+        <div class="logo-sub">fatelab.co/birth</div>
+      </div>
+      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    </div>
+    <div class="filters">
+      <button class="filter-btn" id="f7" onclick="setRange(7,this)">7일</button>
+      <button class="filter-btn active" id="f30" onclick="setRange(30,this)">30일</button>
+      <div class="filter-divider"></div>
+      <input type="date" class="date-input" id="date-from">
+      <span style="color:var(--text-hint);font-size:12px;">~</span>
+      <input type="date" class="date-input" id="date-to">
+      <button class="refresh-btn" onclick="loadAll()">↻ 새로고침</button>
+      <button class="export-btn" onclick="exportCSV()">⤓ CSV</button>
+    </div>
+  </header>
+
+  <div class="section-title">신청 퍼널 (세션 기준)</div>
+  <div class="funnel-grid" id="funnel-grid">
+    <div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>
+  </div>
+
+  <div class="section-title">핵심 지표</div>
+  <div class="kpi-grid" id="kpi-grid">
+    <div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">유입 소스별 (UTM · 방문→전환)</div>
+      <div id="source-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">시간대별 방문 (KST)</div>
+      <div class="chart-wrap" id="hourly-chart"></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">최근 신청 내역</div>
+      <div id="recent-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">기간 요약</div>
+      <div id="summary-stats"><div class="loading"><span class="spinner-sm"></span></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:32px;">
+    <div class="card-title">생성된 리포트 URL</div>
+    <div id="report-list"><div class="loading"><span class="spinner-sm"></span></div></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://rxntisncfnsgtjpbdmre.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4bnRpc25jZm5zZ3RqcGJkbXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MzAzMDYsImV4cCI6MjA4ODIwNjMwNn0.21UHPZZTP0IbDzXMAllitws_ezH7pXhE_S-MYXMMUzc';
+const PRICE = 49000;
+const SITE = 'https://www.fatelab.co';
+
+let fromDate = '', toDate = '';
+let allLogs = [], allReports = [];
+
+function kstTodayStr(){ const now=new Date(); const kst=new Date(now.getTime()+9*3600*1000); return kst.toISOString().slice(0,10); }
+function addDaysStr(s,d){ const t=new Date(s+'T12:00:00Z'); t.setUTCDate(t.getUTCDate()+d); return t.toISOString().slice(0,10); }
+function pm(m){ try{ return typeof m==='string'?JSON.parse(m):(m||{}); }catch{ return {}; } }
+function toKST(d){ return new Date(new Date(d).getTime()+9*3600*1000); }
+function fmtTime(d){ const k=toKST(d); const mm=String(k.getUTCMonth()+1).padStart(2,'0'), dd=String(k.getUTCDate()).padStart(2,'0'); const hh=String(k.getUTCHours()).padStart(2,'0'), mi=String(k.getUTCMinutes()).padStart(2,'0'); return `${mm}/${dd} ${hh}:${mi}`; }
+function won(n){ return '₩'+Number(n||0).toLocaleString(); }
+
+function setRange(days, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const today=kstTodayStr();
+  toDate=today; fromDate=addDaysStr(today,-days+1);
+  document.getElementById('date-from').value=fromDate;
+  document.getElementById('date-to').value=toDate;
+  loadAll();
+}
+document.getElementById('date-from').addEventListener('change',e=>{ fromDate=e.target.value; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); loadAll(); });
+document.getElementById('date-to').addEventListener('change',e=>{ toDate=e.target.value; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); loadAll(); });
+
+async function sbGet(path){
+  const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{ headers:{ apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}` } });
+  const text=await res.text();
+  if(!res.ok) throw new Error(`${res.status} ${text}`);
+  const d=JSON.parse(text);
+  return Array.isArray(d)?d:[];
+}
+
+async function fetchLogs(){
+  const from=fromDate, to=toDate;
+  let offset=0, ps=1000, batch, out=[];
+  do{
+    batch=await sbGet(`birth_logs?select=event_name,session_id,metadata,created_at&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=${ps}&offset=${offset}`);
+    out=out.concat(batch); offset+=ps;
+  } while(batch.length===ps);
+  return out;
+}
+async function fetchReports(){
+  const from=fromDate, to=toDate;
+  return sbGet(`birth_reports?select=id,status,email,created_at,sent_at,price:payload->price,coupon:payload->coupon_code,utm:payload->utm,baby:payload->baby&created_at=gte.${from}T00:00:00%2B09:00&created_at=lte.${to}T23:59:59%2B09:00&order=created_at.desc&limit=300`);
+}
+
+// ── 세션별 이벤트 집합 (봇 제외) ──
+function sessionSets(logs){
+  const s={};
+  logs.forEach(l=>{ if(!s[l.session_id]) s[l.session_id]=new Set(); s[l.session_id].add(l.event_name); });
+  const real=Object.entries(s).filter(([sid])=>{
+    const log=logs.find(l=>l.session_id===sid); const m=pm(log&&log.metadata);
+    return !/(bot|crawler|AdsBot|spider)/i.test(m.user_agent||'');
+  });
+  return real;
+}
+
+function renderFunnel(logs){
+  const real=sessionSets(logs);
+  const has=ev=>real.filter(([,e])=>e.has(ev)).length;
+  const visit=has('page_view');
+  const applyStart=real.filter(([,e])=>e.has('apply_step')||e.has('cta_click')).length;
+  const emailStep=has('reach_email_step');
+  const checkout=real.filter(([,e])=>e.has('paywall_shown')||e.has('coupon_submit')).length;
+  const converted=has('report_created');
+  const rate=(a,b)=>b>0?((a/b)*100).toFixed(0)+'%':'-';
+  const cls=r=>isNaN(r)?'base':r>=60?'good':r>=30?'warn':'bad';
+  const steps=[
+    {label:'방문',num:visit,rate:'기준',cls:'base'},
+    {label:'신청 시작',num:applyStart,rate:rate(applyStart,visit),cls:cls(applyStart/visit*100)},
+    {label:'마지막 단계',num:emailStep,rate:rate(emailStep,applyStart),cls:cls(emailStep/applyStart*100)},
+    {label:'결제/제출',num:checkout,rate:rate(checkout,emailStep),cls:cls(checkout/emailStep*100)},
+    {label:'전환(리포트)',num:converted,rate:rate(converted,checkout),cls:cls(converted/checkout*100)},
+  ];
+  document.getElementById('funnel-grid').innerHTML=steps.map(s=>`
+    <div class="funnel-step">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-num">${s.num}</div>
+      <div class="funnel-rate ${s.cls}">${s.rate}</div>
+    </div>`).join('');
+}
+
+function isFree(r){ return r.coupon!==null && r.coupon!==undefined && r.coupon!==''; }
+function priceOf(r){ const p=Number(r.price); return isNaN(p)?(isFree(r)?0:PRICE):p; }
+
+function renderKPIs(reports){
+  const total=reports.length;
+  const free=reports.filter(isFree).length;
+  const paid=total-free;
+  const revenue=reports.reduce((s,r)=>s+(isFree(r)?0:priceOf(r)),0);
+  const cnt=st=>reports.filter(r=>r.status===st).length;
+  const sent=cnt('sent'), pending=cnt('pending_review'), refund=cnt('pending_refund'), failed=cnt('send_failed');
+  document.getElementById('kpi-grid').innerHTML=`
+    <div class="kpi"><div class="kpi-label">총 신청</div><div class="kpi-num">${total}</div><div class="kpi-sub">리포트 생성 건수</div></div>
+    <div class="kpi paid"><div class="kpi-label">유료 결제</div><div class="kpi-num">${paid}</div><div class="kpi-sub">쿠폰 아님</div></div>
+    <div class="kpi free"><div class="kpi-label">무료 쿠폰</div><div class="kpi-num">${free}</div><div class="kpi-sub">체험/증정</div></div>
+    <div class="kpi rev"><div class="kpi-label">매출</div><div class="kpi-num" style="font-size:22px">${won(revenue)}</div><div class="kpi-sub">유료 ${paid}건 · 건당 ${won(PRICE)}</div></div>`;
+  document.getElementById('summary-stats').innerHTML=`
+    <div class="stat-row"><span class="stat-label">총 신청</span><span class="stat-val">${total}건</span></div>
+    <div class="stat-row"><span class="stat-label">💳 유료 / 🎟️ 무료</span><span class="stat-val">${paid} / ${free}</span></div>
+    <div class="stat-row"><span class="stat-label">매출 (유료)</span><span class="stat-val" style="color:var(--gold)">${won(revenue)}</span></div>
+    <div class="stat-row"><span class="stat-label">✅ 발송 완료</span><span class="stat-val" style="color:var(--green)">${sent}</span></div>
+    <div class="stat-row"><span class="stat-label">🟡 검수 대기</span><span class="stat-val" style="color:var(--yellow)">${pending}</span></div>
+    <div class="stat-row"><span class="stat-label">↩️ 반려 / ⚠️ 발송실패</span><span class="stat-val" style="color:var(--peach)">${refund} / ${failed}</span></div>`;
+}
+
+function srcOf(meta){ const m=pm(meta); return (m.source&&String(m.source))||'direct'; }
+function srcLabel(s){ return s==='direct'?'직접/기타':s; }
+
+function renderSources(logs, reports){
+  // 방문: page_view 세션의 소스 / 전환: report_created 세션의 소스 (+ reports.utm 보강)
+  const pv=logs.filter(l=>l.event_name==='page_view');
+  const visitBySrc={}, seen=new Set();
+  pv.forEach(l=>{ if(seen.has(l.session_id))return; seen.add(l.session_id); const s=srcOf(l.metadata); visitBySrc[s]=(visitBySrc[s]||0)+1; });
+  // 전환 소스: birth_reports.utm.source 우선 (없으면 report_created 로그)
+  const convBySrc={};
+  reports.forEach(r=>{ const s=(r.utm&&r.utm.source)?String(r.utm.source):'direct'; convBySrc[s]=(convBySrc[s]||0)+1; });
+  const keys=[...new Set([...Object.keys(visitBySrc),...Object.keys(convBySrc)])].sort((a,b)=>(visitBySrc[b]||0)-(visitBySrc[a]||0));
+  const max=Math.max(1,...Object.values(visitBySrc));
+  const el=document.getElementById('source-list');
+  if(!keys.length){ el.innerHTML='<div class="empty">데이터 없음</div>'; return; }
+  el.innerHTML=keys.map(s=>{
+    const v=visitBySrc[s]||0, c=convBySrc[s]||0;
+    const cvr=v>0?((c/v)*100).toFixed(1)+'%':(c>0?'—':'0%');
+    return `<div class="source-row">
+      <span class="source-badge ${s==='direct'?'direct':''}">${srcLabel(s)}</span>
+      <div class="source-bar-wrap"><div class="source-bar" style="width:${(v/max*100).toFixed(0)}%"></div></div>
+      <span class="source-num">${v}</span>
+      <span class="source-cvr">${c>0?'🍼'+c+' · ':''}${cvr}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderHourly(logs){
+  const pv=logs.filter(l=>l.event_name==='page_view');
+  const hours=Array(24).fill(0);
+  pv.forEach(l=>{ hours[toKST(l.created_at).getUTCHours()]++; });
+  const max=Math.max(...hours,1);
+  document.getElementById('hourly-chart').innerHTML=hours.map((v,h)=>`
+    <div class="chart-bar-col">
+      <div class="chart-bar" style="height:${(v/max*100).toFixed(0)}%;opacity:${v>0?0.75:0.12}" title="${h}시 ${v}건"></div>
+      <div class="chart-label">${h%6===0?h:''}</div>
+    </div>`).join('');
+}
+
+function statusChip(r){
+  if(r.status==='sent') return '<span class="chip sent">발송완료</span>';
+  if(r.status==='pending_review') return '<span class="chip pending">검수대기</span>';
+  if(r.status==='pending_refund') return '<span class="chip refund">반려</span>';
+  if(r.status==='send_failed') return '<span class="chip failed">발송실패</span>';
+  return `<span class="chip">${r.status||'-'}</span>`;
+}
+
+function renderRecent(reports){
+  const el=document.getElementById('recent-list');
+  if(!reports.length){ el.innerHTML='<div class="empty">신청 내역 없음</div>'; return; }
+  el.innerHTML=reports.slice(0,15).map(r=>{
+    const baby=r.baby||{}; const babyTxt=(baby.sex||'-')+(baby.name?' · '+baby.name:'');
+    const src=(r.utm&&r.utm.source)?String(r.utm.source):'';
+    return `<div class="rec-row">
+      <span class="rec-time">${fmtTime(r.created_at)}</span>
+      <span class="rec-baby">${babyTxt}</span>
+      <span class="rec-email">${r.email||''}</span>
+      ${src?`<span class="rec-src">${src}</span>`:''}
+      ${isFree(r)?'<span class="chip free">무료</span>':''}
+      ${statusChip(r)}
+    </div>`;
+  }).join('');
+}
+
+function renderReportList(reports){
+  const el=document.getElementById('report-list');
+  if(!reports.length){ el.innerHTML='<div class="empty">리포트 없음</div>'; return; }
+  el.innerHTML=reports.slice(0,50).map(r=>`
+    <div class="report-row">
+      <span class="report-time">${fmtTime(r.created_at)}</span>
+      <a class="report-link" href="${SITE}/b/${r.id}" target="_blank">${SITE}/b/${r.id}</a>
+      ${statusChip(r)}
+    </div>`).join('');
+}
+
+function exportCSV(){
+  const rows=[['생성시각(KST)','주문ID','아기','이메일','유입소스','캠페인','유료/무료','금액','상태']];
+  allReports.forEach(r=>{
+    const baby=r.baby||{}; const utm=r.utm||{};
+    rows.push([ fmtTime(r.created_at), r.id, (baby.sex||'')+(baby.name?' '+baby.name:''), r.email||'',
+      utm.source||'', utm.campaign||'', isFree(r)?'무료':'유료', isFree(r)?0:priceOf(r), r.status||'' ]);
+  });
+  const csv='﻿'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`birth_${fromDate}_${toDate}.csv`; a.click();
+}
+
+async function loadAll(){
+  document.getElementById('funnel-grid').innerHTML='<div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span>불러오는 중...</div>';
+  try{
+    const [logs, reports]=await Promise.all([fetchLogs(), fetchReports()]);
+    allLogs=logs; allReports=reports;
+    renderFunnel(logs);
+    renderKPIs(reports);
+    renderSources(logs, reports);
+    renderHourly(logs);
+    renderRecent(reports);
+    renderReportList(reports);
+  }catch(e){
+    document.getElementById('funnel-grid').innerHTML=`<div class="loading" style="grid-column:1/-1;color:#e05a5a">불러오기 실패: ${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+setRange(30, document.getElementById('f30'));
+</script>
+</body>
+</html>
