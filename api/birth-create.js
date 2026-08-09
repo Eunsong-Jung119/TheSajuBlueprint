@@ -71,9 +71,10 @@ async function tgReview(id, payload) {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true,
-      reply_markup: { inline_keyboard: [[
-        { text: '📄 리포트 열기', url: `${SITE}/b/${id}` }],
-        [{ text: '✅ 승인·발송', callback_data: `approve:${id}` }, { text: '❌ 반려', callback_data: `reject:${id}` }]] },
+      reply_markup: { inline_keyboard: [
+        [{ text: '📄 리포트 열기', url: `${SITE}/b/${id}` }],
+        [{ text: '✅ 승인·발송', callback_data: `approve:${id}` }, { text: '❌ 반려', callback_data: `reject:${id}` }],
+        [{ text: '🔄 재생성', callback_data: `regen:${id}` }]] },
     }),
   });
 }
@@ -115,7 +116,7 @@ export default async function handler(req, res) {
     const utmClean = (utm && typeof utm === 'object' && !Array.isArray(utm))
       ? Object.fromEntries(Object.entries(utm).slice(0, 10).map(([k, v]) => [String(k).slice(0, 20), String(v).slice(0, 200)]))
       : null;
-    const payload = { orderId: id, contact, baby, parents: sel.parents, range: sel.all, overview: buildOverviewContext(facts, sel.parents), dates, price: couponOk ? 0 : PRICE, coupon_code: couponOk ? String(coupon_code).toUpperCase() : null, utm: utmClean, ts: new Date().toISOString() };
+    const payload = { orderId: id, contact, baby, parents: sel.parents, range: sel.all, overview: buildOverviewContext(facts, sel.parents), dates, price: couponOk ? 0 : PRICE, coupon_code: couponOk ? String(coupon_code).toUpperCase() : null, utm: utmClean, input: { mom, dad, baby }, ts: new Date().toISOString() };
     await saveReport(id, payload);
     // 6) 텔레그램 검수 요청
     await tgReview(id, payload);
