@@ -403,9 +403,9 @@ async function submitForm(){
 }
 function showDone(){
   const email=(data.c_email||'').trim();
-  document.querySelector('.view').innerHTML=`<div class="done"><div class="emo">☁️💛</div>
+  document.querySelector('.view').innerHTML=`<div class="done">
     <h2>신청이 접수됐어요</h2>
-    <p><b>2시간 이내</b>에 완성된 리포트를<br>${email?`<b>${email}</b> 으로`:'입력하신 이메일로'} 보내드릴게요.<br>곧 만날 아기를 정성껏 그려둘게요 🤍</p>
+    <p><b>24시간 이내</b>에 완성된 리포트를<br>${email?`<b>${email}</b> 으로`:'입력하신 이메일로'} 보내드릴게요.<br>곧 만날 아기를 정성껏 그려둘게요.</p>
     <p style="font-size:13px;color:var(--ink2);margin-top:18px">메일이 안 보이면 스팸함도 확인해 주세요.<br>이 화면은 닫으셔도 괜찮아요.</p></div>`;
   document.querySelector('.bottom').style.display='none';
   document.getElementById('backBtn').style.visibility='hidden';
