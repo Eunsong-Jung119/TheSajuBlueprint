@@ -3,7 +3,7 @@
 // 반려 → status=pending_refund (수동 환불). 기존 send-rating-report / alert-admin 패턴.
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
-const SITE = process.env.NEXT_PUBLIC_BASE_URL || 'https://fatelab.co';
+const SITE = 'https://fatelab.co';   // 리포트 링크는 항상 fatelab.co (공유 env가 다른 상품용이라 무시)
 const TG = process.env.TELEGRAM_BOT_TOKEN;
 
 async function sbGet(id) {
@@ -34,23 +34,16 @@ async function sendEmail(to, id, baby) {
     <p style="text-align:center;margin:28px 0">
       <a href="${link}" style="background:linear-gradient(135deg,#ffb69c,#c9bff0);color:#fff;text-decoration:none;font-weight:800;padding:15px 30px;border-radius:16px;display:inline-block">우리 아기 리포트 보기 →</a></p>
     <p style="font-size:12px;color:#8a7a72">본 리포트는 사주명리 해석에 근거한 참고 자료이며, 정해진 미래나 의학적 판단을 제공하지 않아요. 출산 시기·방법은 반드시 주치의와 상의해 주세요.</p></div>`;
-  if (!process.env.RESEND_API_KEY) { console.error('[birth-review] no RESEND_API_KEY'); return false; }
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: '페이트랩 <noreply@sajublueprint.com>', to, subject: '우리 아기 스케치 리포트가 나왔어요 🍼', html }) });
-  if (!r.ok) { const t = await r.text().catch(() => ''); console.error('[birth-review] resend fail', r.status, t); }
-  else { const j = await r.json().catch(() => ({})); console.log('[birth-review] resend ok id=', j && j.id, 'to=', to); }
   return r.ok;
 }
 
 export default async function handler(req, res) {
   try {
-    // Vercel이 body를 문자열로 넘기는 경우 방어 (validate-coupon.js와 동일 패턴)
-    let body = req.body;
-    if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
-    const cb = body && body.callback_query;
-    if (!cb) { console.log('[birth-review] no callback_query · keys=', body ? Object.keys(body) : 'null'); return res.status(200).json({ ok: true }); }
-    console.log('[birth-review] cb data=', cb.data, '· chat=', cb.message && cb.message.chat && cb.message.chat.id, '· envChat=', process.env.TELEGRAM_CHAT_ID);
+    const cb = req.body && req.body.callback_query;
+    if (!cb) return res.status(200).json({ ok: true }); // 다른 업데이트 무시
     // 검수자 본인만
     if (String(cb.message.chat.id) !== String(process.env.TELEGRAM_CHAT_ID)) { await tgAnswer(cb.id, '권한 없음'); return res.status(200).json({ ok: true }); }
     const [action, id] = String(cb.data || '').split(':');

@@ -9,7 +9,7 @@ const { buildDateMessages, buildOverviewContext } = require('../lib/birth-report
 const PRICE = 49000;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
-const SITE = process.env.NEXT_PUBLIC_BASE_URL || 'https://fatelab.co';
+const SITE = 'https://fatelab.co';   // 리포트 링크는 항상 fatelab.co (공유 env가 다른 상품용이라 무시)
 
 export const config = { maxDuration: 300 };
 
