@@ -31,7 +31,7 @@ async function sendReportEmail(email, token) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'The Saju Blueprint <hello@sajublueprint.com>',
+      from: 'The Saju Blueprint <hello@fatelab.co>',
       to: email,
       subject: 'Your Saju reading is ready ✦',
       html: `<!DOCTYPE html>

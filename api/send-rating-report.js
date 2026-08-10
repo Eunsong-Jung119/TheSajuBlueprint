@@ -115,7 +115,7 @@ module.exports = async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Saju Blueprint <hello@sajublueprint.com>',
+        from: 'Saju Blueprint <hello@fatelab.co>',
         to: email,
         subject: '사주 궁합 결과가 나왔어요 🔮',
         html,

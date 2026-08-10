@@ -297,7 +297,7 @@ export default async function handler(req, res) {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            from: process.env.RESEND_FROM || 'Saju Blueprint <noreply@sajublueprint.com>',
+            from: process.env.RESEND_FROM || 'Saju Blueprint <noreply@fatelab.co>',
             to: email,
             subject: `🔮 ${tName} 심층 분석 결과`,
             html,
