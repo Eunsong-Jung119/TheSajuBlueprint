@@ -63,7 +63,14 @@ async function gptDate(messages) {
 async function generateReport(input) {
   const { mom, dad, baby } = input;
   const toYMD = (s) => { const [y, m, d] = s.split('-').map(Number); return { y, m, d }; };
-  const toHM = (t) => t && t !== '모름' ? { hh: +String(t).slice(0, 2) || 12 } : {};
+  // 입력값이 '인시 (03:00~05:00)' 형태라 slice(0,2)는 '인시'→NaN→12가 되어 시주가 전부 무시됐음.
+  // 괄호 안 시작 시각을 뽑아 실제 시주를 반영. (범위 중간값으로 잡아 경계 오차 방지)
+  const toHM = (t) => {
+    if (!t || t === '모름') return {};
+    const m = String(t).match(/(\d{1,2})\s*:/);
+    if (!m) return {};
+    return { hh: (Number(m[1]) + 1) % 24 };   // 시진 시작+1h = 시진 한가운데
+  };
   const sel = selectBirthDates({
     mom: { ...toYMD(mom.birth), ...toHM(mom.time) },
     dad: { ...toYMD(dad.birth), ...toHM(dad.time) },
