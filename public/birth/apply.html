@@ -347,6 +347,52 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElement
 
 // 포트원(KG이니시스 채널) — rate 상품과 동일 설정
 const PRICE = 49000;
+
+// ── PortOne 리디렉트 복귀 처리 (결제는 됐는데 리포트가 안 생기던 버그) ──
+// 모바일 등에서 결제창이 '팝업'이 아니라 '페이지 이동'으로 열리면, PG에서 돌아올 때 페이지가
+// 새로 로드되어 requestPayment()의 Promise가 영영 resolve되지 않는다. 그 결과 결제는 승인됐는데
+// /api/birth-create 가 호출되지 않아 리포트가 생성되지 않았다.
+// → 결제 직전에 신청 내용을 저장해두고, 복귀 시 저장분으로 생성 요청을 이어서 보낸다.
+const PENDING_KEY='birth_pending_order';
+function savePending(p){ try{ localStorage.setItem(PENDING_KEY, JSON.stringify({p:p, ts:Date.now()})); }catch(e){} }
+function loadPending(){ try{ const o=JSON.parse(localStorage.getItem(PENDING_KEY)||'null');
+  if(!o||!o.p) return null; if(Date.now()-o.ts > 6*60*60*1000) return null; return o.p; }catch(e){ return null; } }
+function clearPending(){ try{ localStorage.removeItem(PENDING_KEY); }catch(e){} }
+
+function sendCreate(payload, paymentId){
+  return fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
+    body:JSON.stringify(Object.assign({}, payload, {paymentId:paymentId})) })
+    .then(async r=>{ if(!r.ok) console.error('[birth-create]', r.status, await r.text().catch(()=>'')); return r.ok; })
+    .catch(err=>{ console.error('[birth-create net]', err); return false; });
+}
+
+// 페이지 로드 시 PortOne 복귀인지 확인해 이어서 처리
+function resumeIfRedirected(){
+  try{
+    const q=new URLSearchParams(location.search);
+    const pid=q.get('paymentId'); if(!pid) return false;
+    const code=q.get('code');
+    history.replaceState(null,'',location.pathname);      // 새로고침 중복 실행 방지
+    const pending=loadPending();
+    if(code){                                             // 실패·취소로 돌아온 경우
+      clearPending(); tb('payment_failed',{code:code, via:'redirect'});
+      alert('결제가 완료되지 않았어요. 다시 시도해 주세요.'); return false;
+    }
+    if(!pending){                                         // 저장분 유실(다른 기기/브라우저 등)
+      tb('payment_orphan',{payment_id:pid});
+      alert('결제는 완료됐는데 신청 정보를 불러오지 못했어요.\nfatelab@naver.com 으로 연락 주시면 바로 처리해 드릴게요 🤍');
+      return false;
+    }
+    tb('payment_confirmed',{payment_id:pid, via:'redirect'});
+    tb('apply_submit',{free:false, via:'redirect'});
+    data.c_email=(pending.contact&&pending.contact.email)||'';
+    clearPending();
+    sendCreate(pending, pid);
+    showDone();
+    return true;
+  }catch(e){ console.error('[resume]',e); return false; }
+}
+
 const LIVE_MODE = true;   // 런칭 전 테스트만: false. 운영도메인=실결제 / ?test=1=테스트
 const IS_TEST_PAY = !LIVE_MODE || location.search.includes('test=1') || !['fatelab.co','www.fatelab.co','sajublueprint.com','www.sajublueprint.com'].includes(location.hostname);
 const PAY_CHANNEL_KEY = IS_TEST_PAY
@@ -374,6 +420,7 @@ async function submitForm(){
     }else{
       btn.textContent='결제창을 여는 중...';
       tb('paywall_shown');
+      savePending(payload);          // 리디렉트로 페이지가 날아가도 복구할 수 있게
       const pay=await PortOne.requestPayment({
         storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
         channelKey:PAY_CHANNEL_KEY,
@@ -385,6 +432,7 @@ async function submitForm(){
       });
       if(pay.code){ if(pay.code!=='FAILURE_TYPE_PG') alert('결제 실패: '+pay.message); tb('payment_failed',{code:pay.code}); btn.disabled=false; btn.textContent=orig; return; }
       paymentId=pay.paymentId;
+      clearPending();               // 팝업 경로로 정상 복귀
       tb('payment_confirmed',{payment_id:paymentId});
     }
     tb('apply_submit',{free:!!_birthCoupon});
@@ -412,6 +460,7 @@ function showDone(){
 }
 initCal();
 render();
+resumeIfRedirected();
 </script>
 </body>
 </html>
