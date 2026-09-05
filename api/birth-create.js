@@ -19,7 +19,7 @@ async function gptDate(messages) {
       const r = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
-        body: JSON.stringify({ model: 'gpt-4o', messages, response_format: { type: 'json_object' }, temperature: 0.85, max_tokens: 3000 }),
+        body: JSON.stringify({ model: 'gpt-4o', messages, response_format: { type: 'json_object' }, temperature: 0.85, max_tokens: 4600 }),
       });
       if (!r.ok) throw new Error('openai_' + r.status);
       const j = await r.json();
@@ -114,7 +114,7 @@ export default async function handler(req, res) {
     });
     // 3) 팩트 + 4) GPT 본문 (날짜별 병렬)
     const facts = buildFacts(sel, baby.sex);
-    const contents = await Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents))));
+    const contents = await Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents, facts.filter(x => x !== f)))));
     const dates = facts.map((f, i) => ({ ...f, content: contents[i] }));
 
     // 5) 저장

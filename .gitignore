@@ -1,1 +1,4 @@
 .vercel
+_smoke.html
+smoke_tmp.js
+.fuse_hidden*
