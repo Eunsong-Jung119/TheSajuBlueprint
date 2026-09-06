@@ -31,17 +31,107 @@ async function tgEdit(chatId, msgId, text) {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ chat_id: chatId, message_id: msgId, text, parse_mode: 'HTML', disable_web_page_preview: true }) });
 }
-async function sendEmail(to, id, baby) {
+// ── 발송 메일 (49,000원짜리 리포트의 '첫인상'이라 표지처럼 공들여서) ──
+// 메일 클라이언트(지메일·네이버·아웃룩) 호환을 위해 table 레이아웃 + 인라인 스타일만 사용.
+const _esc = s => String(s ?? '').replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+const TOC = [
+  '우리는 어떤 부모가 될까?', '왜 이 3일일까 · 선택 가이드', '이 아이의 첫인상', '우리 아이 사용설명서',
+  '꽃피울 분야 · 적성', '돈복 · 곁을 지키는 귀인', '우리 가족 시트콤', '균형을 돕는 이름 · 작명 가이드',
+  '크게 피어나는 때 · 향후 10년', '아기가 보내는 편지',
+];
+function emailHtml(id, payload) {
   const link = `${SITE}/b/${id}`;
-  const html = `<div style="font-family:sans-serif;max-width:520px;margin:0 auto;color:#40323b">
-    <h2>우리 아기 스케치가 완성됐어요 🤍</h2>
-    <p>보내주신 출산 가능일로 아기의 타고난 결을 하나하나 그려두었어요.</p>
-    <p style="text-align:center;margin:28px 0">
-      <a href="${link}" style="background:linear-gradient(135deg,#ffb69c,#c9bff0);color:#fff;text-decoration:none;font-weight:800;padding:15px 30px;border-radius:16px;display:inline-block">우리 아기 리포트 보기 →</a></p>
-    <p style="font-size:12px;color:#8a7a72">본 리포트는 사주명리 해석에 근거한 참고 자료이며, 정해진 미래나 의학적 판단을 제공하지 않아요. 출산 시기·방법은 반드시 주치의와 상의해 주세요.</p></div>`;
+  const baby = (payload && payload.baby) || {};
+  const dates = (payload && payload.dates) || [];
+  const range = (baby.due_from && baby.due_to) ? `${_esc(baby.due_from)} ~ ${_esc(baby.due_to)}` : '';
+
+  // 세 날짜 미리보기 — 캐릭터 한 줄을 살짝 보여줘서 열어보고 싶게
+  const cards = dates.map(d => {
+    const c = d.content || {};
+    const line = c.char_line || c.type || '';
+    return `<tr><td style="padding:0 0 8px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #f0e2d4;border-radius:12px">
+        <tr>
+          <td width="62" style="padding:13px 0 13px 14px;vertical-align:middle;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:17px;font-weight:bold;color:#40323b;white-space:nowrap">${_esc(d.date)}</td>
+          <td style="padding:13px 14px 13px 10px;vertical-align:middle;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:13.5px;line-height:1.5;color:#5a4a44">${_esc(line)}</td>
+        </tr>
+      </table></td></tr>`;
+  }).join('');
+  const preview = cards ? `
+    <tr><td style="padding:4px 0 6px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:13px;font-weight:bold;color:#c8992f">골라드린 세 날짜, 이런 아이예요</td></tr>
+    ${cards}
+    <tr><td style="padding:2px 0 0;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:11.5px;line-height:1.6;color:#8a7a72">세 날짜는 점수 순위가 아니라 <b style="color:#40323b">서로 다른 이야기</b>예요. 리포트 안에 “어떤 아이를 바라시나요”로 고르는 선택 가이드를 담아두었어요.</td></tr>` : '';
+
+  const toc = TOC.map((t, i) => `<tr>
+    <td width="20" style="padding:3px 0;vertical-align:top;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:12px;color:#e79a86;font-weight:bold">${i + 1}</td>
+    <td style="padding:3px 0;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:13px;line-height:1.6;color:#5a4a44">${t}</td></tr>`).join('');
+
+  return `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>우리 아기 사주 스케치북</title></head>
+<body style="margin:0;padding:0;background:#fff8f1">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">곧 만날 아기의 타고난 결을 담은 스케치북이 완성됐어요. 세 날짜, 세 가지 이야기를 확인해 보세요.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fff8f1">
+<tr><td align="center" style="padding:28px 16px 36px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;width:100%">
+
+  <tr><td align="center" style="padding-bottom:6px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:11.5px;font-weight:bold;color:#e79a86;letter-spacing:2px">FATELAB${range ? ' · ' + range : ''}</td></tr>
+  <tr><td align="center" style="padding-bottom:6px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:26px;font-weight:bold;color:#40323b;line-height:1.35">우리 아기<br>사주 스케치북</td></tr>
+  <tr><td align="center" style="padding-bottom:22px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:13.5px;color:#8a7a72">— 곧 만날 아기의 타고난 결 —</td></tr>
+
+  <tr><td style="background:#ffffff;border-radius:18px;padding:22px 20px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td style="font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:15px;line-height:1.85;color:#5a4a44;padding-bottom:16px">
+        보내주신 출산 가능일 안에서 <b style="color:#40323b">세 날짜</b>를 골라, 아기의 타고난 결을 하나하나 그려두었어요.<br>
+        정답을 정해드리려는 게 아니라, <b style="color:#40323b">‘이런 아이일 수 있겠구나’</b> 하고 미리 마음의 준비를 함께하는 작은 책이에요.
+      </td></tr>
+      ${preview}
+    </table>
+  </td></tr>
+
+  <tr><td align="center" style="padding:24px 0 8px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td align="center" bgcolor="#e79a86" style="background:#e79a86;background-image:linear-gradient(135deg,#f0a98f,#c9bff0);border-radius:14px">
+        <a href="${link}" style="display:inline-block;padding:16px 34px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:16px;font-weight:bold;color:#ffffff;text-decoration:none">우리 아기 스케치북 열어보기 →</a>
+      </td></tr></table>
+  </td></tr>
+  <tr><td align="center" style="padding-bottom:24px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:11.5px;color:#8a7a72">링크는 저장해두시면 언제든 다시 열어보실 수 있어요</td></tr>
+
+  <tr><td style="background:#ffffff;border-radius:18px;padding:20px">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr><td style="padding-bottom:8px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:14px;font-weight:bold;color:#40323b">이 스케치북에 담긴 이야기</td></tr>
+      <tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${toc}</table></td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="padding:14px 0 0">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fdf3ea;border:1px dashed #e2c4a5;border-radius:14px">
+      <tr><td style="padding:15px 18px;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:13px;line-height:1.75;color:#5a4a44">
+        <b style="color:#40323b">함께 보고 싶은 분이 있다면</b><br>
+        리포트 맨 아래 <b style="color:#40323b">공유하기</b> 버튼으로 남편분·부모님께 그대로 보내실 수 있어요. 부모님 생년월일이 담겨 있으니 가까운 분들과만 나눠주세요.
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="padding:20px 4px 0;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:13px;line-height:1.8;color:#5a4a44">
+    읽으시다 궁금한 점이 있으면 이 메일에 그대로 답장 주세요. 제가 직접 읽고 답해드려요.<br>
+    <span style="color:#8a7a72">아이 이름을 고민 중이시라면, 리포트 8장의 작명 가이드도 함께 봐주세요.</span>
+  </td></tr>
+
+  <tr><td style="padding:22px 4px 0;border-top:1px solid #f0e6da"></td></tr>
+  <tr><td style="padding:12px 4px 0;font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:11.5px;line-height:1.7;color:#a99a8b">
+    본 리포트는 사주명리 해석에 근거한 참고 자료이며, 정해진 미래나 의학적 판단을 제공하지 않아요. 출산 시기·방법은 반드시 주치의와 상의해 주세요.<br><br>
+    페이트랩 · fatelab.co · 문의 fatelab@naver.com
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>`;
+}
+async function sendEmail(to, id, payload) {
+  const html = emailHtml(id, payload);
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: '페이트랩 <noreply@fatelab.co>', reply_to: 'fatelab@naver.com', to, subject: '우리 아기 스케치 리포트가 나왔어요 🍼', html }) });
+    body: JSON.stringify({ from: '페이트랩 <noreply@fatelab.co>', reply_to: 'fatelab@naver.com', to, subject: '우리 아기 사주 스케치북이 완성됐어요 🍼', html }) });
   return r.ok;
 }
 
@@ -111,7 +201,7 @@ export default async function handler(req, res) {
     if (!row) { await tgAnswer(cb.id, '주문을 찾을 수 없어요'); return res.status(200).json({ ok: true }); }
 
     if (action === 'approve') {
-      const ok = await sendEmail(row.email, id, row.payload.baby);
+      const ok = await sendEmail(row.email, id, row.payload);
       await sbUpdate(id, { status: ok ? 'sent' : 'send_failed', sent_at: new Date().toISOString() });
       await tgAnswer(cb.id, ok ? '✅ 발송 완료' : '⚠️ 이메일 실패');
       await tgEdit(cb.message.chat.id, cb.message.message_id, `✅ <b>승인·발송됨</b> — 주문 <code>${id}</code> → ${row.email}`);
