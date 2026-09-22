@@ -59,7 +59,8 @@ input::placeholder{color:#c9bcae}
 .caldow{font-size:11px;color:var(--ink2);text-align:center;padding:3px 0 6px;font-weight:700}
 .calday{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:15px;border-radius:11px;cursor:pointer;color:var(--ink)}
 .calday.mut{visibility:hidden}
-.calday.dis{color:#dcd2c6;cursor:default}
+.calday.past{color:#b9ab9c}
+.calday.past.sel{color:#fff}
 .calday.inrange{background:var(--peach-soft);border-radius:0}
 .calday.sel{background:var(--peach);color:#fff;font-weight:800}
 .calday.s0{border-radius:11px 0 0 11px}.calday.s1{border-radius:0 11px 11px 0}
@@ -250,14 +251,13 @@ function renderCal(){
   for(let i=0;i<firstDow;i++) h+='<div class="calday mut"></div>';
   for(let d=1;d<=days;d++){
     const cur2=new Date(calY,calM,d), key=_k(cur2);let cls='calday';
-    if(cur2<today) cls+=' dis';
-    else{
-      const isS=dStart&&key===_k(dStart), isE=dEnd&&key===_k(dEnd);
-      if(dStart&&dEnd&&cur2>=dStart&&cur2<=dEnd) cls+=' inrange';
-      if(isS||isE) cls+=' sel';
-      if(isS&&dEnd) cls+=' s0'; if(isE) cls+=' s1';
-    }
-    h+='<div class="'+cls+'"'+(cur2>=today?' onclick="pickDay('+calY+','+calM+','+d+')"':'')+'>'+d+'</div>';
+    // 지난 날짜도 고를 수 있음(이미 태어난 아이 리포트용). 기본 화면은 이번 달이라 미래 선택이 기본값.
+    if(cur2<today) cls+=' past';
+    const isS=dStart&&key===_k(dStart), isE=dEnd&&key===_k(dEnd);
+    if(dStart&&dEnd&&cur2>=dStart&&cur2<=dEnd) cls+=' inrange';
+    if(isS||isE) cls+=' sel';
+    if(isS&&dEnd) cls+=' s0'; if(isE) cls+=' s1';
+    h+='<div class="'+cls+'" onclick="pickDay('+calY+','+calM+','+d+')">'+d+'</div>';
   }
   el.innerHTML=h+'</div>';
 }
