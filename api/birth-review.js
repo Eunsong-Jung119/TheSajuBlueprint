@@ -136,12 +136,27 @@ async function sendEmail(to, id, payload) {
 }
 
 // ── 재생성용: 원본 입력으로 날짜선별→팩트→GPT 재생성 (birth-create와 동일 파이프라인) ──
+// GPT 결과 품질 검사 — 규칙을 어긴 카드는 쓰지 않고 엔진 테이블로 되돌린다.
+// (프롬프트 지시만으로는 '~합니다'체·십성 용어·추상어가 새어 나옴)
+const _SS_WORDS = /(비겁|식상|재성|관성|인성|비견|겁재|식신|상관|편재|정재|편관|정관|편인|정인)/;
+const _FLAT_WORDS = /(에너지|존재입니다|존재예요|역할을 (하|합)|분위기 메이커|활력을 불어넣|긍정적인)/;
+function parentTextOk(g) {
+  if (!g || !g.head || !g.body) return false;
+  const all = [g.head, g.body, g.over, g.mission].filter(Boolean).join(' ');
+  if (/(입니다|합니다|됩니다|습니다)/.test(all)) return false;   // 문체 위반
+  if (_SS_WORDS.test(all)) return false;                        // 십성 용어 노출
+  if (_FLAT_WORDS.test(all)) return false;                      // 추상어로 때움
+  if (/^(엄마|아빠)는/.test(String(g.body).trim())) return false; // 주어로 시작
+  if (String(g.body).length < 70) return false;                  // 너무 짧음
+  return true;
+}
+
 // GPT가 쓴 부모 문장을 parentAn에 얹는다. 실패/누락 시 엔진 테이블 문장이 그대로 남음(폴백).
 function applyParentText(parentAn, txt) {
   if (!parentAn || !txt) return;
   for (const a of parentAn) {
     const g = txt[a.who];
-    if (!g) continue;
+    if (!parentTextOk(g)) { console.warn('[parent-gpt] 품질 미달 → 엔진 폴백:', a.who); continue; }
     if (g.head) a.arche = String(g.head).trim();
     if (Array.isArray(g.lang) && g.lang.length) a.trait = '사랑의 언어 — ' + g.lang.map(x => String(x).trim()).filter(Boolean).join(' · ');
     if (g.body) a.love = String(g.body).trim();
