@@ -150,6 +150,24 @@ function pickParent(txt, who) {
   }
   return null;
 }
+// ~입니다체를 ~예요/~어요로 안전 변환. 한 군데 때문에 카드 전체를 버리는 게 아까워서,
+// 확실한 패턴만 바꾸고 그래도 격식체가 남으면 그때 폴백한다. (불확실한 활용은 건드리지 않음)
+function toPolite(t) {
+  if (!t) return t;
+  let s = String(t);
+  s = s.replace(/것입니다/g, '거예요').replace(/것이었습니다/g, '거였어요');
+  s = s.replace(/있습니다/g, '있어요').replace(/없습니다/g, '없어요');
+  s = s.replace(/하십니다/g, '하세요').replace(/이십니다/g, '이세요');
+  s = s.replace(/됩니다/g, '돼요').replace(/합니다/g, '해요');
+  s = s.replace(/드립니다/g, '드려요').replace(/십니다/g, '세요');
+  // 받침 유무로 예요/이에요 결정
+  s = s.replace(/([가-힣])입니다/g, (m, ch) => {
+    const c = ch.charCodeAt(0) - 0xAC00;
+    const batchim = c >= 0 && c <= 11171 && (c % 28) !== 0;
+    return ch + (batchim ? '이에요' : '예요');
+  });
+  return s;
+}
 // 통과하면 '', 막히면 사유 문자열을 돌려준다(로그·payload에 남겨 원인 추적).
 function parentTextWhy(g) {
   if (!g) return 'no_object';
@@ -168,6 +186,7 @@ function applyParentText(parentAn, txt) {
   if (!parentAn || !txt) return;
   for (const a of parentAn) {
     const g = pickParent(txt, a.who);
+    if (g) ['head','body','over','mission'].forEach(k => { if (g[k]) g[k] = toPolite(g[k]); });
     const why = parentTextWhy(g);
     a.gptWhy = why || 'ok';   // 폴백 사유를 payload에 남겨 원인 추적(로그 못 볼 때 대비)
     if (why) { console.warn('[parent-gpt] 폴백:', a.who, why); continue; }
