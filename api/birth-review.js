@@ -7,7 +7,7 @@ const SITE = 'https://fatelab.co';   // 리포트 링크는 항상 fatelab.co (�
 const TG = process.env.TELEGRAM_BOT_TOKEN;
 const { selectBirthDates } = require('../lib/birth-engine.js');
 const { buildFacts } = require('../lib/birth-facts.js');
-const { buildDateMessages, buildOverviewContext } = require('../lib/birth-report-prompt.js');
+const { buildDateMessages, buildOverviewContext, buildParentMessages } = require('../lib/birth-report-prompt.js');
 
 export const config = { maxDuration: 300 };   // 재생성(GPT 3건)에 시간이 걸려 300초
 
@@ -136,6 +136,27 @@ async function sendEmail(to, id, payload) {
 }
 
 // ── 재생성용: 원본 입력으로 날짜선별→팩트→GPT 재생성 (birth-create와 동일 파이프라인) ──
+// GPT가 쓴 부모 문장을 parentAn에 얹는다. 실패/누락 시 엔진 테이블 문장이 그대로 남음(폴백).
+function applyParentText(parentAn, txt) {
+  if (!parentAn || !txt) return;
+  for (const a of parentAn) {
+    const g = txt[a.who];
+    if (!g) continue;
+    if (g.head) a.arche = String(g.head).trim();
+    if (Array.isArray(g.lang) && g.lang.length) a.trait = '사랑의 언어 — ' + g.lang.map(x => String(x).trim()).filter(Boolean).join(' · ');
+    if (g.body) a.love = String(g.body).trim();
+    if (g.over || g.mission) {
+      const ov = String(g.over || '').trim(), ms = String(g.mission || '').trim();
+      a.watch = `이럴 때 과해져요 — ${ov}${ms ? ' ▷부모 미션 — ' + ms : ''}`;
+    }
+    a.byGpt = true;
+  }
+  // 안전망: GPT가 그래도 같은 문장을 냈으면 엔진 폴백으로 되돌림(엔진은 최소한 축이 다름)
+  if (parentAn.length === 2 && parentAn[0].arche === parentAn[1].arche) {
+    parentAn.forEach(a => { a.byGpt = false; });
+  }
+}
+
 async function gptDate(messages) {
   for (let i = 0; i < 3; i++) {
     try {
@@ -167,7 +188,11 @@ async function generateReport(input) {
     dueFrom: toYMD(baby.due_from), dueTo: toYMD(baby.due_to),
   });
   const facts = buildFacts(sel, baby.sex);
-  const contents = await Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents, facts.filter(x => x !== f)))));
+  const [contents, pTxt] = await Promise.all([
+    Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents, facts.filter(x => x !== f))))),
+    gptDate(buildParentMessages(sel.parentAn)).catch(e => { console.error('[parent-gpt]', e && e.message); return null; }),
+  ]);
+  applyParentText(sel.parentAn, pTxt);
   const dates = facts.map((f, i) => ({ ...f, content: contents[i] }));
   return { parents: sel.parents, range: sel.all, overview: buildOverviewContext(facts, sel.parents), dates };
 }

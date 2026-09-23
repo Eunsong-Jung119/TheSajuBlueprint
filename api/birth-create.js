@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { verifyPortone } = require('../lib/payment.js');
 const { selectBirthDates } = require('../lib/birth-engine.js');
 const { buildFacts } = require('../lib/birth-facts.js');
-const { buildDateMessages, buildOverviewContext } = require('../lib/birth-report-prompt.js');
+const { buildDateMessages, buildOverviewContext, buildParentMessages } = require('../lib/birth-report-prompt.js');
 
 const PRICE = 49000;
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -12,6 +12,27 @@ const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
 const SITE = 'https://fatelab.co';   // 리포트 링크는 항상 fatelab.co (공유 env가 다른 상품용이라 무시)
 
 export const config = { maxDuration: 300 };
+
+// GPT가 쓴 부모 문장을 parentAn에 얹는다. 실패/누락 시 엔진 테이블 문장이 그대로 남음(폴백).
+function applyParentText(parentAn, txt) {
+  if (!parentAn || !txt) return;
+  for (const a of parentAn) {
+    const g = txt[a.who];
+    if (!g) continue;
+    if (g.head) a.arche = String(g.head).trim();
+    if (Array.isArray(g.lang) && g.lang.length) a.trait = '사랑의 언어 — ' + g.lang.map(x => String(x).trim()).filter(Boolean).join(' · ');
+    if (g.body) a.love = String(g.body).trim();
+    if (g.over || g.mission) {
+      const ov = String(g.over || '').trim(), ms = String(g.mission || '').trim();
+      a.watch = `이럴 때 과해져요 — ${ov}${ms ? ' ▷부모 미션 — ' + ms : ''}`;
+    }
+    a.byGpt = true;
+  }
+  // 안전망: GPT가 그래도 같은 문장을 냈으면 엔진 폴백으로 되돌림(엔진은 최소한 축이 다름)
+  if (parentAn.length === 2 && parentAn[0].arche === parentAn[1].arche) {
+    parentAn.forEach(a => { a.byGpt = false; });
+  }
+}
 
 async function gptDate(messages) {
   for (let i = 0; i < 3; i++) {
@@ -114,7 +135,12 @@ export default async function handler(req, res) {
     });
     // 3) 팩트 + 4) GPT 본문 (날짜별 병렬)
     const facts = buildFacts(sel, baby.sex);
-    const contents = await Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents, facts.filter(x => x !== f)))));
+    // 부모 카드는 날짜와 무관 → 날짜 3건과 함께 병렬로 1회만 호출 (체감 지연 없음)
+    const [contents, pTxt] = await Promise.all([
+      Promise.all(facts.map(f => gptDate(buildDateMessages(f, sel.parents, facts.filter(x => x !== f))))),
+      gptDate(buildParentMessages(sel.parentAn)).catch(e => { console.error('[parent-gpt]', e && e.message); return null; }),
+    ]);
+    applyParentText(sel.parentAn, pTxt);
     const dates = facts.map((f, i) => ({ ...f, content: contents[i] }));
 
     // 5) 저장
