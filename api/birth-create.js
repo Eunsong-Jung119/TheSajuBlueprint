@@ -37,7 +37,6 @@ function parentTextWhy(g) {
   if ((m = all.match(/(입니다|합니다|됩니다|습니다)/))) return 'formal:' + m[1];
   if ((m = all.match(_SS_WORDS))) return 'sipseong:' + m[1];
   if ((m = all.match(_FLAT_WORDS))) return 'flat:' + m[1];
-  if (/^(엄마|아빠)는/.test(String(g.body).trim())) return 'starts_with_subject';
   if (String(g.body).length < 70) return 'too_short:' + String(g.body).length;
   return '';
 }
