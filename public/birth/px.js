@@ -14,7 +14,7 @@
       Purchase          결제 승인 — eventID=paymentId 로 서버 CAPI와 중복 제거
    ──────────────────────────────────────────────────────────── */
 (function (w, d) {
-  var PIXEL_ID = '';          // ← 여기에 새 픽셀 ID (숫자 15~16자리)
+  var PIXEL_ID = '28111637121840374';   // FateLab 출산택일 (fatelab.co) 전용 세트
 
   // 상품 파라미터 — 프론트 픽셀과 서버 CAPI가 같은 값을 써야 매칭된다
   w.BPX_PRODUCT = {
