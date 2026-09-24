@@ -1,7 +1,7 @@
 // POST /api/birth-create — 결제검증 → 날짜선별 → 팩트 → GPT본문 → 저장 → 텔레그램 검수요청
 // 기존 generate-upsell.js / alert-admin.js / save-rating-report.js 패턴 재활용.
 const crypto = require('crypto');
-const { verifyPortone } = require('../lib/payment.js');
+const { verifyPortone, sendMetaPurchase } = require('../lib/payment.js');
 const { selectBirthDates } = require('../lib/birth-engine.js');
 const { buildFacts } = require('../lib/birth-facts.js');
 const { buildDateMessages, buildOverviewContext, buildParentMessages } = require('../lib/birth-report-prompt.js');
@@ -151,7 +151,7 @@ async function tgReview(id, payload) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   try {
-    const { mom, dad, baby, contact, paymentId, coupon_code, session_id, utm } = req.body || {};
+    const { mom, dad, baby, contact, paymentId, coupon_code, session_id, utm, fb } = req.body || {};
     if (!mom?.birth || !dad?.birth || !baby?.due_from || !contact?.email) return res.status(400).json({ error: 'missing_fields' });
 
     // 1) 결제 검증 — 무료 쿠폰이 있으면 서버에서 원자적 1회 차감, 없으면 포트원 결제 검증
@@ -161,12 +161,35 @@ export default async function handler(req, res) {
       if (!rc.ok) return res.status(403).json({ error: 'coupon_' + (rc.reason || 'invalid') });
       couponOk = true;
     }
+    let paid = null;
     if (paymentId) {
       const v = await verifyPortone(paymentId, PRICE);
       if (!v.ok && String(v.reason).startsWith('status_')) return res.status(402).json({ error: 'payment_' + v.reason });
+      if (v.ok) paid = v;
     }
     // 쿠폰도 결제도 없으면 무료 발급 차단
     if (!couponOk && !paymentId) return res.status(402).json({ error: 'payment_required' });
+
+    // 1-b) 메타 전환API Purchase — 리포트 생성(1~2분)보다 먼저 쏜다.
+    //      생성이 실패해도 결제는 일어났으므로 전환은 남아야 하고, 지연되면 유실 위험이 커진다.
+    //      event_id = paymentId → 프론트 픽셀 eventID와 같아 중복 제거된다.
+    // 전용 데이터세트가 설정돼 있을 때만 — 없으면 rate 픽셀로 잘못 흘러간다.
+    if (paid && process.env.META_PIXEL_ID_BIRTH) {
+      await sendMetaPurchase({
+        paymentId,
+        value: paid.amount,
+        contentName: '우리 아기 스케치 리포트',
+        contentId: 'birth_report',          // 프론트 BPX_PRODUCT.content_ids와 동일
+        email: contact.email,
+        ip: String(req.headers['x-forwarded-for'] || '').split(',')[0].trim(),
+        ua: req.headers['user-agent'],
+        fbp: fb && fb.fbp,
+        fbc: fb && fb.fbc,
+        pixelId: process.env.META_PIXEL_ID_BIRTH,
+        capiToken: process.env.META_CAPI_TOKEN_BIRTH,
+        sourceUrl: SITE + '/birth/apply',
+      }).catch(e => console.error('[birth-capi]', e && e.message));
+    }
     // 2) 날짜 선별
     const toYMD = (s) => { const [y, m, d] = s.split('-').map(Number); return { y, m, d }; };
     // 입력값이 '인시 (03:00~05:00)' 형태라 slice(0,2)는 '인시'→NaN→12가 되어 시주가 전부 무시됐음.
