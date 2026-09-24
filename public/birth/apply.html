@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>우리 아기 스케치 신청 · 정보 입력</title>
 <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<script src="/birth/px.js"></script>
+<!-- px.js가 광고차단기에 막혀도 페이지 로직이 죽지 않게 하는 안전망 -->
+<script>window.bpx=window.bpx||function(){};window.birthFbIds=window.birthFbIds||function(){return{};};window.BPX_PRODUCT=window.BPX_PRODUCT||{};</script>
 <!--
   ▶ 제출 연결: submitForm() 안의 ENDPOINT 를 실제 백엔드(현재 Resend 전송) 주소로 교체하세요.
      수집 데이터는 payload 객체로 POST 됩니다. 결과는 이메일로 발송됩니다.
@@ -348,6 +351,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElement
 // 포트원(KG이니시스 채널) — rate 상품과 동일 설정
 const PRICE = 49000;
 
+// 메타 픽셀 Purchase — eventID를 paymentId로 줘서 서버 전환API(CAPI)와 중복 제거된다.
+function fbPurchase(paymentId){
+  bpx('Purchase', Object.assign({ value:PRICE, currency:'KRW' }, window.BPX_PRODUCT), { eventID:paymentId });
+}
+
 // ── PortOne 리디렉트 복귀 처리 (결제는 됐는데 리포트가 안 생기던 버그) ──
 // 모바일 등에서 결제창이 '팝업'이 아니라 '페이지 이동'으로 열리면, PG에서 돌아올 때 페이지가
 // 새로 로드되어 requestPayment()의 Promise가 영영 resolve되지 않는다. 그 결과 결제는 승인됐는데
@@ -361,7 +369,7 @@ function clearPending(){ try{ localStorage.removeItem(PENDING_KEY); }catch(e){} 
 
 function sendCreate(payload, paymentId){
   return fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
-    body:JSON.stringify(Object.assign({}, payload, {paymentId:paymentId})) })
+    body:JSON.stringify(Object.assign({}, payload, {paymentId:paymentId, fb:birthFbIds()})) })
     .then(async r=>{ if(!r.ok) console.error('[birth-create]', r.status, await r.text().catch(()=>'')); return r.ok; })
     .catch(err=>{ console.error('[birth-create net]', err); return false; });
 }
@@ -385,6 +393,7 @@ function resumeIfRedirected(){
     }
     tb('payment_confirmed',{payment_id:pid, via:'redirect'});
     tb('apply_submit',{free:false, via:'redirect'});
+    fbPurchase(pid);
     data.c_email=(pending.contact&&pending.contact.email)||'';
     clearPending();
     sendCreate(pending, pid);
@@ -420,6 +429,7 @@ async function submitForm(){
     }else{
       btn.textContent='결제창을 여는 중...';
       tb('paywall_shown');
+      bpx('InitiateCheckout', Object.assign({ value:PRICE, currency:'KRW' }, window.BPX_PRODUCT));
       savePending(payload);          // 리디렉트로 페이지가 날아가도 복구할 수 있게
       const pay=await PortOne.requestPayment({
         storeId:'store-52a1286d-c922-41ac-9fe8-554af80ff935',
@@ -434,13 +444,12 @@ async function submitForm(){
       paymentId=pay.paymentId;
       clearPending();               // 팝업 경로로 정상 복귀
       tb('payment_confirmed',{payment_id:paymentId});
+      fbPurchase(paymentId);
     }
     tb('apply_submit',{free:!!_birthCoupon});
     // 맞춤 리포트 생성은 서버에서 1~2분 걸릴 수 있어요.
     // 요청만 보내고(keepalive로 탭을 닫아도 서버는 계속 생성) 바로 접수완료 화면으로 전환합니다.
-    fetch('/api/birth-create',{ method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true, body:JSON.stringify({...payload, paymentId}) })
-      .then(async r=>{ if(!r.ok) console.error('[birth-create]', r.status, await r.text().catch(()=>'')); })
-      .catch(err=>console.error('[birth-create net]', err));
+    sendCreate(payload, paymentId);
     showDone();
   }catch(e){
     console.error('[submit]',e);

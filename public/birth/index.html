@@ -1,6 +1,9 @@
 <!DOCTYPE html><html lang="ko"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>우리 아기, 어떤 날 만날까요 · 출산택일 + 기질 스케치</title>
+<script src="/birth/px.js"></script>
+<!-- px.js가 광고차단기에 막혀도 페이지 로직이 죽지 않게 하는 안전망 -->
+<script>window.bpx=window.bpx||function(){};window.birthFbIds=window.birthFbIds||function(){return{};};window.BPX_PRODUCT=window.BPX_PRODUCT||{};</script>
 <!--
   ▶ 결제 연결: 모든 .cta href="/birth/apply" 를 실제 결제 링크로 교체.
   ▶ ⚠️ 후기(.reviews)는 '예시'입니다. 동의받은 실제 후기로 교체하세요(후기 조작은 표시광고법 위반).
@@ -211,6 +214,7 @@ footer{color:#bcae9f;font-size:12px;text-align:center;padding:26px 22px 44px;lin
   function getUTM(){ try{ return JSON.parse(sessionStorage.getItem('birth_utm')||'{}'); }catch(e){ return {}; } }
   function tb(name,extra){ try{ fetch('/api/track-birth',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({event_name:name,session_id:sid(),metadata:Object.assign({page:'landing',is_mobile:/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')},getUTM(),extra||{})})}).catch(function(){}); }catch(e){} }
   capUTM(); tb('page_view');
+  bpx('ViewContent', window.BPX_PRODUCT);
   document.querySelectorAll('a.cta').forEach(function(a){ a.addEventListener('click',function(){ tb('cta_click',{href:a.getAttribute('href')||''}); }); });
 })();
 </script>
