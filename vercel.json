@@ -7,6 +7,31 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "rallycut.fatelab.co" }],
+      "destination": "/rallycut/index.html"
+    },
+    {
+      "source": "/index.html",
+      "has": [{ "type": "host", "value": "rallycut.fatelab.co" }],
+      "destination": "/rallycut/index.html"
+    },
+    {
+      "source": "/terms",
+      "has": [{ "type": "host", "value": "rallycut.fatelab.co" }],
+      "destination": "/rallycut/terms.html"
+    },
+    {
+      "source": "/privacy",
+      "has": [{ "type": "host", "value": "rallycut.fatelab.co" }],
+      "destination": "/rallycut/privacy.html"
+    },
+    {
+      "source": "/support",
+      "has": [{ "type": "host", "value": "rallycut.fatelab.co" }],
+      "destination": "/rallycut/support.html"
+    },
     { "source": "/r/:id",         "destination": "/api/r/:id" },
     { "source": "/b/:id",         "destination": "/api/birth-report?id=:id" },
     { "source": "/",              "destination": "/rate/index.html" },
